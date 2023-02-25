@@ -1,7 +1,8 @@
-package com.lovesme.homegram
+package com.lovesme.homegram.presentation.ui.home
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.lovesme.homegram.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

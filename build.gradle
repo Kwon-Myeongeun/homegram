@@ -1,5 +1,12 @@
 buildscript {
     ext {
+        coreKtxVersion = "1.7.0"
+        appcompatVersion = "1.6.1"
+        materialVersion = "1.8.0"
+        constraintlayoutVersion = "2.1.4"
+        junitVersion = "4.13.2"
+        junitUiVersion = "1.1.5"
+        espressoCoreVersion = "3.5.1"
         firebaseVersion = "31.1.0"
     }
     repositories {
