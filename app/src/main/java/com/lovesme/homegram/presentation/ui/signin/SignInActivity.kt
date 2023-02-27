@@ -11,9 +11,13 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.identity.SignInCredential
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.lovesme.homegram.BuildConfig
 import com.lovesme.homegram.databinding.ActivitySignInBinding
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -47,9 +51,9 @@ class SignInActivity : AppCompatActivity() {
                 ActivityResultContracts.StartIntentSenderForResult(),
             ) { result ->
                 if (result.resultCode == RESULT_OK) {
+                    val credential =
+                        oneTapSignInClient.getSignInCredentialFromIntent(result.data)
                     try {
-                        val credential =
-                            oneTapSignInClient.getSignInCredentialFromIntent(result.data)
                         credential.googleIdToken?.let {
                             handleOneTapSignInResult(credential)
                         }
@@ -70,13 +74,39 @@ class SignInActivity : AppCompatActivity() {
                 }
             }
 
+        val legacySignResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val task: Task<GoogleSignInAccount> =
+                    GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    handleLegacySignInResult(task)
+                } catch (e: ApiException) {
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.signin_google_fail),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.signin_google_fail),
+                    Snackbar.LENGTH_SHORT
+                )
+                    .show()
+            }
+        }
+
         binding.signInGoogleBtn.setOnClickListener {
-            initGoogleLogin(signInResultLauncher)
+            initGoogleLogin(signInResultLauncher, legacySignResultLauncher)
         }
     }
 
     private fun initGoogleLogin(
-        oneTapSignInResultLauncher: ActivityResultLauncher<IntentSenderRequest>
+        oneTapSignInResultLauncher: ActivityResultLauncher<IntentSenderRequest>,
+        legacySignResultLauncher: ActivityResultLauncher<Intent>
     ) {
         val signInRequest = BeginSignInRequest.builder()
             .setGoogleIdTokenRequestOptions(
@@ -105,8 +135,20 @@ class SignInActivity : AppCompatActivity() {
                 }
             }
             .addOnFailureListener(this) {
-                TODO("Legacy Sign In")
+                initLegacyLogin(legacySignResultLauncher)
             }
+    }
+
+    private fun initLegacyLogin(legacySignResultLauncher: ActivityResultLauncher<Intent>) {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID)
+            .requestEmail()
+            .build()
+
+        val legacySignInClient = GoogleSignIn.getClient(this, gso)
+        val signIntent: Intent = legacySignInClient.signInIntent
+
+        legacySignResultLauncher.launch(signIntent)
     }
 
     private fun handleOneTapSignInResult(credential: SignInCredential) {
@@ -124,6 +166,27 @@ class SignInActivity : AppCompatActivity() {
                     ).show()
                 }
             }
+    }
+
+    private fun handleLegacySignInResult(completedTask: Task<GoogleSignInAccount>) {
+        val credential = completedTask.getResult(ApiException::class.java)
+
+        if (credential.idToken != null) {
+            val firebaseCredential =
+                GoogleAuthProvider.getCredential(credential.idToken, null)
+            auth.signInWithCredential(firebaseCredential)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        gotoHome()
+                    } else {
+                        Snackbar.make(
+                            binding.root,
+                            getString(R.string.signin_google_fail),
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+        }
     }
 
     private fun gotoHome() {
