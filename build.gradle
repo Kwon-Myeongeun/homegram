@@ -8,6 +8,7 @@ buildscript {
         junitUiVersion = "1.1.5"
         espressoCoreVersion = "3.5.1"
         firebaseVersion = "31.1.0"
+        playServicesAuthVersion = "20.4.1"
     }
     repositories {
         google()
