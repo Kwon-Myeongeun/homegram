@@ -9,6 +9,7 @@ buildscript {
         espressoCoreVersion = "3.5.1"
         firebaseVersion = "31.1.0"
         playServicesAuthVersion = "20.4.1"
+        kotlinxCoroutinesVersion = "1.6.4"
     }
     repositories {
         google()

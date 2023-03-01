@@ -24,7 +24,12 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.lovesme.homegram.R
+import com.lovesme.homegram.data.model.User
+import com.lovesme.homegram.data.repository.UserPreferencesRepository
 import com.lovesme.homegram.presentation.ui.home.HomeActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SignInActivity : AppCompatActivity() {
 
@@ -157,6 +162,7 @@ class SignInActivity : AppCompatActivity() {
         auth.signInWithCredential(firebaseCredential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+                    addUser()
                     gotoHome()
                 } else {
                     Snackbar.make(
@@ -177,6 +183,7 @@ class SignInActivity : AppCompatActivity() {
             auth.signInWithCredential(firebaseCredential)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
+                        addUser()
                         gotoHome()
                     } else {
                         Snackbar.make(
@@ -192,5 +199,12 @@ class SignInActivity : AppCompatActivity() {
     private fun gotoHome() {
         startActivity(Intent(this, HomeActivity::class.java))
         finish()
+    }
+
+    private fun addUser() {
+        val email = auth.currentUser?.email ?: ""
+        CoroutineScope(Dispatchers.IO).launch {
+            UserPreferencesRepository().addUser(User(email, "", ""))
+        }
     }
 }
