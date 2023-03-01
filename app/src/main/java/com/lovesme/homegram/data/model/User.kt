@@ -4,4 +4,5 @@ data class User(
     val email: String,
     val name: String,
     val birthday: String,
+    val grouopId: String,
 )
