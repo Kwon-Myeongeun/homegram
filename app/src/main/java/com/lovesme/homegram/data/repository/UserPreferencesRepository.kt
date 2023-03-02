@@ -10,6 +10,7 @@ import kotlin.coroutines.resume
 import com.lovesme.homegram.data.model.Result
 
 const val DIRECTORY_USER = "user"
+const val DIRECTORY_GROUP_ID = "groupId"
 
 class UserPreferencesRepository {
     private val database =
@@ -33,4 +34,21 @@ class UserPreferencesRepository {
             }
         }
 
+    suspend fun getGroupId() =
+        suspendCoroutine { continuation ->
+            userId?.let { id ->
+                val reference = database.reference
+                    .child(DIRECTORY_USER)
+                    .child(id)
+                    .child(DIRECTORY_GROUP_ID)
+
+                reference.get()
+                    .addOnSuccessListener { snapshot ->
+                        continuation.resume(Result.Success(snapshot.value))
+                    }
+                    .addOnFailureListener { exception ->
+                        continuation.resume(Result.Error(exception))
+                    }
+            }
+        }
 }
