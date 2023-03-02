@@ -29,6 +29,26 @@
         </activity>
         <activity android:name=".presentation.ui.main.MainActivity" />
         <activity android:name=".presentation.ui.setting.SettingActivity" />
+        <activity
+            android:name=".presentation.ui.invite.InviteLinkActivity"
+            android:exported="true">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="homegram.page.link"
+                    android:path="/invite"
+                    android:scheme="https" />
+
+                <data
+                    android:host="testservice.page.link"
+                    android:path="/invite"
+                    android:scheme="http" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
