@@ -6,4 +6,6 @@
     <string name="home_menu_daily">Daily</string>
     <string name="home_menu_calendar">Calendar</string>
     <string name="home_menu_map">Map</string>
+    <string name="main_menu_setting">Setting</string>
+    <string name="setting_invite_link">초대 링크 공유하기</string>
 </resources>
