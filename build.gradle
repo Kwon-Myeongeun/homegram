@@ -10,6 +10,7 @@ buildscript {
         firebaseVersion = "31.1.0"
         playServicesAuthVersion = "20.4.1"
         kotlinxCoroutinesVersion = "1.6.4"
+        navigationVersion = "2.5.3"
     }
     repositories {
         google()

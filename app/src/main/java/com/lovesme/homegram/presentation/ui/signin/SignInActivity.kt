@@ -27,7 +27,7 @@ import com.lovesme.homegram.R
 import com.lovesme.homegram.data.model.User
 import com.lovesme.homegram.data.repository.GroupRepository
 import com.lovesme.homegram.data.repository.UserPreferencesRepository
-import com.lovesme.homegram.presentation.ui.home.HomeActivity
+import com.lovesme.homegram.presentation.ui.main.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -199,7 +199,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun gotoHome() {
-        startActivity(Intent(this, HomeActivity::class.java))
+        startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
 
