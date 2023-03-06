@@ -51,4 +51,25 @@ class UserPreferencesRepository {
                     }
             }
         }
+
+    suspend fun updateGroupId(oldGroupId: String, newGroupId: String) =
+        suspendCoroutine { continuation ->
+            userId?.let { id ->
+                val childUpdates = hashMapOf<String, Any?>(
+                    "/$DIRECTORY_USER/$id/$DIRECTORY_GROUP_ID/" to newGroupId,
+                    "/$DIRECTORY_GROUP/$newGroupId/$DIRECTORY_MEMBER/$id" to "name",
+                    "/$DIRECTORY_GROUP/$oldGroupId/$DIRECTORY_MEMBER/$id/" to null,
+                )
+
+
+                database.reference.updateChildren(childUpdates)
+                    .addOnSuccessListener { snapshot ->
+                        continuation.resume(Result.Success(Unit))
+                    }
+                    .addOnFailureListener { exception ->
+                        continuation.resume(Result.Error(exception))
+                    }
+
+            }
+        }
 }

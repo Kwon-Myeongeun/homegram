@@ -22,6 +22,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.lovesme.homegram.R
 import com.lovesme.homegram.data.model.User
@@ -32,6 +33,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.lovesme.homegram.data.model.Result
+import kotlinx.coroutines.async
 
 class SignInActivity : AppCompatActivity() {
 
@@ -199,6 +201,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun gotoHome() {
+        handleDynamicLinks()
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
@@ -206,10 +209,34 @@ class SignInActivity : AppCompatActivity() {
     private fun registerUser() {
         val email = auth.currentUser?.email ?: ""
         CoroutineScope(Dispatchers.IO).launch {
-            val result = GroupRepository().addMember()
+            val result = GroupRepository().createGroup()
             if (result is Result.Success) {
                 UserPreferencesRepository().addUser(User(email, "", "", result.data))
             }
         }
+    }
+
+    private fun handleDynamicLinks() {
+        Firebase.dynamicLinks
+            .getDynamicLink(intent)
+            .addOnSuccessListener(this) { linkData ->
+                if (linkData != null && linkData.link != null) {
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val deferredGroupId = async {
+                            UserPreferencesRepository().getGroupId()
+                        }
+                        val result = deferredGroupId.await()
+                        val newGroupCode = linkData.link?.getQueryParameter("code")
+                        if (result is Result.Success && newGroupCode != null) {
+                            val oldGroupCode = result.data
+                            UserPreferencesRepository().updateGroupId(
+                                oldGroupCode.toString(),
+                                newGroupCode
+                            )
+                        }
+                    }
+                }
+            }
     }
 }

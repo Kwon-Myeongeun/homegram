@@ -23,15 +23,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity android:name=".presentation.ui.main.MainActivity" />
-        <activity android:name=".presentation.ui.setting.SettingActivity" />
-        <activity
-            android:name=".presentation.ui.invite.InviteLinkActivity"
-            android:exported="true">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -48,6 +39,9 @@
                     android:scheme="http" />
             </intent-filter>
         </activity>
+        <activity android:name=".presentation.ui.main.MainActivity" />
+        <activity android:name=".presentation.ui.setting.SettingActivity" />
+        <activity android:name=".presentation.ui.invite.InviteLinkActivity" />
     </application>
 
 </manifest>
