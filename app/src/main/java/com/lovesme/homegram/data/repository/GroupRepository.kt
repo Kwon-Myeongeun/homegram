@@ -18,7 +18,7 @@ class GroupRepository {
     private val userId = FirebaseAuth.getInstance().currentUser?.uid
     private val groupId = UUID.generate()
 
-    suspend fun addMember() =
+    suspend fun createGroup() =
         suspendCoroutine { continuation ->
             userId?.let { id ->
                 val userReference = database.reference
@@ -29,11 +29,12 @@ class GroupRepository {
                     .child(DIRECTORY_GROUP)
                     .child(groupId)
                     .child(DIRECTORY_MEMBER)
+                    .child(id)
 
                 userReference.get()
                     .addOnSuccessListener {
                         if (!it.exists()) {
-                            groupReference.setValue(id)
+                            groupReference.setValue("name")
                                 .addOnSuccessListener {
                                     continuation.resume(Result.Success(groupId))
                                 }
