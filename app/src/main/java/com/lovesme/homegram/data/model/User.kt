@@ -2,7 +2,7 @@ package com.lovesme.homegram.data.model
 
 data class User(
     val email: String,
-    val name: String,
-    val birthday: String,
     val groupId: String,
+    val name: String? = null,
+    val birthday: String? = null,
 )

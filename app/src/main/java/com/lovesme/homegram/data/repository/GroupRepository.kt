@@ -46,8 +46,6 @@ class GroupRepository {
                     .addOnFailureListener { exception ->
                         continuation.resume(Result.Error(exception))
                     }
-
-
             }
         }
 }
