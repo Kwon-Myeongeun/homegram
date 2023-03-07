@@ -42,6 +42,7 @@
         <activity android:name=".presentation.ui.main.MainActivity" />
         <activity android:name=".presentation.ui.setting.SettingActivity" />
         <activity android:name=".presentation.ui.invite.InviteLinkActivity" />
+        <activity android:name=".presentation.ui.setting.UserPreferenceActivity" />
     </application>
 
 </manifest>

@@ -33,6 +33,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.lovesme.homegram.data.model.Result
+import com.lovesme.homegram.presentation.ui.setting.UserPreferenceActivity
 import kotlinx.coroutines.async
 
 class SignInActivity : AppCompatActivity() {
@@ -201,6 +202,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun gotoHome() {
+        checkInitialSetting()
         handleDynamicLinks()
         startActivity(Intent(this, MainActivity::class.java))
         finish()
@@ -211,7 +213,7 @@ class SignInActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             val result = GroupRepository().createGroup()
             if (result is Result.Success) {
-                UserPreferencesRepository().addUser(User(email, "", "", result.data))
+                UserPreferencesRepository().addUser(User(email, result.data))
             }
         }
     }
@@ -238,5 +240,18 @@ class SignInActivity : AppCompatActivity() {
                     }
                 }
             }
+    }
+
+    private fun checkInitialSetting() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = UserPreferencesRepository().existsUserName()
+            if (result is Result.Success) {
+                if (!result.data) {
+                    startActivity(Intent(this@SignInActivity, UserPreferenceActivity::class.java))
+                }
+            } else {
+                null
+            }
+        }
     }
 }
