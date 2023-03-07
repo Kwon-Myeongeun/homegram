@@ -13,11 +13,10 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.lovesme.homegram.BuildConfig
-import com.lovesme.homegram.R
 import com.lovesme.homegram.data.model.Result
 
 class LegacySignInManager(
-    private val context: Context,
+    context: Context,
     private val activityLauncher: ActivityResultLauncher<Intent>
 ) {
     private val auth: FirebaseAuth = Firebase.auth
@@ -40,9 +39,6 @@ class LegacySignInManager(
                 val firebaseCredential =
                     GoogleAuthProvider.getCredential(credential.idToken, null)
                 auth.signInWithCredential(firebaseCredential)
-                    .addOnFailureListener {
-                        Result.Error(Exception(context.getString(R.string.signin_google_fail)))
-                    }
             }
             Result.Success(Unit)
         } catch (e: ApiException) {
