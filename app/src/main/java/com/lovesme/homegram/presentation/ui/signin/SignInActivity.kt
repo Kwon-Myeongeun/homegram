@@ -18,7 +18,6 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.lovesme.homegram.R
 import com.lovesme.homegram.presentation.ui.main.MainActivity
@@ -161,17 +160,10 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun handleDynamicLinks() {
-        Firebase.dynamicLinks
-            .getDynamicLink(intent)
-            .addOnSuccessListener(this) { linkData ->
-                if (linkData != null && linkData.link != null) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val groupId = linkData.link?.getQueryParameter("code")
-                        if (groupId != null) {
-                            signInViewModel.joinToInvitedGroup(groupId)
-                        }
-                    }
-                }
+        intent.getStringExtra("groupId")?.let { groupId ->
+            CoroutineScope(Dispatchers.IO).launch {
+                signInViewModel.joinToInvitedGroup(groupId)
             }
+        }
     }
 }
