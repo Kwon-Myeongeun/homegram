@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -20,8 +21,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.lovesme.homegram.R
-import com.lovesme.homegram.data.model.User
-import com.lovesme.homegram.data.repository.GroupRepository
 import com.lovesme.homegram.data.repository.UserPreferencesRepository
 import com.lovesme.homegram.presentation.ui.main.MainActivity
 import kotlinx.coroutines.CoroutineScope
@@ -29,10 +28,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.presentation.ui.setting.UserPreferenceActivity
+import com.lovesme.homegram.presentation.ui.viewmodel.SignInViewModel
 import com.lovesme.homegram.util.sns.LegacySignInManager
 import com.lovesme.homegram.util.sns.OneTapSignInManager
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
 
+@AndroidEntryPoint
 class SignInActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignInBinding
@@ -43,6 +45,8 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var legacySignResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var oneTapSignInManagerInstance: OneTapSignInManager
     private lateinit var signInResultLauncher: ActivityResultLauncher<IntentSenderRequest>
+
+    private val signInViewModel: SignInViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +95,7 @@ class SignInActivity : AppCompatActivity() {
                     GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 val loginResult = legacySignInManagerInstance.handleLegacySignInResult(task)
                 if (loginResult is Result.Success) {
-                    registerUser()
+                    saveLogInUserInfo()
                     gotoHome()
                 } else if (loginResult is Result.Error) {
                     Snackbar.make(
@@ -121,7 +125,7 @@ class SignInActivity : AppCompatActivity() {
                     try {
                         credential.googleIdToken?.let {
                             oneTapSignInManagerInstance.handleOneTapSignInResult(credential)
-                            registerUser()
+                            saveLogInUserInfo()
                             gotoHome()
                         }
                     } catch (e: ApiException) {
@@ -149,13 +153,9 @@ class SignInActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun registerUser() {
-        val email = auth.currentUser?.email ?: ""
+    private fun saveLogInUserInfo() {
         CoroutineScope(Dispatchers.IO).launch {
-            val result = GroupRepository().createGroup()
-            if (result is Result.Success) {
-                UserPreferencesRepository().addUser(User(email, result.data))
-            }
+            signInViewModel.saveLogInUserInfo()
         }
     }
 
