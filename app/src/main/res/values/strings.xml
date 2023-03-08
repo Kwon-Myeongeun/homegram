@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">homegram</string>
+    <string name="signin_google_fail">구글 로그인 실패</string>
+    <string name="signin_google_connect_fail">구글 연결 실패</string>
+    <string name="home_menu_home">Home</string>
+    <string name="home_menu_daily">Daily</string>
+    <string name="home_menu_calendar">Calendar</string>
+    <string name="home_menu_map">Map</string>
+    <string name="main_menu_setting">Setting</string>
+    <string name="setting_invite_link">초대 링크 공유하기</string>
+    <string name="invitation_url">https://homegram.com/invite?code=%s</string>
+    <string name="invitation_send_msg">매일 나와 일기를 남겨보지 않을래?\n링크를 눌러 초대장을 받아주세요.\n\n%s</string>
+    <string name="invitation_chooser_msg">Invite significant other</string>
 </resources>
