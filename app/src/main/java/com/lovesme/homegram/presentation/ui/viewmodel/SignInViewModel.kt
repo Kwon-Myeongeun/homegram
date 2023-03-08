@@ -1,7 +1,7 @@
 package com.lovesme.homegram.presentation.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.lovesme.homegram.data.repository.signin.SignInRepository
+import com.lovesme.homegram.data.repository.SignInRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +16,12 @@ class SignInViewModel @Inject constructor(
     suspend fun saveLogInUserInfo() {
         CoroutineScope(Dispatchers.IO).launch {
             signInRepository.saveLogInUserInfo()
+        }
+    }
+
+    suspend fun joinToInvitedGroup(groupId: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            signInRepository.joinToInvitedGroup(groupId)
         }
     }
 }

@@ -21,7 +21,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.lovesme.homegram.R
-import com.lovesme.homegram.data.repository.UserPreferencesRepository
 import com.lovesme.homegram.presentation.ui.main.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +31,6 @@ import com.lovesme.homegram.presentation.ui.viewmodel.SignInViewModel
 import com.lovesme.homegram.util.sns.LegacySignInManager
 import com.lovesme.homegram.util.sns.OneTapSignInManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.async
 
 @AndroidEntryPoint
 class SignInActivity : AppCompatActivity() {
@@ -96,7 +94,6 @@ class SignInActivity : AppCompatActivity() {
                 val loginResult = legacySignInManagerInstance.handleLegacySignInResult(task)
                 if (loginResult is Result.Success) {
                     saveLogInUserInfo()
-                    gotoHome()
                 } else if (loginResult is Result.Error) {
                     Snackbar.make(
                         binding.root,
@@ -126,7 +123,6 @@ class SignInActivity : AppCompatActivity() {
                         credential.googleIdToken?.let {
                             oneTapSignInManagerInstance.handleOneTapSignInResult(credential)
                             saveLogInUserInfo()
-                            gotoHome()
                         }
                     } catch (e: ApiException) {
                         Snackbar.make(
@@ -147,9 +143,13 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun gotoHome() {
-        checkInitialSetting()
         handleDynamicLinks()
         startActivity(Intent(this, MainActivity::class.java))
+        finish()
+    }
+
+    private fun gotoUserPreference() {
+        startActivity(Intent(this, UserPreferenceActivity::class.java))
         finish()
     }
 
@@ -157,6 +157,7 @@ class SignInActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             signInViewModel.saveLogInUserInfo()
         }
+        gotoUserPreference()
     }
 
     private fun handleDynamicLinks() {
@@ -164,35 +165,13 @@ class SignInActivity : AppCompatActivity() {
             .getDynamicLink(intent)
             .addOnSuccessListener(this) { linkData ->
                 if (linkData != null && linkData.link != null) {
-
                     CoroutineScope(Dispatchers.IO).launch {
-                        val deferredGroupId = async {
-                            UserPreferencesRepository().getGroupId()
-                        }
-                        val result = deferredGroupId.await()
-                        val newGroupCode = linkData.link?.getQueryParameter("code")
-                        if (result is Result.Success && newGroupCode != null) {
-                            val oldGroupCode = result.data
-                            UserPreferencesRepository().updateGroupId(
-                                oldGroupCode.toString(),
-                                newGroupCode
-                            )
+                        val groupId = linkData.link?.getQueryParameter("code")
+                        if (groupId != null) {
+                            signInViewModel.joinToInvitedGroup(groupId)
                         }
                     }
                 }
             }
-    }
-
-    private fun checkInitialSetting() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val result = UserPreferencesRepository().existsUserName()
-            if (result is Result.Success) {
-                if (!result.data) {
-                    startActivity(Intent(this@SignInActivity, UserPreferenceActivity::class.java))
-                }
-            } else {
-                null
-            }
-        }
     }
 }
