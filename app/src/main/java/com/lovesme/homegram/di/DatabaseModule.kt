@@ -1,9 +1,9 @@
 package com.lovesme.homegram.di
 
 import com.lovesme.homegram.data.datasource.SignInRemoteDataSource
-import com.lovesme.homegram.data.datasource.SignInRemoteDataSourceImpl
-import com.lovesme.homegram.data.repository.signin.SignInRepository
-import com.lovesme.homegram.data.repository.signin.SignInRepositoryImpl
+import com.lovesme.homegram.data.datasource.impl.SignInRemoteDataSourceImpl
+import com.lovesme.homegram.data.repository.SignInRepository
+import com.lovesme.homegram.data.repository.impl.SignInRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +15,7 @@ import javax.inject.Singleton
 object DatabaseModule {
     @Provides
     @Singleton
-    fun providesignInDataSource(signInDataSource: SignInRemoteDataSourceImpl): SignInRepository {
+    fun provideSignInRepository(signInDataSource: SignInRemoteDataSource): SignInRepository {
         return SignInRepositoryImpl(signInDataSource)
     }
 
