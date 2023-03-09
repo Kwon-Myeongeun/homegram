@@ -7,18 +7,19 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/daily_tab_recycler"
+        <TextView
+            android:id="@+id/question_tv"
+            style="@style/Theme.Homegram.TextView"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_height="wrap_content"
+            android:paddingVertical="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/item_question" />
+            tools:text="+198  내가 가장 좋아하는 음식은?" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

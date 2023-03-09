@@ -1,15 +1,15 @@
-package com.lovesme.homegram.presentation.ui.home
+package com.lovesme.homegram.presentation.ui.main.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.lovesme.homegram.databinding.FragmentMapBinding
+import com.lovesme.homegram.databinding.FragmentHomeBinding
 
-class MapFragment : Fragment() {
+class HomeFragment : Fragment() {
 
-    private var _binding: FragmentMapBinding? = null
+    private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -17,7 +17,7 @@ class MapFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentMapBinding.inflate(inflater, container, false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 }
