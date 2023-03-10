@@ -12,5 +12,7 @@
     <string name="invitation_send_msg">매일 나와 일기를 남겨보지 않을래?\n링크를 눌러 초대장을 받아주세요.\n\n%s</string>
     <string name="invitation_chooser_msg">Invite significant other</string>
     <string name="question_display_msg">Q%s. %s</string>
+    <string name="daily_detail_edit">Edit</string>
+    <string name="comment_iv_Description">comment</string>
 
 </resources>
