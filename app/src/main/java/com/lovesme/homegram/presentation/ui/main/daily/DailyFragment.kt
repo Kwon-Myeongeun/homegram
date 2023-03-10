@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import com.lovesme.homegram.data.model.Question
 import com.lovesme.homegram.data.model.listener.QuestionClickListener
 import com.lovesme.homegram.databinding.FragmentDailyBinding
+import com.lovesme.homegram.presentation.ui.main.daily.detail.DailyDetailActivity
 import com.lovesme.homegram.presentation.ui.viewmodel.DailyViewModel
 import com.lovesme.homegram.util.Constants
 import dagger.hilt.android.AndroidEntryPoint
