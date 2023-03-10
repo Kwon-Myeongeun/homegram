@@ -11,4 +11,6 @@
     <string name="invitation_url">https://homegram.com/invite?code=%s</string>
     <string name="invitation_send_msg">매일 나와 일기를 남겨보지 않을래?\n링크를 눌러 초대장을 받아주세요.\n\n%s</string>
     <string name="invitation_chooser_msg">Invite significant other</string>
+    <string name="question_display_msg">Q%s. %s</string>
+
 </resources>

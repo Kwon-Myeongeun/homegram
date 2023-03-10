@@ -30,5 +30,9 @@ class DailyFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.dailyTabRecycler.adapter = adapter
+        dailyViewModel.loadQuestion()
+        dailyViewModel.questions.observe(viewLifecycleOwner) { question ->
+            adapter.submitList(question.toMutableList())
+        }
     }
 }

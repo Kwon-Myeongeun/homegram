@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.lovesme.homegram.R
 import com.lovesme.homegram.data.model.Question
 import com.lovesme.homegram.databinding.ItemQuestionBinding
 
@@ -29,7 +30,8 @@ class DailyQuestionRVAdapter :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Question) {
-            binding.questionTv.text = item.data
+            binding.questionTv.text = this.itemView.context.getString(R.string.question_display_msg)
+                .format(item.seq, item.contents)
         }
     }
 
@@ -39,7 +41,7 @@ class DailyQuestionRVAdapter :
                 oldItem == newItem
 
             override fun areItemsTheSame(oldItem: Question, newItem: Question) =
-                oldItem.data == newItem.data
+                oldItem.contents == newItem.contents
         }
     }
 }

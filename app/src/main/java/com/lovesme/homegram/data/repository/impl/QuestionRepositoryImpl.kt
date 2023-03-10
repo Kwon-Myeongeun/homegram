@@ -9,6 +9,11 @@ import javax.inject.Inject
 class QuestionRepositoryImpl @Inject constructor(private val questionDataSource: QuestionRemoteDataSource) :
     QuestionRepository {
     override suspend fun getQuestion(): Result<List<Question>> {
-        TODO()
+        val result = questionDataSource.getGroupId()
+        return if (result is Result.Success) {
+            questionDataSource.getQuestion(result.data)
+        } else {
+            Result.Error((result as Result.Error).exception)
+        }
     }
 }
