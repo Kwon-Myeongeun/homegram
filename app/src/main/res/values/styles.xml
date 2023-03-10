@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Homegram.TextStyle.H5" parent="TextAppearance.MaterialComponents.Headline5" />
+
+    <style name="Homegram.TextStyle.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Homegram.TextStyle.Subtitle1.Gray" parent="Homegram.TextStyle.Subtitle1">
+        <item name="android:textColor">@color/gray</item>
+    </style>
+</resources>
