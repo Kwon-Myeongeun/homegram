@@ -5,4 +5,5 @@ import com.lovesme.homegram.data.model.Result
 
 interface QuestionRepository {
     suspend fun getQuestion(): Result<List<Question>>
+    suspend fun updateAnswer(seq: String, answer: String): Result<Unit>
 }

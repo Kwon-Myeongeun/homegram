@@ -16,4 +16,13 @@ class QuestionRepositoryImpl @Inject constructor(private val questionDataSource:
             Result.Error((result as Result.Error).exception)
         }
     }
+
+    override suspend fun updateAnswer(seq: String, answer: String): Result<Unit> {
+        val result = questionDataSource.getGroupId()
+        return if (result is Result.Success) {
+            return questionDataSource.updateAnswer(result.data, seq, answer)
+        } else {
+            Result.Error((result as Result.Error).exception)
+        }
+    }
 }
