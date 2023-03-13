@@ -44,6 +44,7 @@
         <activity android:name=".presentation.ui.invite.InviteLinkActivity" />
         <activity android:name=".presentation.ui.setting.UserPreferenceActivity" />
         <activity android:name=".presentation.ui.main.daily.detail.DailyDetailActivity" />
+        <activity android:name=".presentation.ui.main.daily.composition.DailyCompositionActivity" />
     </application>
 
 </manifest>
