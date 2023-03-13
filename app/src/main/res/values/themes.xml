@@ -17,6 +17,10 @@
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
+    <style name="Theme.Homegram.EditText.Transparent" parent="Theme.Homegram.EditText">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
     <style name="Theme.Homegram.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/white</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_baseline_mail_outline_24</item>
