@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId "com.lovesme.homegram"
-        minSdk 21
+        minSdk 26
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -60,6 +60,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
     implementation "com.google.firebase:firebase-dynamic-links-ktx"
     implementation "com.google.dagger:hilt-android:$hiltVersion"
+    implementation "com.google.firebase:firebase-messaging-ktx"
     kapt "com.google.dagger:hilt-compiler:$hiltVersion"
     implementation "androidx.core:core-splashscreen:$splashVersion"
     testImplementation "junit:junit:$junitVersion"

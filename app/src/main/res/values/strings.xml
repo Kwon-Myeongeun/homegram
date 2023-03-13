@@ -14,5 +14,7 @@
     <string name="question_display_msg">Q%s. %s</string>
     <string name="daily_detail_edit">Edit</string>
     <string name="comment_iv_Description">comment</string>
-
+    <string name="permission_notification_denied">새로운 메세지를 확인하시려면 알림을 허용해주세요</string>
+    <string name="default_notification_channel_id">Notice</string>
+    <string name="default_notification_name">Homegram</string>
 </resources>
