@@ -12,6 +12,7 @@ buildscript {
         kotlinxCoroutinesVersion = "1.6.4"
         navigationVersion = "2.5.3"
         hiltVersion = "2.44"
+        splashVersion = "1.0.0"
     }
     repositories {
         google()

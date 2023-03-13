@@ -16,4 +16,16 @@
         <item name="android:layout_marginEnd">16dp</item>
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
+
+    <style name="Theme.Homegram.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_baseline_mail_outline_24</item>
+        <item name="postSplashScreenTheme">@style/SplashTheme</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
 </resources>

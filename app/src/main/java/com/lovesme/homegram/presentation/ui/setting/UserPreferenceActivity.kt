@@ -1,10 +1,12 @@
 package com.lovesme.homegram.presentation.ui.setting
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.data.repository.UserPreferencesRepository
 import com.lovesme.homegram.databinding.ActivityUserpreferenceBinding
+import com.lovesme.homegram.presentation.ui.main.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -37,6 +39,7 @@ class UserPreferenceActivity : AppCompatActivity() {
                     null
                 }
             }
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
     }
