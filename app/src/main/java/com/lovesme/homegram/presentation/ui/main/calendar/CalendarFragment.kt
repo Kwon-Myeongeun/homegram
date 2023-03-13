@@ -1,15 +1,15 @@
-package com.lovesme.homegram.presentation.ui.home
+package com.lovesme.homegram.presentation.ui.main.calendar
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.lovesme.homegram.databinding.FragmentHomeBinding
+import com.lovesme.homegram.databinding.FragmentCalendarBinding
 
-class HomeFragment : Fragment() {
+class CalendarFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentCalendarBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -17,7 +17,7 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentCalendarBinding.inflate(inflater, container, false)
         return binding.root
     }
 }
