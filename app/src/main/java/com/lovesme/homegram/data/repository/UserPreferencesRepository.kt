@@ -75,13 +75,12 @@ class UserPreferencesRepository {
             }
         }
 
-    suspend fun updateUser(groupId: String, name: String, birth: String) =
+    suspend fun updateUser(name: String, birth: String) =
         suspendCoroutine { continuation ->
             userId?.let { id ->
                 val childUpdates = hashMapOf<String, Any?>(
                     "/$DIRECTORY_USER/$id/$DIRECTORY_NAME/" to name,
-                    "/$DIRECTORY_USER/$id/$DIRECTORY_BIRTH/" to birth,
-                    "/$DIRECTORY_GROUP/$groupId/$DIRECTORY_MEMBER/$id/" to name,
+                    "/$DIRECTORY_USER/$id/$DIRECTORY_BIRTH/" to birth
                 )
 
                 database.reference.updateChildren(childUpdates)

@@ -67,9 +67,9 @@ class SignInRemoteDataSourceImpl @Inject constructor() : SignInRemoteDataSource 
     private fun updateGroup(oldGroupId: String, newGroupId: String) {
         userId?.let { id ->
             val childUpdates = hashMapOf<String, Any?>(
-                "/${com.lovesme.homegram.data.repository.DIRECTORY_USER}/$id/${com.lovesme.homegram.data.repository.DIRECTORY_GROUP_ID}/" to newGroupId,
-                "/${com.lovesme.homegram.data.repository.DIRECTORY_GROUP}/$newGroupId/${com.lovesme.homegram.data.repository.DIRECTORY_MEMBER}/$id" to "name",
-                "/${com.lovesme.homegram.data.repository.DIRECTORY_GROUP}/$oldGroupId/${com.lovesme.homegram.data.repository.DIRECTORY_MEMBER}/$id/" to null,
+                "/${DIRECTORY_USER}/$id/${DIRECTORY_GROUP_ID}/" to newGroupId,
+                "/${DIRECTORY_GROUP}/$newGroupId/${DIRECTORY_MEMBER}/$id" to "token",
+                "/${DIRECTORY_GROUP}/$oldGroupId/${DIRECTORY_MEMBER}/$id/" to null,
             )
             database.reference.updateChildren(childUpdates)
         }
