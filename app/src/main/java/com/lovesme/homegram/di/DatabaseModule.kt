@@ -22,8 +22,12 @@ import javax.inject.Singleton
 object DatabaseModule {
     @Provides
     @Singleton
-    fun provideSignInRepository(signInDataSource: SignInRemoteDataSource): SignInRepository {
-        return SignInRepositoryImpl(signInDataSource)
+    fun provideSignInRepository(
+        signInDataSource: SignInRemoteDataSource,
+        userInfoLocalDataSource: UserInfoLocalDataSource,
+        questionDataSource: QuestionRemoteDataSource
+    ): SignInRepository {
+        return SignInRepositoryImpl(signInDataSource, userInfoLocalDataSource, questionDataSource)
     }
 
     @Provides

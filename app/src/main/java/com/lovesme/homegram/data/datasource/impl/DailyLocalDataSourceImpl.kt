@@ -13,10 +13,12 @@ class DailyLocalDataSourceImpl @Inject constructor(
 ) :
     DailyLocalDataSource {
     override suspend fun syncAllQuestion(questions: List<QuestionEntity>) {
+        questionDao.deleteAll()
         questionDao.syncAll(questions)
     }
 
     override suspend fun syncAllAnswer(answers: List<AnswerEntity>) {
+        answerDao.deleteAll()
         answerDao.syncAll(answers)
     }
 }

@@ -39,9 +39,9 @@ class SyncDataSourceImpl @Inject constructor() : SyncDataSource {
                     for (child in snapshot.children) {
                         val index = child.key ?: ""
                         for (chatItem in child.children) {
-                            if (chatItem.key == QuestionRemoteDataSourceImpl.DIRECTORY_QUESTION_CONTENTS) {
+                            if (chatItem.key == Constants.DIRECTORY_QUESTION_CONTENTS) {
                                 contents = chatItem.value.toString()
-                            } else if (chatItem.key == QuestionRemoteDataSourceImpl.DIRECTORY_QUESTION_MEMBER) {
+                            } else if (chatItem.key == Constants.DIRECTORY_QUESTION_MEMBER) {
                                 for (answerItem in chatItem.children) {
                                     answerList.add(
                                         Answer(

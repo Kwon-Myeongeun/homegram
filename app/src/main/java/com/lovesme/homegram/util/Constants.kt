@@ -7,11 +7,12 @@ import com.lovesme.homegram.BuildConfig
 
 object Constants {
     const val PARCELABLE_QUESTION = "question"
+    const val PARCELABLE_INVITE_ID = "inviteId"
 
     val database = Firebase.database(BuildConfig.DATABASE_URL)
     val userId get() = FirebaseAuth.getInstance().currentUser?.uid
 
-    val email get() = FirebaseAuth.getInstance().currentUser?.email
+    val email get() = FirebaseAuth.getInstance().currentUser?.email ?: ""
 
     const val DIRECTORY_GROUP = "group"
     const val DIRECTORY_MEMBER = "member"
@@ -21,6 +22,8 @@ object Constants {
     const val DIRECTORY_BIRTH = "birth"
     const val DIRECTORY_QUESTION = "question"
     const val DIRECTORY_DAILY = "daily"
+    const val DIRECTORY_QUESTION_CONTENTS = "contents"
+    const val DIRECTORY_QUESTION_MEMBER = "member"
 
     const val KEY_USERINFO = "userInfo"
 }
