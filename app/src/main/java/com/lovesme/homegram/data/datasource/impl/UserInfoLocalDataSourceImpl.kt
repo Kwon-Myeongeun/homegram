@@ -10,4 +10,8 @@ class UserInfoLocalDataSourceImpl @Inject constructor(private val userInfoDao: U
     override suspend fun syncAllUserInfo(userInfo: User) {
         userInfoDao.syncAll(userInfo.mapToUserInfoEntity())
     }
+
+    override suspend fun getGroupId(): String {
+        return userInfoDao.getGroupId()
+    }
 }

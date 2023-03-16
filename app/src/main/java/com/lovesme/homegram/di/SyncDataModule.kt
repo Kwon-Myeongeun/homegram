@@ -2,6 +2,8 @@ package com.lovesme.homegram.di
 
 import android.content.Context
 import com.lovesme.homegram.data.HomegramDB
+import com.lovesme.homegram.data.dao.AnswerDao
+import com.lovesme.homegram.data.dao.QuestionDao
 import com.lovesme.homegram.data.dao.UserInfoDao
 import dagger.Module
 import dagger.Provides
@@ -21,7 +23,19 @@ object SyncDataModule {
 
     @Provides
     @Singleton
-    fun provideCalendarDao(
+    fun provideUserInfoDao(
         homegramDB: HomegramDB
     ): UserInfoDao = homegramDB.userInfoDao()
+
+    @Provides
+    @Singleton
+    fun provideQuestionDao(
+        homegramDB: HomegramDB
+    ): QuestionDao = homegramDB.questionDao()
+
+    @Provides
+    @Singleton
+    fun provideAnswerDao(
+        homegramDB: HomegramDB
+    ): AnswerDao = homegramDB.answerDao()
 }
