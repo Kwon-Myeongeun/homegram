@@ -27,13 +27,4 @@ class SignInRepositoryImpl @Inject constructor(
         }
         return signInDataSource.joinToInvitedGroup(oldGroupId, groupId)
     }
-
-    override suspend fun updateUserInfo(
-        groupId: String,
-        name: String,
-        birth: String
-    ): Result<Unit> {
-        TODO("Not yet implemented")
-    }
-
 }

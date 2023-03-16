@@ -47,12 +47,4 @@ class SignInRemoteDataSourceImpl @Inject constructor() : SignInRemoteDataSource 
                     }
             }
         }
-
-    override suspend fun updateUserInfo(
-        groupId: String,
-        name: String,
-        birth: String
-    ): Result<Unit> {
-        TODO("Not yet implemented")
-    }
 }
