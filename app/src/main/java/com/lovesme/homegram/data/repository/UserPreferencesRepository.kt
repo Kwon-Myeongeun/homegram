@@ -1,32 +1,21 @@
 package com.lovesme.homegram.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import com.lovesme.homegram.BuildConfig
 import kotlin.coroutines.suspendCoroutine
 import kotlin.coroutines.resume
 import com.lovesme.homegram.data.model.Result
-
-const val DIRECTORY_USER = "user"
-const val DIRECTORY_GROUP_ID = "groupId"
-const val DIRECTORY_NAME = "name"
-const val DIRECTORY_BIRTH = "birth"
-const val DIRECTORY_GROUP = "group"
-const val DIRECTORY_MEMBER = "member"
+import com.lovesme.homegram.util.Constants
 
 class UserPreferencesRepository {
-    private val database =
-        Firebase.database(BuildConfig.DATABASE_URL)
     private val userId = FirebaseAuth.getInstance().currentUser?.uid
 
     suspend fun getGroupId() =
         suspendCoroutine { continuation ->
             userId?.let { id ->
-                val reference = database.reference
-                    .child(DIRECTORY_USER)
+                val reference = Constants.database.reference
+                    .child(Constants.DIRECTORY_USER)
                     .child(id)
-                    .child(DIRECTORY_GROUP_ID)
+                    .child(Constants.DIRECTORY_GROUP_ID)
 
                 reference.get()
                     .addOnSuccessListener { snapshot ->
@@ -42,12 +31,12 @@ class UserPreferencesRepository {
         suspendCoroutine { continuation ->
             userId?.let { id ->
                 val childUpdates = hashMapOf<String, Any?>(
-                    "/$DIRECTORY_USER/$id/$DIRECTORY_GROUP_ID/" to newGroupId,
-                    "/$DIRECTORY_GROUP/$newGroupId/$DIRECTORY_MEMBER/$id" to "name",
-                    "/$DIRECTORY_GROUP/$oldGroupId/$DIRECTORY_MEMBER/$id/" to null,
+                    "/$Constants.DIRECTORY_USER/$id/$Constants.DIRECTORY_GROUP_ID/" to newGroupId,
+                    "/$Constants.DIRECTORY_GROUP/$newGroupId/$Constants.DIRECTORY_MEMBER/$id" to "name",
+                    "/$Constants.DIRECTORY_GROUP/$oldGroupId/$Constants.DIRECTORY_MEMBER/$id/" to null,
                 )
 
-                database.reference.updateChildren(childUpdates)
+                Constants.database.reference.updateChildren(childUpdates)
                     .addOnSuccessListener { snapshot ->
                         continuation.resume(Result.Success(Unit))
                     }
@@ -60,10 +49,10 @@ class UserPreferencesRepository {
     suspend fun existsUserName() =
         suspendCoroutine { continuation ->
             userId?.let { id ->
-                val userReference = database.reference
-                    .child(DIRECTORY_USER)
+                val userReference = Constants.database.reference
+                    .child(Constants.DIRECTORY_USER)
                     .child(id)
-                    .child(DIRECTORY_NAME)
+                    .child(Constants.DIRECTORY_NAME)
 
                 userReference.get()
                     .addOnSuccessListener {
@@ -79,12 +68,12 @@ class UserPreferencesRepository {
         suspendCoroutine { continuation ->
             userId?.let { id ->
                 val childUpdates = hashMapOf<String, Any?>(
-                    "/$DIRECTORY_USER/$id/$DIRECTORY_NAME/" to name,
-                    "/$DIRECTORY_USER/$id/$DIRECTORY_BIRTH/" to birth,
-                    "/$DIRECTORY_GROUP/$groupId/$DIRECTORY_MEMBER/$id/" to name,
+                    "/$Constants.DIRECTORY_USER/$id/$Constants.DIRECTORY_NAME/" to name,
+                    "/$Constants.DIRECTORY_USER/$id/$Constants.DIRECTORY_BIRTH/" to birth,
+                    "/$Constants.DIRECTORY_GROUP/$groupId/$Constants.DIRECTORY_MEMBER/$id/" to name,
                 )
 
-                database.reference.updateChildren(childUpdates)
+                Constants.database.reference.updateChildren(childUpdates)
                     .addOnSuccessListener { snapshot ->
                         continuation.resume(Result.Success(Unit))
                     }

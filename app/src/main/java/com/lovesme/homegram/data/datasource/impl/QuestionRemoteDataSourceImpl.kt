@@ -1,13 +1,10 @@
 package com.lovesme.homegram.data.datasource.impl
 
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import com.lovesme.homegram.BuildConfig
 import com.lovesme.homegram.data.datasource.QuestionRemoteDataSource
 import com.lovesme.homegram.data.model.Answer
 import com.lovesme.homegram.data.model.Question
 import com.lovesme.homegram.data.model.Result
+import com.lovesme.homegram.util.Constants
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -16,23 +13,23 @@ class QuestionRemoteDataSourceImpl @Inject constructor() : QuestionRemoteDataSou
 
     override suspend fun getQuestion(groupId: String): Result<List<Question>> =
         suspendCoroutine { continuation ->
-            userId?.let { id ->
-                val reference = database.reference
-                    .child(DIRECTORY_DAILY)
+            Constants.userId?.let { id ->
+                val reference = Constants.database.reference
+                    .child(Constants.DIRECTORY_DAILY)
                     .child(groupId)
 
                 val questionList = mutableListOf<Question>()
                 var contents = ""
-                var answerList = mutableListOf<Answer>()
+                val answerList = mutableListOf<Answer>()
 
                 reference.get()
                     .addOnSuccessListener { snapshot ->
                         for (child in snapshot.children) {
                             val index = child.key ?: ""
                             for (chatItem in child.children) {
-                                if (chatItem.key == DIRECTORY_QUESTION_CONTENTS) {
+                                if (chatItem.key == Constants.DIRECTORY_QUESTION_CONTENTS) {
                                     contents = chatItem.value.toString()
-                                } else if (chatItem.key == DIRECTORY_QUESTION_MEMBER) {
+                                } else if (chatItem.key == Constants.DIRECTORY_QUESTION_MEMBER) {
                                     for (answerItem in chatItem.children) {
                                         answerList.add(
                                             Answer(
@@ -61,11 +58,11 @@ class QuestionRemoteDataSourceImpl @Inject constructor() : QuestionRemoteDataSou
 
     override suspend fun getGroupId(): Result<String> =
         suspendCoroutine { continuation ->
-            userId?.let { id ->
-                val reference = database.reference
-                    .child(com.lovesme.homegram.data.repository.DIRECTORY_USER)
+            Constants.userId?.let { id ->
+                val reference = Constants.database.reference
+                    .child(Constants.DIRECTORY_USER)
                     .child(id)
-                    .child(com.lovesme.homegram.data.repository.DIRECTORY_GROUP_ID)
+                    .child(Constants.DIRECTORY_GROUP_ID)
 
                 reference.get()
                     .addOnSuccessListener { snapshot ->
@@ -79,12 +76,12 @@ class QuestionRemoteDataSourceImpl @Inject constructor() : QuestionRemoteDataSou
 
     override suspend fun updateAnswer(groupId: String, seq: String, answer: String): Result<Unit> =
         suspendCoroutine { continuation ->
-            userId?.let { id ->
+            Constants.userId?.let { id ->
                 val childUpdates = hashMapOf<String, Any?>(
-                    "/${DIRECTORY_DAILY}/$groupId/$seq/$DIRECTORY_QUESTION_MEMBER/$id" to answer
+                    "/${Constants.DIRECTORY_DAILY}/$groupId/$seq/$Constants.DIRECTORY_QUESTION_MEMBER/$id" to answer
                 )
 
-                database.reference.updateChildren(childUpdates)
+                Constants.database.reference.updateChildren(childUpdates)
                     .addOnSuccessListener { snapshot ->
                         continuation.resume(Result.Success(Unit))
                     }
@@ -93,13 +90,4 @@ class QuestionRemoteDataSourceImpl @Inject constructor() : QuestionRemoteDataSou
                     }
             }
         }
-
-    companion object {
-        val database = Firebase.database(BuildConfig.DATABASE_URL)
-        private val userId = FirebaseAuth.getInstance().currentUser?.uid
-
-        const val DIRECTORY_DAILY = "daily"
-        const val DIRECTORY_QUESTION_CONTENTS = "contents"
-        const val DIRECTORY_QUESTION_MEMBER = "member"
-    }
 }

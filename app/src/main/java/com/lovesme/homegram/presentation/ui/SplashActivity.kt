@@ -8,6 +8,7 @@ import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.lovesme.homegram.databinding.ActivitySplashBinding
 import com.lovesme.homegram.presentation.ui.signin.SignInActivity
+import com.lovesme.homegram.util.Constants.PARCELABLE_INVITE_ID
 
 class SplashActivity : AppCompatActivity() {
 
@@ -28,7 +29,7 @@ class SplashActivity : AppCompatActivity() {
                 if (linkData != null && linkData.link != null) {
                     val groupId = linkData.link?.getQueryParameter("code")
                     Intent(this, SignInActivity::class.java).apply {
-                        putExtra("groupId", groupId)
+                        putExtra(PARCELABLE_INVITE_ID, groupId)
                         startActivity(this)
                     }
                     finish()
