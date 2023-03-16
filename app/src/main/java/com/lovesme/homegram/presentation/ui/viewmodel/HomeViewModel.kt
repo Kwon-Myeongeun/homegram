@@ -13,7 +13,10 @@ class HomeViewModel @Inject constructor(private val repository: SyncRepository) 
 
     fun startSync() {
         viewModelScope.launch {
-            Constants.userId?.let { repository.startSync(it) }
+            Constants.userId?.let {
+                repository.syncStart(it)
+            }
+
         }
     }
 }

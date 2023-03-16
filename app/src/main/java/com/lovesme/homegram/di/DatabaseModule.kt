@@ -1,14 +1,10 @@
 package com.lovesme.homegram.di
 
+import com.lovesme.homegram.data.dao.AnswerDao
+import com.lovesme.homegram.data.dao.QuestionDao
 import com.lovesme.homegram.data.dao.UserInfoDao
-import com.lovesme.homegram.data.datasource.QuestionRemoteDataSource
-import com.lovesme.homegram.data.datasource.SignInRemoteDataSource
-import com.lovesme.homegram.data.datasource.SyncDataSource
-import com.lovesme.homegram.data.datasource.UserInfoLocalDataSource
-import com.lovesme.homegram.data.datasource.impl.QuestionRemoteDataSourceImpl
-import com.lovesme.homegram.data.datasource.impl.SignInRemoteDataSourceImpl
-import com.lovesme.homegram.data.datasource.impl.SyncDataSourceImpl
-import com.lovesme.homegram.data.datasource.impl.UserInfoLocalDataSourceImpl
+import com.lovesme.homegram.data.datasource.*
+import com.lovesme.homegram.data.datasource.impl.*
 import com.lovesme.homegram.data.repository.QuestionRepository
 import com.lovesme.homegram.data.repository.SignInRepository
 import com.lovesme.homegram.data.repository.SyncRepository
@@ -50,8 +46,12 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideSyncRepository(syncDataSource: SyncDataSource, userInfoLocalDataSource: UserInfoLocalDataSource): SyncRepository {
-        return SyncRepositoryImpl(syncDataSource, userInfoLocalDataSource)
+    fun provideSyncRepository(
+        syncDataSource: SyncDataSource,
+        userInfoLocalDataSource: UserInfoLocalDataSource,
+        dailyLocalDataSource: DailyLocalDataSource
+    ): SyncRepository {
+        return SyncRepositoryImpl(syncDataSource, userInfoLocalDataSource, dailyLocalDataSource)
     }
 
     @Provides
@@ -64,5 +64,14 @@ object DatabaseModule {
     @Singleton
     fun provideUserInfoLocalDataSource(userInfoDao: UserInfoDao): UserInfoLocalDataSource {
         return UserInfoLocalDataSourceImpl(userInfoDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDailyLocalDataSource(
+        questionDao: QuestionDao,
+        answerDao: AnswerDao
+    ): DailyLocalDataSource {
+        return DailyLocalDataSourceImpl(questionDao, answerDao)
     }
 }

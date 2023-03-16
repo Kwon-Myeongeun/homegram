@@ -19,4 +19,8 @@ object Constants {
     const val DIRECTORY_GROUP_ID = "groupId"
     const val DIRECTORY_NAME = "name"
     const val DIRECTORY_BIRTH = "birth"
+    const val DIRECTORY_QUESTION = "question"
+    const val DIRECTORY_DAILY = "daily"
+
+    const val KEY_USERINFO = "userInfo"
 }
