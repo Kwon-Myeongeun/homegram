@@ -16,8 +16,8 @@ class SignInRemoteDataSourceImpl @Inject constructor() : SignInRemoteDataSource 
             Constants.userId?.let { id ->
                 val groupId = UUID.generate()
                 val childUpdates = hashMapOf<String, Any?>(
-                    "/$Constants.DIRECTORY_USER/$id/" to User(Constants.email, groupId),
-                    "/$Constants.DIRECTORY_GROUP/$groupId/$Constants.DIRECTORY_MEMBER/$id/" to ""
+                    "/${Constants.DIRECTORY_USER}/$id/" to User(Constants.email, groupId),
+                    "/${Constants.DIRECTORY_GROUP}/$groupId/${Constants.DIRECTORY_MEMBER}/$id/" to "",
                 )
 
                 Constants.database.reference.updateChildren(childUpdates)

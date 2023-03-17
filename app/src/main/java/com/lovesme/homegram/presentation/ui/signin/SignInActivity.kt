@@ -8,6 +8,7 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -18,6 +19,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.lovesme.homegram.R
 import com.lovesme.homegram.presentation.ui.main.MainActivity
@@ -27,7 +29,6 @@ import kotlinx.coroutines.launch
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.presentation.ui.setting.UserPreferenceActivity
 import com.lovesme.homegram.presentation.ui.viewmodel.SignInViewModel
-import com.lovesme.homegram.util.Constants.PARCELABLE_INVITE_ID
 import com.lovesme.homegram.util.sns.LegacySignInManager
 import com.lovesme.homegram.util.sns.OneTapSignInManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,6 +49,7 @@ class SignInActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initData()
@@ -161,10 +163,17 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun handleDynamicLinks() {
-        intent.getStringExtra(PARCELABLE_INVITE_ID)?.let { groupId ->
-            CoroutineScope(Dispatchers.IO).launch {
-                signInViewModel.joinToInvitedGroup(groupId)
+        Firebase.dynamicLinks
+            .getDynamicLink(intent)
+            .addOnSuccessListener(this) { linkData ->
+                if (linkData != null && linkData.link != null) {
+                    val groupId = linkData.link?.getQueryParameter("code")
+                    if (groupId != null) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            signInViewModel.joinToInvitedGroup(groupId)
+                        }
+                    }
+                }
             }
-        }
     }
 }
