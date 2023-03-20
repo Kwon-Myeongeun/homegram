@@ -15,7 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LifecycleService
 import com.google.android.gms.location.*
 import com.lovesme.homegram.data.model.Location
-import com.lovesme.homegram.presentation.ui.main.MainActivity
+import com.lovesme.homegram.ui.main.MainActivity
 import com.lovesme.homegram.R
 
 class LocationService : LifecycleService() {
@@ -37,10 +37,13 @@ class LocationService : LifecycleService() {
         setForeground()
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return super.onStartCommand(intent, flags, startId)
+    }
+
     private fun setForeground() {
         createNotification()
         getPersonLocation()
-
     }
 
     private fun createNotification() {

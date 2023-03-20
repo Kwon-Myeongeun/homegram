@@ -24,7 +24,7 @@
             android:value="${GoogleMapApiKey}" />
 
         <activity
-            android:name=".presentation.ui.signin.SignInActivity"
+            android:name=".ui.signin.SignInActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,12 +41,12 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.ui.main.MainActivity" />
-        <activity android:name=".presentation.ui.setting.SettingActivity" />
-        <activity android:name=".presentation.ui.invite.InviteLinkActivity" />
-        <activity android:name=".presentation.ui.setting.UserPreferenceActivity" />
-        <activity android:name=".presentation.ui.main.daily.detail.DailyDetailActivity" />
-        <activity android:name=".presentation.ui.main.daily.composition.DailyCompositionActivity" />
+        <activity android:name=".ui.main.MainActivity" />
+        <activity android:name=".ui.setting.SettingActivity" />
+        <activity android:name=".ui.invite.InviteLinkActivity" />
+        <activity android:name=".ui.setting.UserPreferenceActivity" />
+        <activity android:name=".ui.main.daily.detail.DailyDetailActivity" />
+        <activity android:name=".ui.main.daily.composition.DailyCompositionActivity" />
 
         <service
             android:name=".util.location.LocationService"
