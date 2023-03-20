@@ -22,6 +22,7 @@ android {
         buildConfigField "String", "GOOGLE_CLIENT_ID", properties["google_client_id"]
         buildConfigField "String", "DATABASE_URL", properties["database_url"]
         buildConfigField "String", "LINK_PREFIX_URL", properties["link_prefix_url"]
+        manifestPlaceholders = [GoogleMapApiKey: properties["google_map_api_id"]]
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
