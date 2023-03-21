@@ -24,6 +24,7 @@ object Constants {
     const val DIRECTORY_DAILY = "daily"
     const val DIRECTORY_QUESTION_CONTENTS = "contents"
     const val DIRECTORY_QUESTION_MEMBER = "member"
+    const val DIRECTORY_LOCATION = "location"
 
     const val KEY_USERINFO = "userInfo"
 }

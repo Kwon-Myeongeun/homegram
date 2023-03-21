@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -22,7 +23,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.lovesme.homegram.data.model.Location
 import com.lovesme.homegram.databinding.FragmentMapBinding
+import com.lovesme.homegram.ui.viewmodel.MapViewModel
 import com.lovesme.homegram.util.location.LocationService
 
 
@@ -35,6 +38,8 @@ class MapFragment : Fragment(), OnMapReadyCallback,
     private lateinit var mapView: MapView
     private lateinit var map: GoogleMap
     private lateinit var locationServiceIntent: Intent
+
+    private val mapViewModel: MapViewModel by activityViewModels()
 
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -70,14 +75,11 @@ class MapFragment : Fragment(), OnMapReadyCallback,
     override fun onMapReady(googleMap: GoogleMap) {
 
         map = googleMap
-        val HOME = LatLng(37.635731, 126.869626)
-        val markerOptions = MarkerOptions()
-            .position(HOME)
-            .title("집")
-            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
 
-        googleMap.addMarker(markerOptions)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(HOME, 10f))
+        mapViewModel.loadLocation()
+        mapViewModel.location.observe(viewLifecycleOwner) { locations ->
+            drawMarkers(locations)
+        }
         enableMyLocation()
     }
 
@@ -142,6 +144,28 @@ class MapFragment : Fragment(), OnMapReadyCallback,
                 arrayOf(
                     Manifest.permission.ACCESS_BACKGROUND_LOCATION,
                 ), 2
+            )
+        }
+    }
+
+    private fun drawMarkers(locations: List<Location>) {
+        if (locations != null) {
+            for (item in locations) {
+
+                val marker = MarkerOptions()
+                    .position(LatLng(item.latitude, item.longitude))
+                    .title(item.title)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+
+                map.addMarker(marker)
+            }
+            map.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(
+                        locations.first().latitude,
+                        locations.first().longitude
+                    ), 10f
+                )
             )
         }
     }
