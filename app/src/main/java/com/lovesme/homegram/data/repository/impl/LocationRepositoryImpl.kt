@@ -17,4 +17,8 @@ class LocationRepositoryImpl @Inject constructor(
         val groupId = userInfoLocalDataSource.getGroupId()
         return locationDataSource.getLocation(groupId)
     }
+
+    override suspend fun setLocation(groupId: String, location: Location): Result<Unit> {
+        return locationDataSource.setLocation(groupId, location)
+    }
 }

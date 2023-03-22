@@ -13,10 +13,15 @@ import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.*
 import com.lovesme.homegram.data.model.Location
 import com.lovesme.homegram.ui.main.MainActivity
 import com.lovesme.homegram.R
+import com.lovesme.homegram.util.Constants
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class LocationService : LifecycleService() {
     private val locationRequest by lazy {
@@ -44,6 +49,7 @@ class LocationService : LifecycleService() {
     private fun setForeground() {
         createNotification()
         getPersonLocation()
+        sendLocationInfo()
     }
 
     private fun createNotification() {
@@ -85,7 +91,7 @@ class LocationService : LifecycleService() {
                 if (location != null) {
                     userLocation = Location(location.latitude, location.longitude)
 
-                    Log.d("Location", "${userLocation.latitude} , ${userLocation.longitude}")
+                    Log.d("Personal Location Test 1", "${userLocation.latitude} , ${userLocation.longitude}")
                 }
             }
             .addOnFailureListener {
@@ -98,7 +104,7 @@ class LocationService : LifecycleService() {
                     if (location != null) {
                         userLocation = Location(location.latitude, location.longitude)
 
-                        Log.d("Location", "${userLocation.latitude} , ${userLocation.longitude}")
+                        Log.d("Personal Location Test 2", "${userLocation.latitude} , ${userLocation.longitude}")
                     }
                 }
             }
@@ -121,7 +127,19 @@ class LocationService : LifecycleService() {
         }
     }
 
+    private fun sendLocationInfo() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            delay(1_000L)
+            val statusIntent = Intent().apply {
+                action = ACTION_LOCATIONS
+                putExtra(Constants.PARCELABLE_LOCATION, userLocation)
+            }
+            sendBroadcast(statusIntent)
+        }
+    }
+
     companion object {
         const val INTERVAL_UNIT = 1000L
+        const val ACTION_LOCATIONS = "action_locations"
     }
 }

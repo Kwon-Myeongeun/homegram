@@ -10,6 +10,8 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class LocationRemoteDataSourceImpl @Inject constructor() : LocationRemoteDataSource {
     override suspend fun getLocation(groupId: String): Flow<Result<List<Location>>> = callbackFlow {
@@ -35,4 +37,21 @@ class LocationRemoteDataSourceImpl @Inject constructor() : LocationRemoteDataSou
             awaitClose { reference.removeEventListener(listener) }
         }
     }
+
+    override suspend fun setLocation(groupId: String, location: Location): Result<Unit> =
+        suspendCoroutine { continuation ->
+            Constants.userId?.let { id ->
+                Constants.database.reference
+                    .child(Constants.DIRECTORY_LOCATION)
+                    .child(groupId)
+                    .push()
+                    .setValue(location)
+                    .addOnSuccessListener { snapshot ->
+                        continuation.resume(Result.Success(Unit))
+                    }
+                    .addOnFailureListener { exception ->
+                        continuation.resume(Result.Error(exception))
+                    }
+            }
+        }
 }

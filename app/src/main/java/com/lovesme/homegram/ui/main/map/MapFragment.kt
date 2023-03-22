@@ -2,9 +2,7 @@ package com.lovesme.homegram.ui.main.map
 
 import android.Manifest
 import android.app.AlertDialog
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
+import android.content.*
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -16,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -26,7 +25,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.lovesme.homegram.data.model.Location
 import com.lovesme.homegram.databinding.FragmentMapBinding
 import com.lovesme.homegram.ui.viewmodel.MapViewModel
+import com.lovesme.homegram.util.Constants
 import com.lovesme.homegram.util.location.LocationService
+import kotlinx.coroutines.launch
 
 
 class MapFragment : Fragment(), OnMapReadyCallback,
@@ -38,6 +39,7 @@ class MapFragment : Fragment(), OnMapReadyCallback,
     private lateinit var mapView: MapView
     private lateinit var map: GoogleMap
     private lateinit var locationServiceIntent: Intent
+    private lateinit var locationInfoReceiver: BroadcastReceiver
 
     private val mapViewModel: MapViewModel by activityViewModels()
 
@@ -48,12 +50,17 @@ class MapFragment : Fragment(), OnMapReadyCallback,
             (permissions[Manifest.permission.ACCESS_FINE_LOCATION]
                 ?: false) && (permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false) -> {
                 checkLocationPermission()
-                setLocationService()
             }
             else -> {
                 // No location access granted.
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setLocationService()
+        setBroadcastReceiver()
     }
 
     override fun onCreateView(
@@ -77,8 +84,13 @@ class MapFragment : Fragment(), OnMapReadyCallback,
         map = googleMap
 
         mapViewModel.loadLocation()
-        mapViewModel.location.observe(viewLifecycleOwner) { locations ->
-            drawMarkers(locations)
+        mapViewModel.locations.observe(viewLifecycleOwner) { locations ->
+            drawMembersMarkers(locations)
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            mapViewModel.personalLocation.collect { location ->
+                drawPersonalMarkers(location)
+            }
         }
         enableMyLocation()
     }
@@ -148,7 +160,7 @@ class MapFragment : Fragment(), OnMapReadyCallback,
         }
     }
 
-    private fun drawMarkers(locations: List<Location>) {
+    private fun drawMembersMarkers(locations: List<Location>) {
         if (locations != null) {
             for (item in locations) {
 
@@ -159,15 +171,47 @@ class MapFragment : Fragment(), OnMapReadyCallback,
 
                 map.addMarker(marker)
             }
+        }
+    }
+
+    private fun drawPersonalMarkers(location: Location) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val marker = MarkerOptions()
+                .position(LatLng(location.latitude, location.longitude))
+                .title(location.title)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+
+            map.addMarker(marker)
             map.moveCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     LatLng(
-                        locations.first().latitude,
-                        locations.first().longitude
+                        location.latitude,
+                        location.longitude
                     ), 10f
                 )
             )
         }
+
+    }
+
+    private fun setBroadcastReceiver() {
+        val intentFilter = IntentFilter().apply {
+            addAction(LocationService.ACTION_LOCATIONS)
+        }
+
+        locationInfoReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    intent?.getParcelableExtra(Constants.PARCELABLE_LOCATION, Location::class.java)
+                } else {
+                    intent?.getParcelableExtra<Location>(Constants.PARCELABLE_LOCATION)
+                }
+                item?.let {
+                    mapViewModel.personalLocation.value = it
+                }
+            }
+        }
+        requireActivity().registerReceiver(locationInfoReceiver, intentFilter)
     }
 
     override fun onStart() {
@@ -196,6 +240,7 @@ class MapFragment : Fragment(), OnMapReadyCallback,
     }
 
     override fun onDestroy() {
+        requireActivity().unregisterReceiver(locationInfoReceiver)
         mapView.onDestroy()
         super.onDestroy()
     }

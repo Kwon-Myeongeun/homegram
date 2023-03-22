@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocationRemoteDataSource {
     suspend fun getLocation(groupId: String): Flow<Result<List<Location>>>
+    suspend fun setLocation(groupId: String, location: Location): Result<Unit>
 }

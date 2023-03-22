@@ -8,6 +8,7 @@ import com.lovesme.homegram.data.model.Location
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.data.repository.LocationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,7 +16,9 @@ import javax.inject.Inject
 class MapViewModel @Inject constructor(private val repository: LocationRepository) : ViewModel() {
 
     private val _locations = MutableLiveData<List<Location>>()
-    val location: LiveData<List<Location>> = _locations
+    val locations: LiveData<List<Location>> = _locations
+
+    val personalLocation = MutableStateFlow(Location(37.553836, 126.969652))
 
     fun loadLocation() {
         viewModelScope.launch {
@@ -23,6 +26,14 @@ class MapViewModel @Inject constructor(private val repository: LocationRepositor
                 if (result is Result.Success) {
                     _locations.value = result.data as List<Location>
                 }
+            }
+        }
+    }
+
+    fun updateLocation(groupId: String) {
+        viewModelScope.launch {
+            personalLocation.collect { result ->
+                repository.setLocation(groupId, result)
             }
         }
     }
