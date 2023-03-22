@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.presentation.ui.setting.UserPreferenceActivity
 import com.lovesme.homegram.presentation.ui.viewmodel.SignInViewModel
+import com.lovesme.homegram.util.Constants.PARCELABLE_INVITE_ID
 import com.lovesme.homegram.util.sns.LegacySignInManager
 import com.lovesme.homegram.util.sns.OneTapSignInManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -160,7 +161,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun handleDynamicLinks() {
-        intent.getStringExtra("groupId")?.let { groupId ->
+        intent.getStringExtra(PARCELABLE_INVITE_ID)?.let { groupId ->
             CoroutineScope(Dispatchers.IO).launch {
                 signInViewModel.joinToInvitedGroup(groupId)
             }

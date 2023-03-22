@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Answer(
-    val name: String,
-    val contents: String
+    val seq: String = "",
+    val name: String = "",
+    val contents: String = ""
 ) : Parcelable
