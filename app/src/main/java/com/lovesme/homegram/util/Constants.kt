@@ -28,4 +28,6 @@ object Constants {
     const val DIRECTORY_LOCATION = "location"
 
     const val KEY_USERINFO = "userInfo"
+
+    const val PERSONAL_MAP_TITLE = "ME"
 }

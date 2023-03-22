@@ -13,4 +13,8 @@ interface UserInfoDao {
 
     @Query("SELECT groupId FROM userInfo LIMIT 1")
     suspend fun getGroupId(): String
+
+    @Query("SELECT name FROM userInfo LIMIT 1")
+    suspend fun getUserName(): String
+
 }

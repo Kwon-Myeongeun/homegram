@@ -89,7 +89,7 @@ class MapFragment : Fragment(), OnMapReadyCallback,
         }
         viewLifecycleOwner.lifecycleScope.launch {
             mapViewModel.personalLocation.collect { location ->
-                drawPersonalMarkers(location)
+                mapViewModel.updateLocation(location)
             }
         }
         enableMyLocation()
@@ -161,37 +161,29 @@ class MapFragment : Fragment(), OnMapReadyCallback,
     }
 
     private fun drawMembersMarkers(locations: List<Location>) {
-        if (locations != null) {
-            for (item in locations) {
+        map.clear()
+        for (item in locations) {
+            val latLng = LatLng(item.latitude, item.longitude)
+            val marker = if (item.title == Constants.PERSONAL_MAP_TITLE) {
+                map.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        latLng, 10f
+                    )
+                )
 
-                val marker = MarkerOptions()
-                    .position(LatLng(item.latitude, item.longitude))
+                MarkerOptions()
+                    .position(latLng)
+                    .title(item.title)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            } else {
+                MarkerOptions()
+                    .position(latLng)
                     .title(item.title)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
-
-                map.addMarker(marker)
             }
-        }
-    }
-
-    private fun drawPersonalMarkers(location: Location) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            val marker = MarkerOptions()
-                .position(LatLng(location.latitude, location.longitude))
-                .title(location.title)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
 
             map.addMarker(marker)
-            map.moveCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    LatLng(
-                        location.latitude,
-                        location.longitude
-                    ), 10f
-                )
-            )
         }
-
     }
 
     private fun setBroadcastReceiver() {

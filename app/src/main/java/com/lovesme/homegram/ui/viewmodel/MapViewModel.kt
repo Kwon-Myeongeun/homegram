@@ -30,11 +30,9 @@ class MapViewModel @Inject constructor(private val repository: LocationRepositor
         }
     }
 
-    fun updateLocation(groupId: String) {
+    fun updateLocation(location: Location) {
         viewModelScope.launch {
-            personalLocation.collect { result ->
-                repository.setLocation(groupId, result)
-            }
+            repository.setLocation(location)
         }
     }
 }

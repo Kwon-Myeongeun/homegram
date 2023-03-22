@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocationRepository {
     suspend fun getLocation(): Flow<Result<List<Location>>>
-    suspend fun setLocation(groupId: String, location: Location): Result<Unit>
+    suspend fun setLocation(location: Location): Result<Unit>
 }

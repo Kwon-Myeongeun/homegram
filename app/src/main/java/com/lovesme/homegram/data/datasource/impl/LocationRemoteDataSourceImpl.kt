@@ -22,11 +22,15 @@ class LocationRemoteDataSourceImpl @Inject constructor() : LocationRemoteDataSou
 
             val listener = object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val lotationList = mutableListOf<Location?>()
+                    val locationList = mutableListOf<Location?>()
                     for (child in dataSnapshot.children) {
-                        lotationList.add(child.getValue(Location::class.java))
+                        val item = child.getValue(Location::class.java)
+                        if (child.key == id) {
+                            item?.title = Constants.PERSONAL_MAP_TITLE
+                        }
+                        locationList.add(item)
                     }
-                    trySend(Result.Success(lotationList.filterNotNull()))
+                    trySend(Result.Success(locationList.filterNotNull()))
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
@@ -44,7 +48,7 @@ class LocationRemoteDataSourceImpl @Inject constructor() : LocationRemoteDataSou
                 Constants.database.reference
                     .child(Constants.DIRECTORY_LOCATION)
                     .child(groupId)
-                    .push()
+                    .child(id)
                     .setValue(location)
                     .addOnSuccessListener { snapshot ->
                         continuation.resume(Result.Success(Unit))
