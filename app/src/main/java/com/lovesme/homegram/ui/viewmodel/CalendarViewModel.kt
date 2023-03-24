@@ -25,4 +25,10 @@ class CalendarViewModel @Inject constructor(private val repository: TodoReposito
             }
         }
     }
+
+    fun writeTodo(date: String, contents: String) {
+        viewModelScope.launch {
+            val result = repository.addSchedule(date, contents)
+        }
+    }
 }

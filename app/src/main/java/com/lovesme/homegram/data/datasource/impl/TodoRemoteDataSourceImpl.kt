@@ -12,22 +12,36 @@ class TodoRemoteDataSourceImpl @Inject constructor() : TodoRemoteDataSource {
 
     override suspend fun getSchedule(groupId: String, date: String): Result<List<Todo>> =
         suspendCoroutine { continuation ->
-            Constants.userId?.let { id ->
-                Constants.database.reference
-                    .child(Constants.DIRECTORY_TODO)
-                    .child(groupId)
-                    .child(date)
-                    .get()
-                    .addOnSuccessListener { snapshot ->
-                        val todoList = mutableListOf<Todo?>()
-                        for (child in snapshot.children) {
-                            todoList.add(child.getValue(Todo::class.java))
-                        }
-                        continuation.resume(Result.Success(todoList.filterNotNull()))
+            Constants.database.reference
+                .child(Constants.DIRECTORY_TODO)
+                .child(groupId)
+                .child(date)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val todoList = mutableListOf<Todo?>()
+                    for (child in snapshot.children) {
+                        todoList.add(child.getValue(Todo::class.java))
                     }
-                    .addOnFailureListener { exception ->
-                        continuation.resume(Result.Error(exception))
-                    }
-            }
+                    continuation.resume(Result.Success(todoList.filterNotNull()))
+                }
+                .addOnFailureListener { exception ->
+                    continuation.resume(Result.Error(exception))
+                }
+        }
+
+    override suspend fun addSchedule(groupId: String, date: String, todo: Todo): Result<Unit> =
+        suspendCoroutine { continuation ->
+            Constants.database.reference
+                .child(Constants.DIRECTORY_TODO)
+                .child(groupId)
+                .child(date)
+                .push()
+                .setValue(todo)
+                .addOnSuccessListener {
+                    continuation.resume(Result.Success(Unit))
+                }
+                .addOnFailureListener { exception ->
+                    continuation.resume(Result.Error(exception))
+                }
         }
 }

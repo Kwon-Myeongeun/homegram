@@ -26,11 +26,33 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/write_todo_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/date_tv"
             tools:listitem="@layout/item_schedule" />
+
+        <EditText
+            android:id="@+id/todo_composition_content_tv"
+            style="@style/Theme.Homegram.EditText.Transparent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Todo"
+            android:inputType="text"
+            android:paddingVertical="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/write_todo_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteX="329dp" />
+
+        <Button
+            android:id="@+id/write_todo_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/write_todo_btn_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/todo_composition_content_tv" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

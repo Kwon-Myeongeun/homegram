@@ -32,6 +32,13 @@ class CalendarFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentCalendarBinding.inflate(inflater, container, false)
+        todoViewModel.loadTodo(
+            dateFormatText.convertToDateText(
+                dateFormatText.getTodayYEAR(),
+                dateFormatText.getTodayMONTH(),
+                dateFormatText.getTodayDATE()
+            )
+        )
         binding.dateTv.setOnClickListener {
             DatePickerDialog(
                 requireContext(),
@@ -40,6 +47,12 @@ class CalendarFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                 dateFormatText.getTodayMONTH(),
                 dateFormatText.getTodayDATE(),
             ).show()
+        }
+        binding.writeTodoBtn.setOnClickListener {
+            val date = binding.dateTv.text.toString()
+            val contents = binding.todoCompositionContentTv.text.toString()
+            binding.todoCompositionContentTv.text.clear()
+            todoViewModel.writeTodo(date, contents)
         }
         return binding.root
     }
