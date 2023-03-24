@@ -5,14 +5,8 @@ import com.lovesme.homegram.data.dao.QuestionDao
 import com.lovesme.homegram.data.dao.UserInfoDao
 import com.lovesme.homegram.data.datasource.*
 import com.lovesme.homegram.data.datasource.impl.*
-import com.lovesme.homegram.data.repository.LocationRepository
-import com.lovesme.homegram.data.repository.QuestionRepository
-import com.lovesme.homegram.data.repository.SignInRepository
-import com.lovesme.homegram.data.repository.SyncRepository
-import com.lovesme.homegram.data.repository.impl.LocationRepositoryImpl
-import com.lovesme.homegram.data.repository.impl.QuestionRepositoryImpl
-import com.lovesme.homegram.data.repository.impl.SignInRepositoryImpl
-import com.lovesme.homegram.data.repository.impl.SyncRepositoryImpl
+import com.lovesme.homegram.data.repository.*
+import com.lovesme.homegram.data.repository.impl.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -94,5 +88,20 @@ object DatabaseModule {
         locationDataSource: LocationRemoteDataSource
     ): LocationRepository {
         return LocationRepositoryImpl(userInfoLocalDataSource, locationDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTodoRemoteDataSource(): TodoRemoteDataSource {
+        return TodoRemoteDataSourceImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTodoRepository(
+        userInfoLocalDataSource: UserInfoLocalDataSource,
+        todoDataSource: TodoRemoteDataSource
+    ): TodoRepository {
+        return TodoRepositoryImpl(userInfoLocalDataSource, todoDataSource)
     }
 }
