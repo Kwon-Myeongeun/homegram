@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.DatePicker
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.lovesme.homegram.data.model.listener.DeleteClickListener
 import com.lovesme.homegram.databinding.FragmentCalendarBinding
 import com.lovesme.homegram.ui.viewmodel.CalendarViewModel
 import com.lovesme.homegram.util.DateFormatText
@@ -15,13 +16,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class CalendarFragment : Fragment(), DatePickerDialog.OnDateSetListener {
+class CalendarFragment : Fragment(), DatePickerDialog.OnDateSetListener, DeleteClickListener {
 
     private var _binding: FragmentCalendarBinding? = null
     private val binding get() = _binding!!
 
     private val todoViewModel: CalendarViewModel by activityViewModels()
-    private val adapter = TodoRVAdapter()
+    private val adapter = TodoRVAdapter(this)
 
     @Inject
     lateinit var dateFormatText: DateFormatText
@@ -62,14 +63,20 @@ class CalendarFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         binding.dateTv.text = dateFormatText.getTodayText()
         binding.calendarRecycler.adapter = adapter
         todoViewModel.todo.observe(viewLifecycleOwner) { todo ->
-            adapter.submitList(todo.toMutableList())
+            val todoList = todo.entries.map { Pair(it.key, it.value) }
+            adapter.submitList(todoList)
+        }
+        todoViewModel.date.observe(viewLifecycleOwner) { date ->
+            todoViewModel.loadTodo(date)
+            binding.dateTv.text = date
         }
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        val date = dateFormatText.convertToDateText(year, month, dayOfMonth)
-        todoViewModel.loadTodo(date)
+        todoViewModel.changeDate(year, month, dayOfMonth)
+    }
 
-        binding.dateTv.text = date
+    override fun onClickTodoItem(key: String) {
+        todoViewModel.deleteTodo(key)
     }
 }

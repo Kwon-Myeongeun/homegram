@@ -10,7 +10,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class TodoRemoteDataSourceImpl @Inject constructor() : TodoRemoteDataSource {
 
-    override suspend fun getSchedule(groupId: String, date: String): Result<List<Todo>> =
+    override suspend fun getSchedule(groupId: String, date: String): Result<Map<String, Todo>> =
         suspendCoroutine { continuation ->
             Constants.database.reference
                 .child(Constants.DIRECTORY_TODO)
@@ -18,11 +18,15 @@ class TodoRemoteDataSourceImpl @Inject constructor() : TodoRemoteDataSource {
                 .child(date)
                 .get()
                 .addOnSuccessListener { snapshot ->
-                    val todoList = mutableListOf<Todo?>()
+                    val todoList = mutableMapOf<String, Todo>()
                     for (child in snapshot.children) {
-                        todoList.add(child.getValue(Todo::class.java))
+                        val key = child.key.toString()
+                        val todo = child.getValue(Todo::class.java)
+                        todo?.let {
+                            todoList.put(key, it)
+                        }
                     }
-                    continuation.resume(Result.Success(todoList.filterNotNull()))
+                    continuation.resume(Result.Success(todoList))
                 }
                 .addOnFailureListener { exception ->
                     continuation.resume(Result.Error(exception))
@@ -37,6 +41,22 @@ class TodoRemoteDataSourceImpl @Inject constructor() : TodoRemoteDataSource {
                 .child(date)
                 .push()
                 .setValue(todo)
+                .addOnSuccessListener {
+                    continuation.resume(Result.Success(Unit))
+                }
+                .addOnFailureListener { exception ->
+                    continuation.resume(Result.Error(exception))
+                }
+        }
+
+    override suspend fun deleteSchedule(groupId: String, date: String, key: String): Result<Unit> =
+        suspendCoroutine { continuation ->
+            Constants.database.reference
+                .child(Constants.DIRECTORY_TODO)
+                .child(groupId)
+                .child(date)
+                .child(key)
+                .removeValue()
                 .addOnSuccessListener {
                     continuation.resume(Result.Success(Unit))
                 }

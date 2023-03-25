@@ -12,7 +12,7 @@ class TodoRepositoryImpl @Inject constructor(
     private val todoDataSource: TodoRemoteDataSource
 ) :
     TodoRepository {
-    override suspend fun getSchedule(date: String): Result<List<Todo>> {
+    override suspend fun getSchedule(date: String): Result<Map<String, Todo>> {
         val groupId = userInfoLocalDataSource.getGroupId()
         return todoDataSource.getSchedule(groupId, date)
     }
@@ -22,5 +22,10 @@ class TodoRepositoryImpl @Inject constructor(
         val userName = userInfoLocalDataSource.getUserName()
         val todo = Todo(userName, contents)
         return todoDataSource.addSchedule(groupId, date, todo)
+    }
+
+    override suspend fun deleteSchedule(date: String, key: String): Result<Unit> {
+        val groupId = userInfoLocalDataSource.getGroupId()
+        return todoDataSource.deleteSchedule(groupId, date, key)
     }
 }
