@@ -14,10 +14,10 @@
     <string name="question_display_msg">Q%s. %s</string>
     <string name="daily_detail_edit">Edit</string>
     <string name="comment_iv_Description">comment</string>
-    <string name="mission_notification_channel_id">locationChannel</string>
+    <string name="location_notification_channel_id">locationChannel</string>
     <string name="notification_title">Location Tracking</string>
     <string name="notification_message">사용자의 위치를 트래킹 중입니다</string>
-    <string name="mission_notification_channel_name">locationTracking</string>
+    <string name="location_notification_channel_name">locationTracking</string>
     <string name="write_todo_btn_text">작성하기</string>
 
 </resources>
