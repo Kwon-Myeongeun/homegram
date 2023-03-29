@@ -13,7 +13,7 @@ import com.lovesme.homegram.data.model.UserInfoEntity
 
 @Database(
     entities = [UserInfoEntity::class, QuestionEntity::class, AnswerEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 

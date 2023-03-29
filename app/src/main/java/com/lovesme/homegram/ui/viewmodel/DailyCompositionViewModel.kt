@@ -11,9 +11,9 @@ import javax.inject.Inject
 class DailyCompositionViewModel @Inject constructor(private val repository: QuestionRepository) :
     ViewModel() {
 
-    fun updateAnswer(groupId: String, seq: String) {
+    fun updateAnswer(key: String, answer: String) {
         viewModelScope.launch {
-            val result = repository.updateAnswer(groupId, seq)
+            val result = repository.updateAnswer(key, answer)
         }
     }
 }

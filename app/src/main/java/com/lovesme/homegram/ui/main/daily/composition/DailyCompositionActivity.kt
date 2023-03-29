@@ -35,7 +35,7 @@ class DailyCompositionActivity : AppCompatActivity() {
         binding.dailyCompositionToolbar.setOnMenuItemClickListener {
             val answer = binding.dailyCompositionContentTv.text
             item?.let {
-                dailyCompositionViewModel.updateAnswer(it.seq, answer.toString())
+                dailyCompositionViewModel.updateAnswer(it.key, answer.toString())
             }
             finish()
             return@setOnMenuItemClickListener true

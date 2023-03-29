@@ -34,8 +34,11 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideQuestionRepository(questionDataSource: QuestionRemoteDataSource): QuestionRepository {
-        return QuestionRepositoryImpl(questionDataSource)
+    fun provideQuestionRepository(
+        questionDataSource: QuestionRemoteDataSource,
+        userInfoLocalDataSource: UserInfoLocalDataSource,
+    ): QuestionRepository {
+        return QuestionRepositoryImpl(questionDataSource, userInfoLocalDataSource)
     }
 
     @Provides
@@ -49,9 +52,15 @@ object DatabaseModule {
     fun provideSyncRepository(
         syncDataSource: SyncDataSource,
         userInfoLocalDataSource: UserInfoLocalDataSource,
-        dailyLocalDataSource: DailyLocalDataSource
+        dailyLocalDataSource: DailyLocalDataSource,
+        questionDataSource: QuestionRemoteDataSource
     ): SyncRepository {
-        return SyncRepositoryImpl(syncDataSource, userInfoLocalDataSource, dailyLocalDataSource)
+        return SyncRepositoryImpl(
+            syncDataSource,
+            userInfoLocalDataSource,
+            dailyLocalDataSource,
+            questionDataSource
+        )
     }
 
     @Provides
