@@ -61,7 +61,7 @@ class LocationService : LifecycleService() {
                         PendingIntent.FLAG_IMMUTABLE
                     )
                 }
-            val channelId = applicationContext.getString(R.string.mission_notification_channel_id)
+            val channelId = applicationContext.getString(R.string.location_notification_channel_id)
             val notification: Notification = Notification.Builder(this, channelId)
                 .setContentTitle(applicationContext.getString(R.string.notification_title))
                 .setContentText(applicationContext.getString(R.string.notification_message))
@@ -119,7 +119,7 @@ class LocationService : LifecycleService() {
     private fun createChannel(id: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (notificationManager.getNotificationChannel(id) == null) {
-                val name = this.getString(R.string.mission_notification_channel_name)
+                val name = this.getString(R.string.location_notification_channel_name)
                 NotificationChannel(id, name, NotificationManager.IMPORTANCE_DEFAULT).apply {
                     notificationManager.createNotificationChannel(this)
                 }

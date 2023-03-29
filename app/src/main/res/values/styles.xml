@@ -3,6 +3,10 @@
 
     <style name="Homegram.TextStyle.H5" parent="TextAppearance.MaterialComponents.Headline5" />
 
+    <style name="Homegram.TextStyle.H5.bold" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="Homegram.TextStyle.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
         <item name="android:textSize">14sp</item>
     </style>
