@@ -6,21 +6,21 @@
 
     <fragment
         android:id="@+id/navigation_home_menu"
-        android:name="com.lovesme.homegram.presentation.ui.main.home.HomeFragment"
+        android:name="com.lovesme.homegram.ui.main.home.HomeFragment"
         android:label="HomeFragment" />
 
     <fragment
         android:id="@+id/navigation_daily_menu"
-        android:name="com.lovesme.homegram.presentation.ui.main.daily.DailyFragment"
+        android:name="com.lovesme.homegram.ui.main.daily.DailyFragment"
         android:label="DailyFragment" />
 
     <fragment
         android:id="@+id/navigation_calendar_menu"
-        android:name="com.lovesme.homegram.presentation.ui.main.calendar.CalendarFragment"
+        android:name="com.lovesme.homegram.ui.main.calendar.CalendarFragment"
         android:label="CalendarFragment" />
 
     <fragment
         android:id="@+id/navigation_map_menu"
-        android:name="com.lovesme.homegram.presentation.ui.main.map.MapFragment"
+        android:name="com.lovesme.homegram.ui.main.map.MapFragment"
         android:label="MapFragment" />
 </navigation>

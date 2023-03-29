@@ -5,9 +5,11 @@ import com.lovesme.homegram.data.dao.QuestionDao
 import com.lovesme.homegram.data.dao.UserInfoDao
 import com.lovesme.homegram.data.datasource.*
 import com.lovesme.homegram.data.datasource.impl.*
+import com.lovesme.homegram.data.repository.LocationRepository
 import com.lovesme.homegram.data.repository.QuestionRepository
 import com.lovesme.homegram.data.repository.SignInRepository
 import com.lovesme.homegram.data.repository.SyncRepository
+import com.lovesme.homegram.data.repository.impl.LocationRepositoryImpl
 import com.lovesme.homegram.data.repository.impl.QuestionRepositoryImpl
 import com.lovesme.homegram.data.repository.impl.SignInRepositoryImpl
 import com.lovesme.homegram.data.repository.impl.SyncRepositoryImpl
@@ -77,5 +79,20 @@ object DatabaseModule {
         answerDao: AnswerDao
     ): DailyLocalDataSource {
         return DailyLocalDataSourceImpl(questionDao, answerDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationRemoteDataSource(): LocationRemoteDataSource {
+        return LocationRemoteDataSourceImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationRepository(
+        userInfoLocalDataSource: UserInfoLocalDataSource,
+        locationDataSource: LocationRemoteDataSource
+    ): LocationRepository {
+        return LocationRepositoryImpl(userInfoLocalDataSource, locationDataSource)
     }
 }

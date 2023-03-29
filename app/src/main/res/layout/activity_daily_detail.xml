@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.ui.main.daily.detail.DailyDetailActivity">
+        tools:context=".ui.main.daily.detail.DailyDetailActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/daily_detail_appbar"

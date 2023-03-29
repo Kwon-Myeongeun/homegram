@@ -14,4 +14,8 @@ class UserInfoLocalDataSourceImpl @Inject constructor(private val userInfoDao: U
     override suspend fun getGroupId(): String {
         return userInfoDao.getGroupId()
     }
+
+    override suspend fun getUserName(): String {
+        return userInfoDao.getUserName()
+    }
 }

@@ -22,6 +22,7 @@ android {
         buildConfigField "String", "GOOGLE_CLIENT_ID", properties["google_client_id"]
         buildConfigField "String", "DATABASE_URL", properties["database_url"]
         buildConfigField "String", "LINK_PREFIX_URL", properties["link_prefix_url"]
+        manifestPlaceholders = [GoogleMapApiKey: properties["google_map_api_id"]]
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -65,6 +66,8 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
+    implementation "com.google.android.gms:play-services-maps:$google_map_version"
+    implementation "com.google.android.gms:play-services-location:$location_version"
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$junitUiVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoCoreVersion"
