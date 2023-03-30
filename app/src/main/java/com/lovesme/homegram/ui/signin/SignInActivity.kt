@@ -1,13 +1,16 @@
 package com.lovesme.homegram.ui.signin
 
+import android.Manifest
 import android.content.Intent
 import android.content.IntentSender
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.PermissionChecker
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -44,6 +47,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var legacySignResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var oneTapSignInManagerInstance: OneTapSignInManager
     private lateinit var signInResultLauncher: ActivityResultLauncher<IntentSenderRequest>
+    private lateinit var notificationPermissionLauncher: ActivityResultLauncher<String>
 
     private val signInViewModel: SignInViewModel by viewModels()
 
@@ -53,6 +57,7 @@ class SignInActivity : AppCompatActivity() {
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initData()
+        requestNotificationPermission()
         if (auth.currentUser != null) {
             gotoHome()
         }
@@ -142,6 +147,17 @@ class SignInActivity : AppCompatActivity() {
                         .show()
                 }
             }
+
+        notificationPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                if (isGranted.not()) {
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.permission_notification_denied),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+            }
     }
 
     private fun gotoHome() {
@@ -175,5 +191,17 @@ class SignInActivity : AppCompatActivity() {
                     }
                 }
             }
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permissionCheck = PermissionChecker.checkCallingOrSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            )
+            if (permissionCheck != PermissionChecker.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
     }
 }

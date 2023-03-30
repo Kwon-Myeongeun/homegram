@@ -68,6 +68,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     implementation "com.google.android.gms:play-services-maps:$google_map_version"
     implementation "com.google.android.gms:play-services-location:$location_version"
+    implementation "com.google.firebase:firebase-messaging-ktx"
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$junitUiVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoCoreVersion"
