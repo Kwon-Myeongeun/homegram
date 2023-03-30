@@ -113,4 +113,18 @@ object DatabaseModule {
     ): TodoRepository {
         return TodoRepositoryImpl(userInfoLocalDataSource, todoDataSource)
     }
+
+    @Provides
+    @Singleton
+    fun provideUserInfoRemoteDataSource(): UserInfoRemoteDataSource {
+        return UserInfoRemoteDataSourceImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserInfoRepository(
+        userInfoDataSource: UserInfoRemoteDataSource
+    ): UserPreferencesRepository {
+        return UserPreferencesRepositoryImpl(userInfoDataSource)
+    }
 }

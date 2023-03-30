@@ -1,0 +1,9 @@
+package com.lovesme.homegram.data.datasource
+
+import com.lovesme.homegram.data.model.Result
+
+interface UserInfoRemoteDataSource {
+    suspend fun updateUserInfo(groupId: String, name: String, birth: String): Result<Unit>
+    suspend fun setMessageToken(groupId: String, token: String): Result<Unit>
+    suspend fun getGroupId(): Result<String>
+}
