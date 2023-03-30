@@ -13,10 +13,14 @@ buildscript {
         navigationVersion = "2.5.3"
         hiltVersion = "2.44"
         splashVersion = "1.0.0"
-        room_version = "2.5.0"
+        room_version = "2.5.1"
         google_map_version = "18.1.0"
         location_version = "21.0.1"
         lifecycle_service_version = "2.6.0"
+        retrofitVersion = "2.9.0"
+        okhttpVersion = "4.10.0"
+        kotlinxSerializationJsonVersion = "1.4.1"
+        retrofitSerializationVersion = "0.8.0"
     }
     repositories {
         google()
@@ -24,6 +28,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.google.gms:google-services:4.3.15'
+        classpath "org.jetbrains.kotlin:kotlin-serialization:1.7.20"
     }
 }
 plugins {
