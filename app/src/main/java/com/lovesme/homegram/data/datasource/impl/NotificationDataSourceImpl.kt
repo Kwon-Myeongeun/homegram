@@ -12,16 +12,13 @@ class NotificationDataSourceImpl @Inject constructor(private val cloudMessagingS
         notification: NotificationRequestData,
         to: String
     ): Boolean {
-        return try {
+        return runCatching {
             cloudMessagingService.sendNotification(
                 NotificationRequest(
                     to = to,
                     data = notification
                 )
             )
-            true
-        } catch (e: Exception) {
-            false
-        }
+        }.isSuccess
     }
 }

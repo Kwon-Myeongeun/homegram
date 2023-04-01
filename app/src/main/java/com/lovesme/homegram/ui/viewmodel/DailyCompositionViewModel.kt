@@ -22,7 +22,6 @@ class DailyCompositionViewModel @Inject constructor(
             sendNotificationUseCase.invoke(
                 NotificationType.UPDATE_ANSWER,
                 Constants.userId.toString(),
-                ""
             )
         }
     }

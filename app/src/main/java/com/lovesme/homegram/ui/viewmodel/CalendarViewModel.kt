@@ -45,7 +45,6 @@ class CalendarViewModel @Inject constructor(
             sendNotificationUseCase.invoke(
                 NotificationType.UPDATE_TODO,
                 Constants.userId.toString(),
-                ""
             )
         }
     }

@@ -27,4 +27,13 @@ class UserPreferencesRepositoryImpl(private val userInfoDataSource: UserInfoRemo
             is Result.Error -> Result.Error(result.exception)
         }
     }
+
+    override suspend fun getReceiverToken(): Result<List<String>> {
+        val result = userInfoDataSource.getGroupId()
+        return when (result) {
+            is Result.Success ->
+                userInfoDataSource.getReceiverToken(result.data)
+            is Result.Error -> Result.Error(result.exception)
+        }
+    }
 }

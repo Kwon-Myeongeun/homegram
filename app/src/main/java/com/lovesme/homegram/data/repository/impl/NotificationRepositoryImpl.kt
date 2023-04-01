@@ -13,8 +13,7 @@ class NotificationRepositoryImpl @Inject constructor(
         notification: NotificationRequestData,
         receiverId: String
     ): Result<Unit> {
-        val receiverToken = "egCh-2ilQTafokC3sTwxFJ:APA91bETKQjCNany7nw2C-d7l5OjrekYsghOeco2QhqtrdaSDwNlQRFb0ex_C5vz2xzi_GoSrVJh4SUB4lc3R4QvWGWTcll_oAbLiWyu3QihsWhO8IFrCH4u1b_BjI2vu5dM8Lu3OPUS"
-        return if (notificationDataSource.sendNotification(notification, receiverToken)) {
+        return if (notificationDataSource.sendNotification(notification, receiverId)) {
             Result.Success(Unit)
         } else {
             Result.Error(Exception())
