@@ -1,18 +1,17 @@
 package com.lovesme.homegram.data.usecase
 
-import android.content.Context
+import com.lovesme.homegram.data.datasource.UserInfoLocalDataSource
 import com.lovesme.homegram.data.model.NotificationRequestData
 import com.lovesme.homegram.data.model.NotificationType
 import com.lovesme.homegram.data.repository.NotificationRepository
 import javax.inject.Inject
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.data.repository.UserPreferencesRepository
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 class SendNotificationUseCase @Inject constructor(
     private val notificationRepository: NotificationRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
-    @ApplicationContext private val context: Context
+    private val userInfoLocalDataSource: UserInfoLocalDataSource,
 ) {
     suspend operator fun invoke(
         notificationType: NotificationType,
@@ -25,12 +24,15 @@ class SendNotificationUseCase @Inject constructor(
             fromId = userId,
         )
         val receiverIds = userPreferencesRepository.getReceiverToken()
+        val personalToken = userInfoLocalDataSource.getUserToken()
         var result: Result<Unit> = Result.Success(Unit)
         return if (receiverIds is Result.Success) {
             for (receiverId in (receiverIds.data as List<String>)) {
-                val temp = notificationRepository.sendNotification(notification, receiverId)
-                if (temp is Result.Error) {
-                    result = temp
+                if (receiverId != personalToken) {
+                    val temp = notificationRepository.sendNotification(notification, receiverId)
+                    if (temp is Result.Error) {
+                        result = temp
+                    }
                 }
             }
             result
