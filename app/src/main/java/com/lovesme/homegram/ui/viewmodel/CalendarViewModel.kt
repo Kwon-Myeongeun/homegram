@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lovesme.homegram.data.model.NotificationType
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.data.model.Todo
 import com.lovesme.homegram.data.repository.TodoRepository
@@ -41,7 +42,11 @@ class CalendarViewModel @Inject constructor(
     fun writeTodo(date: String, contents: String) {
         viewModelScope.launch {
             val result = repository.addSchedule(date, contents)
-            sendNotificationUseCase.invoke(Constants.userId.toString(), "")
+            sendNotificationUseCase.invoke(
+                NotificationType.UPDATE_TODO,
+                Constants.userId.toString(),
+                ""
+            )
         }
     }
 
