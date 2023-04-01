@@ -51,7 +51,7 @@ class UserInfoRemoteDataSourceImpl @Inject constructor() :
             }
         }
 
-    override suspend fun  setMessageToken(groupId: String, token: String): Result<Unit> =
+    override suspend fun setMessageToken(groupId: String, token: String): Result<Unit> =
         suspendCoroutine { continuation ->
             Constants.userId?.let { id ->
                 val childUpdates = hashMapOf<String, Any?>(
@@ -61,6 +61,33 @@ class UserInfoRemoteDataSourceImpl @Inject constructor() :
                 Constants.database.reference.updateChildren(childUpdates)
                     .addOnSuccessListener { snapshot ->
                         continuation.resume(Result.Success(Unit))
+                    }
+                    .addOnFailureListener { exception ->
+                        continuation.resume(Result.Error(exception))
+                    }
+            }
+        }
+
+    override suspend fun getReceiverToken(groupId: String): Result<List<String>> =
+        suspendCoroutine { continuation ->
+            Constants.userId?.let { id ->
+                val reference = Constants.database.reference
+                    .child(Constants.DIRECTORY_GROUP)
+                    .child(groupId)
+                    .child(Constants.DIRECTORY_MEMBER)
+
+                val tokenList = mutableListOf<String>()
+
+                reference.get()
+                    .addOnSuccessListener { snapshot ->
+                        for (child in snapshot.children) {
+                            for (tokenItem in child.children) {
+                                if (tokenItem.key == Constants.DIRECTORY_TOKEN) {
+                                    tokenList.add(tokenItem.value.toString())
+                                }
+                            }
+                        }
+                        continuation.resume(Result.Success(tokenList.filter { it != id }))
                     }
                     .addOnFailureListener { exception ->
                         continuation.resume(Result.Error(exception))

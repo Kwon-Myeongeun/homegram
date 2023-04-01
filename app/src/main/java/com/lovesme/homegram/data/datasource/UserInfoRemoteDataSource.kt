@@ -6,4 +6,5 @@ interface UserInfoRemoteDataSource {
     suspend fun updateUserInfo(groupId: String, name: String, birth: String): Result<Unit>
     suspend fun setMessageToken(groupId: String, token: String): Result<Unit>
     suspend fun getGroupId(): Result<String>
+    suspend fun getReceiverToken(groupId: String): Result<List<String>>
 }

@@ -7,6 +7,7 @@ import com.lovesme.homegram.data.datasource.*
 import com.lovesme.homegram.data.datasource.impl.*
 import com.lovesme.homegram.data.repository.*
 import com.lovesme.homegram.data.repository.impl.*
+import com.lovesme.homegram.util.network.CloudMessagingService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -126,5 +127,19 @@ object DatabaseModule {
         userInfoDataSource: UserInfoRemoteDataSource
     ): UserPreferencesRepository {
         return UserPreferencesRepositoryImpl(userInfoDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotificationRemoteDataSource(cloudMessagingService: CloudMessagingService): NotificationDataSource {
+        return NotificationDataSourceImpl(cloudMessagingService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotificationRepository(
+        notificationDataSource: NotificationDataSource
+    ): NotificationRepository {
+        return NotificationRepositoryImpl(notificationDataSource)
     }
 }
