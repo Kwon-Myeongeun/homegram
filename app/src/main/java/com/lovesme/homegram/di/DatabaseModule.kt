@@ -54,13 +54,15 @@ object DatabaseModule {
         syncDataSource: SyncDataSource,
         userInfoLocalDataSource: UserInfoLocalDataSource,
         dailyLocalDataSource: DailyLocalDataSource,
-        questionDataSource: QuestionRemoteDataSource
+        questionDataSource: QuestionRemoteDataSource,
+        userInfoDataSource: UserInfoRemoteDataSource,
     ): SyncRepository {
         return SyncRepositoryImpl(
             syncDataSource,
             userInfoLocalDataSource,
             dailyLocalDataSource,
-            questionDataSource
+            questionDataSource,
+            userInfoDataSource
         )
     }
 
