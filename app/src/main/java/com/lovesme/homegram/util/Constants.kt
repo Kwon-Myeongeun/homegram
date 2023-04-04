@@ -34,4 +34,6 @@ object Constants {
     const val KEY_USERINFO = "userInfo"
 
     const val PERSONAL_MAP_TITLE = "ME"
+
+    const val REQUEST_LOCATION_PERMISSION = 1
 }
