@@ -26,9 +26,6 @@ import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.lovesme.homegram.R
 import com.lovesme.homegram.ui.main.MainActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.ui.setting.UserPreferenceActivity
 import com.lovesme.homegram.ui.viewmodel.SignInViewModel
@@ -172,10 +169,9 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun saveLogInUserInfo() {
-        CoroutineScope(Dispatchers.IO).launch {
-            signInViewModel.saveLogInUserInfo()
-        }
+        signInViewModel.saveLogInUserInfo()
         gotoUserPreference()
+
     }
 
     private fun handleDynamicLinks() {
@@ -185,9 +181,7 @@ class SignInActivity : AppCompatActivity() {
                 if (linkData != null && linkData.link != null) {
                     val groupId = linkData.link?.getQueryParameter("code")
                     if (groupId != null) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            signInViewModel.joinToInvitedGroup(groupId)
-                        }
+                        signInViewModel.joinToInvitedGroup(groupId)
                     }
                 }
             }

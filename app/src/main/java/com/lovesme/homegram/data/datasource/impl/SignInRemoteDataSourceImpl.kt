@@ -2,7 +2,6 @@ package com.lovesme.homegram.data.datasource.impl
 
 import com.lovesme.homegram.data.datasource.SignInRemoteDataSource
 import com.lovesme.homegram.data.model.Result
-import com.lovesme.homegram.data.model.User
 import com.lovesme.homegram.util.Constants
 import com.lovesme.homegram.util.UUID
 import javax.inject.Inject
@@ -16,7 +15,8 @@ class SignInRemoteDataSourceImpl @Inject constructor() : SignInRemoteDataSource 
             Constants.userId?.let { id ->
                 val groupId = UUID.generate()
                 val childUpdates = hashMapOf<String, Any?>(
-                    "/${Constants.DIRECTORY_USER}/$id/" to User(Constants.email, groupId)
+                    "/${Constants.DIRECTORY_USER}/$id/${Constants.DIRECTORY_EMAIL}/" to Constants.email,
+                    "/${Constants.DIRECTORY_USER}/$id/${Constants.DIRECTORY_GROUP_ID}/" to groupId,
                 )
 
                 Constants.database.reference.updateChildren(childUpdates)
