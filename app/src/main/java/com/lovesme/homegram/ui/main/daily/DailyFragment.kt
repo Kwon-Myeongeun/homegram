@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.lovesme.homegram.data.model.Question
 import com.lovesme.homegram.data.model.listener.QuestionClickListener
@@ -39,9 +41,11 @@ class DailyFragment : Fragment(), QuestionClickListener {
         binding.dailyTabRecycler.adapter = adapter
         dailyViewModel.loadQuestion()
         viewLifecycleOwner.lifecycleScope.launch {
-            dailyViewModel.questions.collect { question ->
-                adapter.submitList(question.toMutableList())
-            }
+            dailyViewModel.questions
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect { question ->
+                    adapter.submitList(question.toMutableList())
+                }
         }
     }
 
