@@ -5,20 +5,24 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Question(
-    val seq: String = "",
+    val key: String = "",
+    val no: String = "",
     val contents: String = "",
+    val isDone: Boolean = false,
     var answer: List<Answer> = emptyList()
 ) : Parcelable {
     fun mapToQuestionEntity(): QuestionEntity =
         QuestionEntity(
-            seq,
-            contents
+            key,
+            no,
+            contents,
+            isDone
         )
 
     fun mapToAnswerEntityList(): List<AnswerEntity> =
         answer.map {
             AnswerEntity(
-                seq,
+                key,
                 it.name,
                 it.contents
             )

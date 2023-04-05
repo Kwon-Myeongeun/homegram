@@ -1,6 +1,7 @@
 package com.lovesme.homegram.data.repository.impl
 
 import com.lovesme.homegram.data.datasource.DailyLocalDataSource
+import com.lovesme.homegram.data.datasource.QuestionRemoteDataSource
 import com.lovesme.homegram.data.datasource.SyncDataSource
 import com.lovesme.homegram.data.datasource.UserInfoLocalDataSource
 import com.lovesme.homegram.data.model.Result
@@ -10,7 +11,8 @@ import javax.inject.Inject
 class SyncRepositoryImpl @Inject constructor(
     private val syncDataSource: SyncDataSource,
     private val userInfoLocalDataSource: UserInfoLocalDataSource,
-    private val dailyLocalDataSource: DailyLocalDataSource
+    private val dailyLocalDataSource: DailyLocalDataSource,
+    private val questionDataSource: QuestionRemoteDataSource,
 ) :
     SyncRepository {
     override suspend fun syncStart(userId: String) {
@@ -22,7 +24,7 @@ class SyncRepositoryImpl @Inject constructor(
         }
 
         val groupId = userInfoLocalDataSource.getGroupId()
-        val daily = syncDataSource.loadDailyInfo(groupId)
+        val daily = questionDataSource.getQuestion(groupId)
         if (daily is Result.Success) {
             dailyLocalDataSource.syncAllQuestion(
                 daily.data.map { item ->

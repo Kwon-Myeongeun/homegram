@@ -20,33 +20,46 @@ class QuestionRemoteDataSourceImpl @Inject constructor() : QuestionRemoteDataSou
 
                 val questionList = mutableListOf<Question>()
                 var contents = ""
+                var index = ""
+                var isDone = false
                 val answerList = mutableListOf<Answer>()
 
                 reference.get()
                     .addOnSuccessListener { snapshot ->
                         for (child in snapshot.children) {
-                            val index = child.key ?: ""
                             for (chatItem in child.children) {
-                                if (chatItem.key == Constants.DIRECTORY_QUESTION_CONTENTS) {
-                                    contents = chatItem.value.toString()
-                                } else if (chatItem.key == Constants.DIRECTORY_QUESTION_MEMBER) {
-                                    for (answerItem in chatItem.children) {
-                                        answerList.add(
-                                            Answer(
-                                                answerItem.key.toString(),
-                                                answerItem.value.toString()
+                                when (chatItem.key) {
+                                    Constants.DIRECTORY_QUESTION_CONTENTS -> {
+                                        contents = chatItem.value.toString()
+                                    }
+                                    Constants.DIRECTORY_QUESTION_NUM -> {
+                                        index = chatItem.value.toString()
+                                    }
+                                    Constants.DIRECTORY_QUESTION_IS_DONE -> {
+                                        isDone = chatItem.value.toString().toBoolean()
+                                    }
+                                    Constants.DIRECTORY_QUESTION_MEMBER -> {
+                                        for (answerItem in chatItem.children) {
+                                            answerList.add(
+                                                Answer(
+                                                    answerItem.key.toString(),
+                                                    answerItem.value.toString()
+                                                )
                                             )
-                                        )
+                                        }
                                     }
                                 }
                             }
                             questionList.add(
                                 Question(
+                                    child.key.toString(),
                                     index,
                                     contents,
-                                    answerList
+                                    isDone,
+                                    answerList.toMutableList()
                                 )
                             )
+                            answerList.clear()
                         }
                         continuation.resume(Result.Success(questionList))
                     }
@@ -74,20 +87,25 @@ class QuestionRemoteDataSourceImpl @Inject constructor() : QuestionRemoteDataSou
             }
         }
 
-    override suspend fun updateAnswer(groupId: String, seq: String, answer: String): Result<Unit> =
+    override suspend fun updateAnswer(
+        groupId: String,
+        key: String,
+        name: String,
+        answer: String
+    ): Result<Unit> =
         suspendCoroutine { continuation ->
-            Constants.userId?.let { id ->
-                val childUpdates = hashMapOf<String, Any?>(
-                    "/${Constants.DIRECTORY_DAILY}/$groupId/$seq/$Constants.DIRECTORY_QUESTION_MEMBER/$id" to answer
-                )
+            val childUpdates = hashMapOf<String, Any?>(
+                "/${Constants.DIRECTORY_DAILY}/$groupId/$key/${Constants.DIRECTORY_QUESTION_MEMBER}/$name" to answer,
+                "/${Constants.DIRECTORY_DAILY}/$groupId/$key/${Constants.DIRECTORY_QUESTION_IS_DONE}/$name" to true
+            )
 
-                Constants.database.reference.updateChildren(childUpdates)
-                    .addOnSuccessListener { snapshot ->
-                        continuation.resume(Result.Success(Unit))
-                    }
-                    .addOnFailureListener { exception ->
-                        continuation.resume(Result.Error(exception))
-                    }
-            }
+            Constants.database.reference.updateChildren(childUpdates)
+                .addOnSuccessListener { snapshot ->
+                    continuation.resume(Result.Success(Unit))
+                }
+                .addOnFailureListener { exception ->
+                    continuation.resume(Result.Error(exception))
+                }
         }
+
 }

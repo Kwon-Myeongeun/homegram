@@ -32,7 +32,7 @@ class DailyQuestionRVAdapter(private val clickListener: QuestionClickListener) :
 
         fun bind(item: Question, clickListener: QuestionClickListener) {
             binding.questionTv.text = this.itemView.context.getString(R.string.question_display_msg)
-                .format(item.seq, item.contents)
+                .format(item.no, item.contents)
             binding.question = item
             binding.clickListener = clickListener
         }

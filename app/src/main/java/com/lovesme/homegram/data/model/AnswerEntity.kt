@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "answer")
 data class AnswerEntity(
-    val seq: String,
+    val key: String,
     val name: String,
     val contents: String
 ) {

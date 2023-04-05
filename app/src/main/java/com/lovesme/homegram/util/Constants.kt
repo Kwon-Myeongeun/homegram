@@ -27,6 +27,8 @@ object Constants {
     const val DIRECTORY_QUESTION_MEMBER = "member"
     const val DIRECTORY_LOCATION = "location"
     const val DIRECTORY_TODO = "todo"
+    const val DIRECTORY_QUESTION_NUM = "no"
+    const val DIRECTORY_QUESTION_IS_DONE = "isDone"
 
     const val KEY_USERINFO = "userInfo"
 
