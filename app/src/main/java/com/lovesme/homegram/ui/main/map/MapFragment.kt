@@ -14,7 +14,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -84,12 +86,18 @@ class MapFragment : Fragment(), OnMapReadyCallback,
         map = googleMap
 
         mapViewModel.loadLocation()
-        mapViewModel.locations.observe(viewLifecycleOwner) { locations ->
-            drawMembersMarkers(locations)
-        }
         viewLifecycleOwner.lifecycleScope.launch {
-            mapViewModel.personalLocation.collect { location ->
-                mapViewModel.updateLocation(location)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    mapViewModel.locations.collect { locations ->
+                        drawMembersMarkers(locations)
+                    }
+                }
+                launch {
+                    mapViewModel.personalLocation.collect { location ->
+                        mapViewModel.updateLocation(location)
+                    }
+                }
             }
         }
         enableMyLocation()

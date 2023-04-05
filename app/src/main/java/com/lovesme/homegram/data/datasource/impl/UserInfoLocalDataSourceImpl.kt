@@ -8,6 +8,7 @@ import javax.inject.Inject
 class UserInfoLocalDataSourceImpl @Inject constructor(private val userInfoDao: UserInfoDao) :
     UserInfoLocalDataSource {
     override suspend fun syncAllUserInfo(userInfo: User) {
+        userInfoDao.deleteAll()
         userInfoDao.syncAll(userInfo.mapToUserInfoEntity())
     }
 
