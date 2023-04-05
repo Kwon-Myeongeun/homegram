@@ -5,6 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.dynamiclinks.ktx.androidParameters
 import com.google.firebase.dynamiclinks.ktx.dynamicLink
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
@@ -12,6 +14,7 @@ import com.google.firebase.ktx.Firebase
 import com.lovesme.homegram.BuildConfig
 import com.lovesme.homegram.R
 import com.lovesme.homegram.databinding.ActivitySettingBinding
+import com.lovesme.homegram.ui.signin.SignInActivity
 import com.lovesme.homegram.ui.viewmodel.SettingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
@@ -34,6 +37,14 @@ class SettingActivity : AppCompatActivity() {
                     shareLink(dynamicLink.toString())
                 }
             }
+        }
+        binding.userSignOutTv.setOnClickListener {
+            Firebase.auth.currentUser?.delete()
+            FirebaseAuth.getInstance().signOut()
+
+            val intent = Intent(this, SignInActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
         }
     }
 

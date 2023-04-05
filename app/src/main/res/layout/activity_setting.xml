@@ -36,5 +36,33 @@
             android:text="@string/setting_invite_link"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/setting_appbar" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/user_divider"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/invite_link_tv" />
+
+        <TextView
+            android:id="@+id/user_info_tv"
+            style="@style/Theme.Homegram.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="16dp"
+            android:text="@string/setting_user_info"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_divider" />
+
+        <TextView
+            android:id="@+id/user_sign_out_tv"
+            style="@style/Theme.Homegram.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="16dp"
+            android:text="@string/setting_user_sign_out"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_info_tv" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

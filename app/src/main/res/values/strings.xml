@@ -23,4 +23,6 @@
     <string name="default_notification_channel_id">Notice</string>
     <string name="default_notification_name">Homegram</string>
     <string name="notification_get_member_fail">멤버가 존재하지 않습니다.</string>
+    <string name="setting_user_info">내 정보</string>
+    <string name="setting_user_sign_out">회원 탈퇴</string>
 </resources>
