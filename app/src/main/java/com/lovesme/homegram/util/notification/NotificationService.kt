@@ -13,11 +13,13 @@ import com.google.firebase.messaging.RemoteMessage
 import com.lovesme.homegram.R
 import com.lovesme.homegram.data.usecase.SetMessageTokenUseCase
 import com.lovesme.homegram.ui.main.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class NotificationService : FirebaseMessagingService() {
 
     private val notificationManager: NotificationManager by lazy {
