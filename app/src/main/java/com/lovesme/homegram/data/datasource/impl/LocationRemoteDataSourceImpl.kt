@@ -20,14 +20,24 @@ class LocationRemoteDataSourceImpl @Inject constructor() : LocationRemoteDataSou
                 .child(Constants.DIRECTORY_LOCATION)
                 .child(groupId)
 
+            reference.get()
+                .addOnSuccessListener { snapshot ->
+                    val locationList = mutableListOf<Location?>()
+                    for (child in snapshot.children) {
+                        val item = child.getValue(Location::class.java)
+                        locationList.add(item)
+                    }
+                    trySend(Result.Success(locationList.filterNotNull()))
+                }
+                .addOnFailureListener { exception ->
+                    trySend(Result.Error(exception))
+                }
+
             val listener = object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val locationList = mutableListOf<Location?>()
                     for (child in dataSnapshot.children) {
                         val item = child.getValue(Location::class.java)
-                        if (child.key == id) {
-                            item?.title = Constants.PERSONAL_MAP_TITLE
-                        }
                         locationList.add(item)
                     }
                     trySend(Result.Success(locationList.filterNotNull()))
