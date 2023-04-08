@@ -42,6 +42,7 @@ class MapFragment : Fragment(), OnMapReadyCallback,
     private lateinit var locationServiceIntent: Intent
 
     private val mapViewModel: MapViewModel by activityViewModels()
+    var isFirst = true
 
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -160,11 +161,14 @@ class MapFragment : Fragment(), OnMapReadyCallback,
         for (item in locations) {
             val latLng = LatLng(item.latitude, item.longitude)
             val marker = if (item.title == mapViewModel.name) {
-                map.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        latLng, 10f
+                if (isFirst) {
+                    map.moveCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            latLng, 10f
+                        )
                     )
-                )
+                    isFirst = false
+                }
 
                 MarkerOptions()
                     .position(latLng)
