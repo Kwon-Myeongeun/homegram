@@ -13,17 +13,16 @@ class SyncRepositoryImpl @Inject constructor(
     private val userInfoDataSource: UserInfoRemoteDataSource,
 ) :
     SyncRepository {
-    override suspend fun syncStart(userId: String) {
-        val userInfo = syncDataSource.loadUserInfo(userId)
+    override suspend fun syncStart(): Result<Unit> {
+        val userInfo = syncDataSource.loadUserInfo()
         if (userInfo is Result.Success) {
             userInfo.data?.let { userInfoLocalDataSource.syncAllUserInfo(it) }
         } else {
-            Result.Error((userInfo as Result.Error).exception)
+            return Result.Error((userInfo as Result.Error).exception)
         }
 
         val groupId = userInfoDataSource.getGroupId()
         if (groupId is Result.Success) {
-
             val daily = questionDataSource.getQuestion(groupId.data)
             if (daily is Result.Success) {
                 dailyLocalDataSource.syncAllQuestion(
@@ -37,10 +36,11 @@ class SyncRepositoryImpl @Inject constructor(
                     }.flatten()
                 )
             } else {
-                Result.Error((daily as Result.Error).exception)
+                return Result.Error((daily as Result.Error).exception)
             }
         } else {
-            Result.Error((userInfo as Result.Error).exception)
+            return Result.Error((groupId as Result.Error).exception)
         }
+        return Result.Success(Unit)
     }
 }

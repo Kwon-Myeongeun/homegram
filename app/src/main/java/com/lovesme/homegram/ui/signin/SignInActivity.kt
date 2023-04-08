@@ -82,15 +82,21 @@ class SignInActivity : AppCompatActivity() {
         }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    signInViewModel.uiState.collect { state ->
-                        when (state) {
-                            is UiState.Success -> {
-                                gotoUserPreference()
-                            }
-                            else -> {
-                                return@collect
-                            }
+                signInViewModel.uiState.collect { state ->
+                    when (state) {
+                        is UiState.Success -> {
+                            gotoUserPreference()
+                        }
+                        is UiState.Error -> {
+                            Snackbar.make(
+                                binding.root,
+                                getString(R.string.signin_google_fail),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            return@collect
+                        }
+                        else -> {
+                            return@collect
                         }
                     }
                 }

@@ -22,7 +22,6 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        homeViewModel.startSync()
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }

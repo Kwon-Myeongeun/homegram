@@ -36,9 +36,9 @@ class SignInViewModel @Inject constructor(
         auth.addAuthStateListener(authStateListener)
     }
 
-    fun saveLogInUserInfo() {
+    private fun saveLogInUserInfo() {
+        _uiState.value = UiState.Loading
         viewModelScope.launch {
-            _uiState.value = UiState.Loading
             val result = signInRepository.saveLogInUserInfo()
             if (result is Result.Success) {
                 val token = FirebaseMessaging.getInstance().token.await()
