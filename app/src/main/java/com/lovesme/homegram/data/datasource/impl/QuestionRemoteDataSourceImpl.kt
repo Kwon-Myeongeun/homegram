@@ -96,7 +96,7 @@ class QuestionRemoteDataSourceImpl @Inject constructor() : QuestionRemoteDataSou
         suspendCoroutine { continuation ->
             val childUpdates = hashMapOf<String, Any?>(
                 "/${Constants.DIRECTORY_DAILY}/$groupId/$key/${Constants.DIRECTORY_QUESTION_MEMBER}/$name" to answer,
-                "/${Constants.DIRECTORY_DAILY}/$groupId/$key/${Constants.DIRECTORY_QUESTION_IS_DONE}/$name" to true
+                "/${Constants.DIRECTORY_DAILY}/$groupId/$key/${Constants.DIRECTORY_QUESTION_IS_DONE}" to true
             )
 
             Constants.database.reference.updateChildren(childUpdates)

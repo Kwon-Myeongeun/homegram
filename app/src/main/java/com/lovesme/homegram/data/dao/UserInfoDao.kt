@@ -17,4 +17,6 @@ interface UserInfoDao {
     @Query("SELECT name FROM userInfo LIMIT 1")
     suspend fun getUserName(): String
 
+    @Query("SELECT token FROM userInfo LIMIT 1")
+    suspend fun getUserToken(): String
 }

@@ -4,16 +4,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lovesme.homegram.data.model.NotificationType
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.data.model.Todo
 import com.lovesme.homegram.data.repository.TodoRepository
+import com.lovesme.homegram.data.usecase.SendNotificationUseCase
+import com.lovesme.homegram.util.Constants
 import com.lovesme.homegram.util.DateFormatText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CalendarViewModel @Inject constructor(private val repository: TodoRepository) : ViewModel() {
+class CalendarViewModel @Inject constructor(
+    private val repository: TodoRepository,
+    private val sendNotificationUseCase: SendNotificationUseCase
+) : ViewModel() {
 
     @Inject
     lateinit var dateFormatText: DateFormatText
@@ -36,6 +42,10 @@ class CalendarViewModel @Inject constructor(private val repository: TodoReposito
     fun writeTodo(date: String, contents: String) {
         viewModelScope.launch {
             val result = repository.addSchedule(date, contents)
+            sendNotificationUseCase.invoke(
+                NotificationType.UPDATE_TODO,
+                Constants.userId.toString(),
+            )
         }
     }
 

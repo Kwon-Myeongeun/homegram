@@ -3,21 +3,27 @@ package com.lovesme.homegram.ui.setting
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.dynamiclinks.ktx.androidParameters
 import com.google.firebase.dynamiclinks.ktx.dynamicLink
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.lovesme.homegram.BuildConfig
 import com.lovesme.homegram.R
-import com.lovesme.homegram.data.model.Result
-import com.lovesme.homegram.data.repository.UserPreferencesRepository
 import com.lovesme.homegram.databinding.ActivitySettingBinding
+import com.lovesme.homegram.ui.signin.SignInActivity
+import com.lovesme.homegram.ui.viewmodel.SettingViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
+@AndroidEntryPoint
 class SettingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingBinding
+    private val settingViewModel: SettingViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +38,14 @@ class SettingActivity : AppCompatActivity() {
                 }
             }
         }
+        binding.userSignOutTv.setOnClickListener {
+            Firebase.auth.currentUser?.delete()
+            FirebaseAuth.getInstance().signOut()
+
+            val intent = Intent(this, SignInActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
     }
 
     private fun shareLink(url: String) {
@@ -45,20 +59,14 @@ class SettingActivity : AppCompatActivity() {
 
     private suspend fun createLink(): Uri? =
         withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
-            val deferredGroupId = async {
-                UserPreferencesRepository().getGroupId()
+            val groupId = settingViewModel.getGroupId()
+
+            val dynamicLink = Firebase.dynamicLinks.dynamicLink {
+                link = Uri.parse(getString(R.string.invitation_url).format(groupId))
+                domainUriPrefix = BuildConfig.LINK_PREFIX_URL
+                androidParameters { }
             }
-            val result = deferredGroupId.await()
-            if (result is Result.Success) {
-                val groupCode = result.data
-                val dynamicLink = Firebase.dynamicLinks.dynamicLink {
-                    link = Uri.parse(getString(R.string.invitation_url).format(groupCode))
-                    domainUriPrefix = BuildConfig.LINK_PREFIX_URL
-                    androidParameters { }
-                }
-                dynamicLink.uri
-            } else {
-                null
-            }
+            dynamicLink.uri
+
         }
 }

@@ -33,7 +33,7 @@ class LocationService : LifecycleService() {
     private val notificationManager by lazy {
         this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
-    private lateinit var userLocation: Location
+    private var userLocation: Location = Location()
     private lateinit var locationCallback: LocationCallback
 
     override fun onCreate() {
@@ -43,13 +43,13 @@ class LocationService : LifecycleService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        sendLocationInfo()
         return super.onStartCommand(intent, flags, startId)
     }
 
     private fun setForeground() {
         createNotification()
         getPersonLocation()
-        sendLocationInfo()
     }
 
     private fun createNotification() {
@@ -91,7 +91,10 @@ class LocationService : LifecycleService() {
                 if (location != null) {
                     userLocation = Location(location.latitude, location.longitude)
 
-                    Log.d("Personal Location Test 1", "${userLocation.latitude} , ${userLocation.longitude}")
+                    Log.d(
+                        "Personal Location Test 1",
+                        "${userLocation.latitude} , ${userLocation.longitude}"
+                    )
                 }
             }
             .addOnFailureListener {
@@ -104,7 +107,10 @@ class LocationService : LifecycleService() {
                     if (location != null) {
                         userLocation = Location(location.latitude, location.longitude)
 
-                        Log.d("Personal Location Test 2", "${userLocation.latitude} , ${userLocation.longitude}")
+                        Log.d(
+                            "Personal Location Test 2",
+                            "${userLocation.latitude} , ${userLocation.longitude}"
+                        )
                     }
                 }
             }
