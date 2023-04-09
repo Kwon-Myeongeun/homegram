@@ -9,4 +9,5 @@ interface UserPreferencesRepository {
     suspend fun deleteUserInfo(): Result<Unit>
     suspend fun existUser(): Result<Boolean>
     suspend fun existGroupId(groupId: String): Result<Boolean>
+    suspend fun existUserName(): Result<Boolean>
 }

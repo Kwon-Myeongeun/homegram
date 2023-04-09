@@ -148,4 +148,25 @@ class UserInfoRemoteDataSourceImpl @Inject constructor() :
                     continuation.resume(Result.Error(exception))
                 }
         }
+
+    override suspend fun existUserName(): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            Constants.userId?.let { id ->
+                Constants.database.reference
+                    .child(Constants.DIRECTORY_USER)
+                    .child(id)
+                    .child(Constants.DIRECTORY_NAME)
+                    .get()
+                    .addOnSuccessListener { snapshot ->
+                        if (snapshot.exists()) {
+                            continuation.resume(Result.Success(true))
+                        } else {
+                            continuation.resume(Result.Success(false))
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        continuation.resume(Result.Error(exception))
+                    }
+            }
+        }
 }

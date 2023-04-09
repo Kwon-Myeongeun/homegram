@@ -10,4 +10,5 @@ interface UserInfoRemoteDataSource {
     suspend fun deleteUserInfo(groupId: String): Result<Unit>
     suspend fun existUser(): Result<Boolean>
     suspend fun existGroupId(groupId: String): Result<Boolean>
+    suspend fun existUserName(): Result<Boolean>
 }

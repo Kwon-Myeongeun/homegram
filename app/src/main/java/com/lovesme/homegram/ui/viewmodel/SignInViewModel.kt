@@ -70,6 +70,10 @@ class SignInViewModel @Inject constructor(
         }
     }
 
+    suspend fun existUserName(): Result<Boolean> {
+        return userPreferencesRepository.existUserName()
+    }
+
     override fun onCleared() {
         auth.removeAuthStateListener(authStateListener)
         super.onCleared()
