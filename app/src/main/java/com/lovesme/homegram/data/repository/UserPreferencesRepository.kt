@@ -6,4 +6,5 @@ interface UserPreferencesRepository {
     suspend fun setMessageToken(token: String): Result<Unit>
     suspend fun updateUserInfo(name: String, birth: String): Result<Unit>
     suspend fun getReceiverToken(): Result<List<String>>
+    suspend fun deleteUserInfo(): Result<Unit>
 }

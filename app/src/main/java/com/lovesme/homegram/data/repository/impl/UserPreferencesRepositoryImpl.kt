@@ -36,4 +36,13 @@ class UserPreferencesRepositoryImpl(private val userInfoDataSource: UserInfoRemo
             is Result.Error -> Result.Error(result.exception)
         }
     }
+
+    override suspend fun deleteUserInfo(): Result<Unit> {
+        val result = userInfoDataSource.getGroupId()
+        return when (result) {
+            is Result.Success ->
+                userInfoDataSource.deleteUserInfo(result.data)
+            is Result.Error -> Result.Error(result.exception)
+        }
+    }
 }
