@@ -11,54 +11,60 @@
 
         <TextView
             android:id="@+id/name_setting_label_tv"
-            style="@style/Theme.Homegram.TextView"
+            style="@style/Theme.Homegram.TextView.TitleBold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingVertical="16dp"
-            android:text="닉네임"
+            android:text="@string/user_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/name_setting_tv"
             style="@style/Theme.Homegram.EditText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="닉네임"
+            android:hint="@string/user_name"
             android:inputType="text"
             android:maxLines="1"
             android:paddingVertical="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="329dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/name_setting_label_tv"
+            tools:layout_editor_absoluteX="329dp"
+            android:importantForAutofill="no" />
 
         <TextView
             android:id="@+id/birth_setting_label_tv"
-            style="@style/Theme.Homegram.TextView"
+            style="@style/Theme.Homegram.TextView.TitleBold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:paddingVertical="16dp"
-            android:text="생일"
+            android:text="@string/user_birth"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/name_setting_label_tv" />
+            app:layout_constraintTop_toBottomOf="@id/name_setting_tv" />
 
         <EditText
             android:id="@+id/birth_setting_tv"
             style="@style/Theme.Homegram.EditText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="생일"
+            android:focusable="false"
+            android:hint="@string/user_birth"
             android:inputType="date"
             android:paddingVertical="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/name_setting_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/birth_setting_label_tv"
             tools:layout_editor_absoluteX="342dp" />
 
         <Button
             android:id="@+id/save_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="저장"
+            android:enabled="false"
+            android:text="@string/save_btn_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
