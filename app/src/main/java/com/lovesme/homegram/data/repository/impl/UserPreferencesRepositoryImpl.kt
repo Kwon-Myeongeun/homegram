@@ -45,4 +45,12 @@ class UserPreferencesRepositoryImpl(private val userInfoDataSource: UserInfoRemo
             is Result.Error -> Result.Error(result.exception)
         }
     }
+
+    override suspend fun existUser(): Result<Boolean> {
+        return userInfoDataSource.existUser()
+    }
+
+    override suspend fun existGroupId(groupId: String): Result<Boolean> {
+        return userInfoDataSource.existGroupId(groupId)
+    }
 }
