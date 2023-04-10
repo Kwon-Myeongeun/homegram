@@ -7,11 +7,16 @@ import android.widget.DatePicker
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
+import com.lovesme.homegram.R
+import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.databinding.ActivityUserpreferenceBinding
 import com.lovesme.homegram.ui.main.MainActivity
 import com.lovesme.homegram.ui.viewmodel.UserPreferenceViewModel
 import com.lovesme.homegram.util.DateFormatText
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -37,18 +42,29 @@ class UserPreferenceActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLi
                 dateFormatText.getTodayDATE(),
             ).show()
         }
-
         binding.saveBtn.setOnClickListener {
-            userPreferenceViewModel.updateUserInfo(
-                binding.nameSettingTv.text.toString(),
-                binding.birthSettingTv.text.toString()
-            )
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+            lifecycleScope.launch {
+                val result = userPreferenceViewModel.updateUserInfo(
+                    binding.nameSettingTv.text.toString(),
+                    binding.birthSettingTv.text.toString()
+                )
+                if (result is Result.Success) {
+                    startActivity(Intent(this@UserPreferenceActivity, MainActivity::class.java))
+                    finish()
+                } else {
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.download_data_fail),
+                        Snackbar.LENGTH_SHORT
+                    )
+                        .show()
+                }
+            }
         }
 
         binding.nameSettingTv.doAfterTextChanged {
-            binding.saveBtn.isEnabled = !it.isNullOrEmpty() && !binding.birthSettingTv.text.isNullOrEmpty()
+            binding.saveBtn.isEnabled =
+                !it.isNullOrEmpty() && !binding.birthSettingTv.text.isNullOrEmpty()
         }
     }
 
