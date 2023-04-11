@@ -30,7 +30,6 @@
 
         <TextView
             android:id="@+id/invite_link_tv"
-            style="@style/Theme.Homegram.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingVertical="16dp"
@@ -48,7 +47,6 @@
 
         <TextView
             android:id="@+id/user_info_tv"
-            style="@style/Theme.Homegram.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingVertical="16dp"
@@ -58,7 +56,6 @@
 
         <TextView
             android:id="@+id/user_sign_out_tv"
-            style="@style/Theme.Homegram.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingVertical="16dp"

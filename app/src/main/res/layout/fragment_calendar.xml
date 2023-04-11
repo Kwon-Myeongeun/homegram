@@ -11,7 +11,7 @@
 
         <TextView
             android:id="@+id/date_tv"
-            style="@style/Homegram.TextStyle.H5.bold"
+            style="@style/Theme.Homegram.TextView.TitleBold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -37,7 +37,8 @@
             style="@style/Theme.Homegram.EditText.Transparent"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Todo"
+            android:hint="@string/todo_text"
+            android:importantForAutofill="no"
             android:inputType="text"
             android:paddingVertical="16dp"
             app:layout_constraintBottom_toBottomOf="parent"

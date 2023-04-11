@@ -21,7 +21,6 @@
 
         <TextView
             android:id="@+id/question_tv"
-            style="@style/Theme.Homegram.TextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingVertical="16dp"

@@ -32,4 +32,6 @@
     <string name="user_birth">생일</string>
     <string name="save_btn_text">저장</string>
     <string name="signout_fail">로그아웃 실패</string>
+    <string name="todo_text">Todo</string>
+    <string name="delete_todo">delete Todo</string>
 </resources>
