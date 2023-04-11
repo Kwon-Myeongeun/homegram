@@ -12,14 +12,17 @@ import android.os.Build
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.location.*
 import com.lovesme.homegram.data.model.Location
 import com.lovesme.homegram.ui.main.MainActivity
 import com.lovesme.homegram.R
 import com.lovesme.homegram.data.repository.LocationRepository
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -155,10 +158,12 @@ class LocationService() : LifecycleService() {
     }
 
     private fun setObserver() {
-        lifecycleScope.launch {
-            userLocation.collectLatest { location ->
-                delay(1_000L)
-                repository.setLocation(location)
+        lifecycleScope.launch(Dispatchers.IO) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userLocation.collectLatest { location ->
+                    delay(INTERVAL_UNIT)
+                    repository.setLocation(location)
+                }
             }
         }
     }

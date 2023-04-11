@@ -53,7 +53,6 @@ class MapFragment : Fragment(), OnMapReadyCallback,
                 checkLocationPermission()
             }
             else -> {
-                // No location access granted.
             }
         }
     }
@@ -75,10 +74,16 @@ class MapFragment : Fragment(), OnMapReadyCallback,
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mapViewModel.loadLocation()
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
-        mapViewModel.loadLocation()
+        enableMyLocation()
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
@@ -88,7 +93,6 @@ class MapFragment : Fragment(), OnMapReadyCallback,
                 }
             }
         }
-        enableMyLocation()
     }
 
     private fun setLocationService() {
@@ -113,11 +117,10 @@ class MapFragment : Fragment(), OnMapReadyCallback,
     }
 
     private fun enableMyLocation() {
-
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+            ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
