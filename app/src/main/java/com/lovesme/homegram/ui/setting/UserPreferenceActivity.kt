@@ -69,7 +69,8 @@ class UserPreferenceActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLi
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        binding.birthSettingTv.setText("${year}.${month}.${dayOfMonth}")
+        val date = dateFormatText.convertToDateText(year, month, dayOfMonth)
+        binding.birthSettingTv.setText(date)
         if (!binding.nameSettingTv.text.isNullOrEmpty()) {
             binding.saveBtn.isEnabled = true
         }

@@ -5,8 +5,8 @@ import java.util.*
 import javax.inject.Inject
 
 private const val DATE_YEAR_MONTH_DAY_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-
 private const val DATE_TODAY_PATTERN = "yyyy-MM-dd"
+private const val SEPARATOR = "-"
 
 class DateFormatText @Inject constructor() {
     private val currentLocale
@@ -41,9 +41,11 @@ class DateFormatText @Inject constructor() {
         cal.set(year, month, date)
         return convertToNewDateFormat(
             DATE_TODAY_PATTERN,
-            convertToDate("${year}-${month + 1}-${date}")
+            convertToDate("${year}${SEPARATOR}${month + 1}${SEPARATOR}${date}")
         )
     }
+
+    fun convertToDateInt(date: String) = date.split(SEPARATOR).map { it.toInt() }
 
     fun convertToNewDateFormat(newPattern: String, date: Date): String {
         return SimpleDateFormat(newPattern, currentLocale).format(date)

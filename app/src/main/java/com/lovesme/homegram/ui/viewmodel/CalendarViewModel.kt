@@ -60,4 +60,6 @@ class CalendarViewModel @Inject constructor(
             repository.deleteSchedule(date.value, key)
         }
     }
+
+    fun getDate() = dateFormatText.convertToDateInt(date.value)
 }
