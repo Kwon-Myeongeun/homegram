@@ -59,13 +59,11 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun joinToInvitedGroup(groupId: String) {
-        viewModelScope.launch {
-            val result = userPreferencesRepository.existGroupId(groupId)
-            if (result is Result.Success) {
-                if (result.data) {
-                    signInRepository.joinToInvitedGroup(groupId)
-                }
+    suspend fun joinToInvitedGroup(groupId: String) {
+        val result = userPreferencesRepository.existGroupId(groupId)
+        if (result is Result.Success) {
+            if (result.data) {
+                signInRepository.joinToInvitedGroup(groupId)
             }
         }
     }

@@ -25,6 +25,10 @@ class SignInRepositoryImpl @Inject constructor(
                 oldGroupId = result.data
             }
         }
-        return signInDataSource.joinToInvitedGroup(oldGroupId, groupId)
+        return if(oldGroupId != groupId){
+            signInDataSource.joinToInvitedGroup(oldGroupId, groupId)
+        } else {
+            Result.Error(Exception())
+        }
     }
 }

@@ -61,7 +61,7 @@ class SignInActivity : AppCompatActivity() {
         initData()
         requestNotificationPermission()
         if (auth.currentUser != null) {
-            gotoLoginSuccessActivity()
+            handleDynamicLinks()
         }
     }
 
@@ -85,7 +85,7 @@ class SignInActivity : AppCompatActivity() {
                 signInViewModel.uiState.collect { state ->
                     when (state) {
                         is UiState.Success -> {
-                            gotoUserPreference()
+                            handleDynamicLinks()
                         }
                         is UiState.Error -> {
                             Snackbar.make(
@@ -181,21 +181,18 @@ class SignInActivity : AppCompatActivity() {
             }
     }
 
-    private fun gotoLoginSuccessActivity() {
-        lifecycleScope.launch() {
-            val result = signInViewModel.existUserName()
-            if (result is Result.Success) {
-                if (result.data) {
-                    gotoHome()
-                } else {
-                    gotoUserPreference()
-                }
+    private suspend fun gotoLoginSuccessActivity() {
+        val result = signInViewModel.existUserName()
+        if (result is Result.Success) {
+            if (result.data) {
+                gotoHome()
+            } else {
+                gotoUserPreference()
             }
         }
     }
 
     private fun gotoHome() {
-        handleDynamicLinks()
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
@@ -211,8 +208,15 @@ class SignInActivity : AppCompatActivity() {
             .addOnSuccessListener(this) { linkData ->
                 if (linkData != null && linkData.link != null) {
                     val groupId = linkData.link?.getQueryParameter("code")
-                    if (groupId != null) {
-                        signInViewModel.joinToInvitedGroup(groupId)
+                    lifecycleScope.launch {
+                        if (groupId != null) {
+                            signInViewModel.joinToInvitedGroup(groupId)
+                        }
+                        gotoLoginSuccessActivity()
+                    }
+                } else {
+                    lifecycleScope.launch() {
+                        gotoLoginSuccessActivity()
                     }
                 }
             }
