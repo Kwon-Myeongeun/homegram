@@ -29,11 +29,6 @@ class QuestionRemoteDataSourceImpl @Inject constructor() : QuestionRemoteDataSou
             var isDone = false
             val answerList = mutableListOf<Answer>()
 
-            reference.get()
-                .addOnFailureListener { exception ->
-                    trySend(Result.Error(exception))
-                }
-
             val listener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     questionList.clear()
