@@ -47,6 +47,10 @@ class SettingActivity : AppCompatActivity() {
             settingViewModel.deleteUserInfo()
         }
 
+        binding.settingToolbar.setNavigationOnClickListener {
+            finish()
+        }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 settingViewModel.uiState.collect { state ->

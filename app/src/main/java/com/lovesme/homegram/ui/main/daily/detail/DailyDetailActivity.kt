@@ -4,13 +4,19 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.lovesme.homegram.data.model.Question
 import com.lovesme.homegram.databinding.ActivityDailyDetailBinding
 import com.lovesme.homegram.ui.main.daily.composition.DailyCompositionActivity
 import com.lovesme.homegram.ui.viewmodel.DailyDetailViewModel
 import com.lovesme.homegram.util.Constants
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DailyDetailActivity : AppCompatActivity() {
@@ -19,6 +25,8 @@ class DailyDetailActivity : AppCompatActivity() {
     private val adapter = DailyDetailRVAdapter()
 
     private val dailyDetailViewModel: DailyDetailViewModel by viewModels()
+
+    private lateinit var dailyCompositionResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,16 +39,42 @@ class DailyDetailActivity : AppCompatActivity() {
         }
         binding.dailyDetailRecycler.adapter = adapter
         binding.dailyDetailTitleTv.text = item?.contents
-        adapter.submitList(item?.answer?.toMutableList())
+        dailyDetailViewModel.setAnswer(item?.answer)
+
+        lifecycleScope.launch {
+            dailyDetailViewModel.answer
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect { answer ->
+                    adapter.submitList(answer.toMutableList())
+                }
+        }
+
+        dailyCompositionResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val contents = result.data?.getStringExtra(Constants.PARCELABLE_ANSWER_TEXT)
+                if (contents != null) {
+                    item?.let {
+                        dailyDetailViewModel.updateAnswer(it.key, contents)
+                    }
+                }
+            }
+        }
 
         binding.dailyDetailToolbar.setNavigationOnClickListener {
             finish()
         }
 
         binding.dailyDetailToolbar.setOnMenuItemClickListener {
-            val intent = Intent(this, DailyCompositionActivity::class.java)
-            intent.putExtra(Constants.PARCELABLE_QUESTION, item)
-            startActivity(intent)
+            lifecycleScope.launch {
+                val intent = Intent(this@DailyDetailActivity, DailyCompositionActivity::class.java)
+                val test = dailyDetailViewModel.getMyAnswer(item)
+                test?.let{
+                    intent.putExtra(Constants.PARCELABLE_ANSWER_TEXT, it)
+                }
+                dailyCompositionResultLauncher.launch(intent)
+            }
             return@setOnMenuItemClickListener true
         }
     }

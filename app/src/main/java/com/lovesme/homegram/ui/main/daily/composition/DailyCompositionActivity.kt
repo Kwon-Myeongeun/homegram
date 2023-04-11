@@ -1,12 +1,10 @@
 package com.lovesme.homegram.ui.main.daily.composition
 
-import android.os.Build
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.activity.viewModels
-import com.lovesme.homegram.data.model.Question
 import com.lovesme.homegram.databinding.ActivityDailyCompositionBinding
-import com.lovesme.homegram.ui.viewmodel.DailyCompositionViewModel
+import com.lovesme.homegram.ui.main.daily.detail.DailyDetailActivity
 import com.lovesme.homegram.util.Constants
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,17 +13,14 @@ class DailyCompositionActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDailyCompositionBinding
 
-    private val dailyCompositionViewModel: DailyCompositionViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDailyCompositionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(Constants.PARCELABLE_QUESTION, Question::class.java)
-        } else {
-            intent.getParcelableExtra<Question>(Constants.PARCELABLE_QUESTION)
+        val item = intent.getStringExtra(Constants.PARCELABLE_ANSWER_TEXT)
+        item?.let{
+            binding.dailyCompositionContentTv.setText(it)
         }
 
         binding.dailyCompositionToolbar.setNavigationOnClickListener {
@@ -34,9 +29,12 @@ class DailyCompositionActivity : AppCompatActivity() {
 
         binding.dailyCompositionToolbar.setOnMenuItemClickListener {
             val answer = binding.dailyCompositionContentTv.text
-            item?.let {
-                dailyCompositionViewModel.updateAnswer(it.key, answer.toString())
+            val intent = Intent(this, DailyDetailActivity::class.java).apply {
+                if(!answer.isNullOrEmpty()){
+                    putExtra(Constants.PARCELABLE_ANSWER_TEXT, answer.toString())
+                }
             }
+            setResult(RESULT_OK, intent)
             finish()
             return@setOnMenuItemClickListener true
         }

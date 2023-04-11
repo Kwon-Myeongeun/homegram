@@ -7,6 +7,7 @@ import com.lovesme.homegram.BuildConfig
 
 object Constants {
     const val PARCELABLE_QUESTION = "question"
+    const val PARCELABLE_ANSWER_TEXT = "contents"
 
     val database = Firebase.database(BuildConfig.DATABASE_URL)
     val userId get() = FirebaseAuth.getInstance().currentUser?.uid
