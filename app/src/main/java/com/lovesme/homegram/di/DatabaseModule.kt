@@ -22,9 +22,13 @@ object DatabaseModule {
     fun provideSignInRepository(
         signInDataSource: SignInRemoteDataSource,
         userInfoLocalDataSource: UserInfoLocalDataSource,
-        questionDataSource: QuestionRemoteDataSource
+        questionDataSource: QuestionRemoteDataSource,
     ): SignInRepository {
-        return SignInRepositoryImpl(signInDataSource, userInfoLocalDataSource, questionDataSource)
+        return SignInRepositoryImpl(
+            signInDataSource,
+            userInfoLocalDataSource,
+            questionDataSource,
+        )
     }
 
     @Provides

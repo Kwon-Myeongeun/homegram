@@ -4,5 +4,5 @@ import com.lovesme.homegram.data.model.User
 import com.lovesme.homegram.data.model.Result
 
 interface SyncDataSource {
-    suspend fun loadUserInfo(userId: String): Result<User?>
+    suspend fun loadUserInfo(): Result<User?>
 }

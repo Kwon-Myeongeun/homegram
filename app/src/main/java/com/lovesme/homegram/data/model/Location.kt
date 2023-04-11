@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Location(
-    val latitude: Double = 0.0,
-    val longitude: Double = 0.0,
+    val latitude: Double = 128.624,
+    val longitude: Double = 36.805,
     var title: String = "",
 ) : Parcelable

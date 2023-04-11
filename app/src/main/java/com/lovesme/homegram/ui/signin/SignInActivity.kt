@@ -12,6 +12,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.PermissionChecker
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -27,11 +30,13 @@ import com.google.firebase.ktx.Firebase
 import com.lovesme.homegram.R
 import com.lovesme.homegram.ui.main.MainActivity
 import com.lovesme.homegram.data.model.Result
+import com.lovesme.homegram.data.model.UiState
 import com.lovesme.homegram.ui.setting.UserPreferenceActivity
 import com.lovesme.homegram.ui.viewmodel.SignInViewModel
 import com.lovesme.homegram.util.sns.LegacySignInManager
 import com.lovesme.homegram.util.sns.OneTapSignInManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignInActivity : AppCompatActivity() {
@@ -75,6 +80,28 @@ class SignInActivity : AppCompatActivity() {
                 ).show()
             }
         }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                signInViewModel.uiState.collect { state ->
+                    when (state) {
+                        is UiState.Success -> {
+                            gotoUserPreference()
+                        }
+                        is UiState.Error -> {
+                            Snackbar.make(
+                                binding.root,
+                                getString(R.string.signin_google_fail),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            return@collect
+                        }
+                        else -> {
+                            return@collect
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun initManager() {
@@ -96,9 +123,7 @@ class SignInActivity : AppCompatActivity() {
                 val task: Task<GoogleSignInAccount> =
                     GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 val loginResult = legacySignInManagerInstance.handleLegacySignInResult(task)
-                if (loginResult is Result.Success) {
-                    saveLogInUserInfo()
-                } else if (loginResult is Result.Error) {
+                if (loginResult is Result.Error) {
                     Snackbar.make(
                         binding.root,
                         getString(R.string.signin_google_fail),
@@ -126,7 +151,6 @@ class SignInActivity : AppCompatActivity() {
                     try {
                         credential.googleIdToken?.let {
                             oneTapSignInManagerInstance.handleOneTapSignInResult(credential)
-                            saveLogInUserInfo()
                         }
                     } catch (e: ApiException) {
                         Snackbar.make(
@@ -166,12 +190,6 @@ class SignInActivity : AppCompatActivity() {
     private fun gotoUserPreference() {
         startActivity(Intent(this, UserPreferenceActivity::class.java))
         finish()
-    }
-
-    private fun saveLogInUserInfo() {
-        signInViewModel.saveLogInUserInfo()
-        gotoUserPreference()
-
     }
 
     private fun handleDynamicLinks() {

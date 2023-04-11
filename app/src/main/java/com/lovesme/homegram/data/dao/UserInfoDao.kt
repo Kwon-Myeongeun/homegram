@@ -19,4 +19,7 @@ interface UserInfoDao {
 
     @Query("SELECT token FROM userInfo LIMIT 1")
     suspend fun getUserToken(): String
+
+    @Query("DELETE FROM userInfo")
+    suspend fun deleteAll()
 }

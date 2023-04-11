@@ -13,60 +13,58 @@ class QuestionRemoteDataSourceImpl @Inject constructor() : QuestionRemoteDataSou
 
     override suspend fun getQuestion(groupId: String): Result<List<Question>> =
         suspendCoroutine { continuation ->
-            Constants.userId?.let { id ->
-                val reference = Constants.database.reference
-                    .child(Constants.DIRECTORY_DAILY)
-                    .child(groupId)
+            val reference = Constants.database.reference
+                .child(Constants.DIRECTORY_DAILY)
+                .child(groupId)
 
-                val questionList = mutableListOf<Question>()
-                var contents = ""
-                var index = ""
-                var isDone = false
-                val answerList = mutableListOf<Answer>()
+            val questionList = mutableListOf<Question>()
+            var contents = ""
+            var index = ""
+            var isDone = false
+            val answerList = mutableListOf<Answer>()
 
-                reference.get()
-                    .addOnSuccessListener { snapshot ->
-                        for (child in snapshot.children) {
-                            for (chatItem in child.children) {
-                                when (chatItem.key) {
-                                    Constants.DIRECTORY_QUESTION_CONTENTS -> {
-                                        contents = chatItem.value.toString()
-                                    }
-                                    Constants.DIRECTORY_QUESTION_NUM -> {
-                                        index = chatItem.value.toString()
-                                    }
-                                    Constants.DIRECTORY_QUESTION_IS_DONE -> {
-                                        isDone = chatItem.value.toString().toBoolean()
-                                    }
-                                    Constants.DIRECTORY_QUESTION_MEMBER -> {
-                                        for (answerItem in chatItem.children) {
-                                            answerList.add(
-                                                Answer(
-                                                    answerItem.key.toString(),
-                                                    answerItem.value.toString()
-                                                )
+            reference.get()
+                .addOnSuccessListener { snapshot ->
+                    for (child in snapshot.children) {
+                        for (chatItem in child.children) {
+                            when (chatItem.key) {
+                                Constants.DIRECTORY_QUESTION_CONTENTS -> {
+                                    contents = chatItem.value.toString()
+                                }
+                                Constants.DIRECTORY_QUESTION_NUM -> {
+                                    index = chatItem.value.toString()
+                                }
+                                Constants.DIRECTORY_QUESTION_IS_DONE -> {
+                                    isDone = chatItem.value.toString().toBoolean()
+                                }
+                                Constants.DIRECTORY_QUESTION_MEMBER -> {
+                                    for (answerItem in chatItem.children) {
+                                        answerList.add(
+                                            Answer(
+                                                answerItem.key.toString(),
+                                                answerItem.value.toString()
                                             )
-                                        }
+                                        )
                                     }
                                 }
                             }
-                            questionList.add(
-                                Question(
-                                    child.key.toString(),
-                                    index,
-                                    contents,
-                                    isDone,
-                                    answerList.toMutableList()
-                                )
-                            )
-                            answerList.clear()
                         }
-                        continuation.resume(Result.Success(questionList))
+                        questionList.add(
+                            Question(
+                                child.key.toString(),
+                                index,
+                                contents,
+                                isDone,
+                                answerList.toMutableList()
+                            )
+                        )
+                        answerList.clear()
                     }
-                    .addOnFailureListener { exception ->
-                        continuation.resume(Result.Error(exception))
-                    }
-            }
+                    continuation.resume(Result.Success(questionList))
+                }
+                .addOnFailureListener { exception ->
+                    continuation.resume(Result.Error(exception))
+                }
         }
 
     override suspend fun getGroupId(): Result<String> =

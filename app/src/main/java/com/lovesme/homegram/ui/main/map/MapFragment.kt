@@ -14,7 +14,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -25,7 +27,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.lovesme.homegram.data.model.Location
 import com.lovesme.homegram.databinding.FragmentMapBinding
 import com.lovesme.homegram.ui.viewmodel.MapViewModel
-import com.lovesme.homegram.util.Constants
 import com.lovesme.homegram.util.location.LocationService
 import kotlinx.coroutines.launch
 
@@ -39,9 +40,9 @@ class MapFragment : Fragment(), OnMapReadyCallback,
     private lateinit var mapView: MapView
     private lateinit var map: GoogleMap
     private lateinit var locationServiceIntent: Intent
-    private lateinit var locationInfoReceiver: BroadcastReceiver
 
     private val mapViewModel: MapViewModel by activityViewModels()
+    var isFirst = true
 
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -60,7 +61,6 @@ class MapFragment : Fragment(), OnMapReadyCallback,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setLocationService()
-        setBroadcastReceiver()
     }
 
     override fun onCreateView(
@@ -75,21 +75,17 @@ class MapFragment : Fragment(), OnMapReadyCallback,
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     override fun onMapReady(googleMap: GoogleMap) {
-
         map = googleMap
 
         mapViewModel.loadLocation()
-        mapViewModel.locations.observe(viewLifecycleOwner) { locations ->
-            drawMembersMarkers(locations)
-        }
         viewLifecycleOwner.lifecycleScope.launch {
-            mapViewModel.personalLocation.collect { location ->
-                mapViewModel.updateLocation(location)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    mapViewModel.locations.collect { locations ->
+                        drawMembersMarkers(locations)
+                    }
+                }
             }
         }
         enableMyLocation()
@@ -164,12 +160,15 @@ class MapFragment : Fragment(), OnMapReadyCallback,
         map.clear()
         for (item in locations) {
             val latLng = LatLng(item.latitude, item.longitude)
-            val marker = if (item.title == Constants.PERSONAL_MAP_TITLE) {
-                map.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        latLng, 10f
+            val marker = if (item.title == mapViewModel.name) {
+                if (isFirst) {
+                    map.moveCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            latLng, 10f
+                        )
                     )
-                )
+                    isFirst = false
+                }
 
                 MarkerOptions()
                     .position(latLng)
@@ -184,26 +183,6 @@ class MapFragment : Fragment(), OnMapReadyCallback,
 
             map.addMarker(marker)
         }
-    }
-
-    private fun setBroadcastReceiver() {
-        val intentFilter = IntentFilter().apply {
-            addAction(LocationService.ACTION_LOCATIONS)
-        }
-
-        locationInfoReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                val item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    intent?.getParcelableExtra(Constants.PARCELABLE_LOCATION, Location::class.java)
-                } else {
-                    intent?.getParcelableExtra<Location>(Constants.PARCELABLE_LOCATION)
-                }
-                item?.let {
-                    mapViewModel.personalLocation.value = it
-                }
-            }
-        }
-        requireActivity().registerReceiver(locationInfoReceiver, intentFilter)
     }
 
     override fun onStart() {
@@ -232,7 +211,6 @@ class MapFragment : Fragment(), OnMapReadyCallback,
     }
 
     override fun onDestroy() {
-        requireActivity().unregisterReceiver(locationInfoReceiver)
         mapView.onDestroy()
         super.onDestroy()
     }

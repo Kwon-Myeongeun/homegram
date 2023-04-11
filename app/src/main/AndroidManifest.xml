@@ -51,6 +51,7 @@
 
         <service
             android:name=".util.location.LocationService"
+            android:exported="false"
             android:foregroundServiceType="location" />
         <service
             android:name=".util.notification.NotificationService"

@@ -13,12 +13,8 @@ class QuestionRepositoryImpl @Inject constructor(
 ) :
     QuestionRepository {
     override suspend fun getQuestion(): Result<List<Question>> {
-        val result = questionDataSource.getGroupId()
-        return if (result is Result.Success) {
-            questionDataSource.getQuestion(result.data)
-        } else {
-            Result.Error((result as Result.Error).exception)
-        }
+        val groupId = userInfoLocalDataSource.getGroupId()
+        return questionDataSource.getQuestion(groupId)
     }
 
     override suspend fun updateAnswer(key: String, answer: String): Result<Unit> {

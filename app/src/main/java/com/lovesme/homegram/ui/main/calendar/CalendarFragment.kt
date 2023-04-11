@@ -8,11 +8,15 @@ import android.view.ViewGroup
 import android.widget.DatePicker
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.lovesme.homegram.data.model.listener.DeleteClickListener
 import com.lovesme.homegram.databinding.FragmentCalendarBinding
 import com.lovesme.homegram.ui.viewmodel.CalendarViewModel
 import com.lovesme.homegram.util.DateFormatText
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -62,13 +66,21 @@ class CalendarFragment : Fragment(), DatePickerDialog.OnDateSetListener, DeleteC
         super.onViewCreated(view, savedInstanceState)
         binding.dateTv.text = dateFormatText.getTodayText()
         binding.calendarRecycler.adapter = adapter
-        todoViewModel.todo.observe(viewLifecycleOwner) { todo ->
-            val todoList = todo.entries.map { Pair(it.key, it.value) }
-            adapter.submitList(todoList)
-        }
-        todoViewModel.date.observe(viewLifecycleOwner) { date ->
-            todoViewModel.loadTodo(date)
-            binding.dateTv.text = date
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    todoViewModel.todo.collect { todo ->
+                        val todoList = todo.entries.map { Pair(it.key, it.value) }
+                        adapter.submitList(todoList)
+                    }
+                }
+                launch {
+                    todoViewModel.date.collect { date ->
+                        todoViewModel.loadTodo(date)
+                        binding.dateTv.text = date
+                    }
+                }
+            }
         }
     }
 

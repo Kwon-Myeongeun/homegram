@@ -12,18 +12,29 @@ import android.os.Build
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.location.*
 import com.lovesme.homegram.data.model.Location
 import com.lovesme.homegram.ui.main.MainActivity
 import com.lovesme.homegram.R
-import com.lovesme.homegram.util.Constants
-import kotlinx.coroutines.Dispatchers
+import com.lovesme.homegram.data.repository.LocationRepository
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LocationService : LifecycleService() {
+@AndroidEntryPoint
+class LocationService() : LifecycleService() {
+
+    @Inject
+    lateinit var repository: LocationRepository
+
     private val locationRequest by lazy {
         LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, INTERVAL_UNIT).build()
     }
@@ -33,17 +44,18 @@ class LocationService : LifecycleService() {
     private val notificationManager by lazy {
         this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
-    private var userLocation: Location = Location()
+
+    private val _userLocation: MutableStateFlow<Location> = MutableStateFlow(Location())
+    private val userLocation: StateFlow<Location> = _userLocation
+
     private lateinit var locationCallback: LocationCallback
 
     override fun onCreate() {
         super.onCreate()
-        getPersonLocation()
         setForeground()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        sendLocationInfo()
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -78,7 +90,7 @@ class LocationService : LifecycleService() {
         if (ActivityCompat.checkSelfPermission(
                 applicationContext,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
                 applicationContext,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
@@ -86,14 +98,15 @@ class LocationService : LifecycleService() {
             return
         }
 
+        setObserver()
+
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location ->
                 if (location != null) {
-                    userLocation = Location(location.latitude, location.longitude)
-
+                    _userLocation.value = Location(location.latitude, location.longitude)
                     Log.d(
                         "Personal Location Test 1",
-                        "${userLocation.latitude} , ${userLocation.longitude}"
+                        "${location.latitude} , ${location.longitude}"
                     )
                 }
             }
@@ -105,11 +118,11 @@ class LocationService : LifecycleService() {
             override fun onLocationResult(locationResult: LocationResult) {
                 for (location in locationResult.locations) {
                     if (location != null) {
-                        userLocation = Location(location.latitude, location.longitude)
+                        _userLocation.value = Location(location.latitude, location.longitude)
 
                         Log.d(
                             "Personal Location Test 2",
-                            "${userLocation.latitude} , ${userLocation.longitude}"
+                            "${location.latitude} , ${location.longitude}"
                         )
                     }
                 }
@@ -133,19 +146,18 @@ class LocationService : LifecycleService() {
         }
     }
 
-    private fun sendLocationInfo() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            delay(1_000L)
-            val statusIntent = Intent().apply {
-                action = ACTION_LOCATIONS
-                putExtra(Constants.PARCELABLE_LOCATION, userLocation)
+    private fun setObserver() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userLocation.collectLatest { location ->
+                    delay(1_000L)
+                    repository.setLocation(location)
+                }
             }
-            sendBroadcast(statusIntent)
         }
     }
 
     companion object {
         const val INTERVAL_UNIT = 1000L
-        const val ACTION_LOCATIONS = "action_locations"
     }
 }
