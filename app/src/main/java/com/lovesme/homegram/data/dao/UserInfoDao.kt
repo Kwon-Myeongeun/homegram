@@ -22,4 +22,7 @@ interface UserInfoDao {
 
     @Query("DELETE FROM userInfo")
     suspend fun deleteAll()
+
+    @Query("UPDATE userInfo SET token=:userToken")
+    suspend fun updateToken(userToken: String)
 }

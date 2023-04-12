@@ -7,4 +7,5 @@ interface UserInfoLocalDataSource {
     suspend fun getGroupId(): String
     suspend fun getUserName(): String
     suspend fun getUserToken(): String
+    suspend fun updateToken(userToken: String)
 }

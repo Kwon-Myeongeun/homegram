@@ -23,4 +23,10 @@ class UserInfoLocalDataSourceImpl @Inject constructor(private val userInfoDao: U
     override suspend fun getUserToken(): String {
         return userInfoDao.getUserToken()
     }
+
+    override suspend fun updateToken(userToken: String) {
+        return userInfoDao.updateToken(userToken)
+    }
+
+
 }
