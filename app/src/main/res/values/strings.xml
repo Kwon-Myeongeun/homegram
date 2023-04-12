@@ -34,4 +34,5 @@
     <string name="signout_fail">로그아웃 실패</string>
     <string name="todo_text">Todo</string>
     <string name="delete_todo">delete Todo</string>
+    <string name="composition_hint">답변을 입력해주세요.</string>
 </resources>
