@@ -12,15 +12,15 @@ data class NotificationRequestData(
 
 enum class NotificationType(val title: String, val msg: String) {
     UPDATE_TODO(
-        "Homegram Todo",
+        "일정 알림",
         "일정이 추가되었습니다."
     ),
     UPDATE_ANSWER(
-        "Homegram answer",
+        "답변 알림",
         "답변이 추가되었습니다."
     ),
     UPDATE_QUESTION(
-        "Homegram question",
+        "질문 알림",
         "오늘의 질문이 추가되었습니다."
     ),
 }
