@@ -70,8 +70,11 @@ class DailyDetailActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 val intent = Intent(this@DailyDetailActivity, DailyCompositionActivity::class.java)
                 val test = dailyDetailViewModel.getMyAnswer(item)
-                test?.let{
+                test?.let {
                     intent.putExtra(Constants.PARCELABLE_ANSWER_TEXT, it)
+                }
+                item?.let {
+                    intent.putExtra(Constants.PARCELABLE_CONTENT, it.contents)
                 }
                 dailyCompositionResultLauncher.launch(intent)
             }

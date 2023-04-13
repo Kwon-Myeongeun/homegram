@@ -19,7 +19,7 @@ class TodoRemoteDataSourceImpl @Inject constructor() : TodoRemoteDataSource {
     override suspend fun getSchedule(
         groupId: String,
         date: String
-    ): Flow<Result<Map<String, Todo>>> =
+    ): Flow<Result<List<Todo>>> =
         callbackFlow {
             val reference = Constants.database.reference
                 .child(Constants.DIRECTORY_TODO)
@@ -28,14 +28,48 @@ class TodoRemoteDataSourceImpl @Inject constructor() : TodoRemoteDataSource {
 
             val listener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val todoList = mutableMapOf<String, Todo>()
+                    val todoList = mutableListOf<Todo>()
                     for (child in snapshot.children) {
-                        val key = child.key.toString()
                         val todo = child.getValue(Todo::class.java)
                         todo?.let {
-                            todoList.put(key, it)
+                            todo.date = snapshot.key.toString()
+                            todo.key = child.key.toString()
+                            todoList.add(todo)
                         }
                     }
+                    trySend(Result.Success(todoList))
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    trySend(Result.Error(Error(databaseError.message)))
+                }
+            }
+            reference.addValueEventListener(listener)
+            awaitClose { reference.removeEventListener(listener) }
+        }
+
+    override suspend fun getAllSchedule(groupId: String): Flow<Result<List<Todo>>> =
+        callbackFlow {
+            val reference = Constants.database.reference
+                .child(Constants.DIRECTORY_TODO)
+                .child(groupId)
+
+            val listener = object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val todoList = mutableListOf<Todo>()
+                    for (childSnapshot in snapshot.children) {
+                        for (child in childSnapshot.children) {
+                            val date = childSnapshot.key.toString()
+                            val key = child.key.toString()
+                            val todo = child.getValue(Todo::class.java)
+                            todo?.let {
+                                todo.date = date
+                                todo.key = key
+                                todoList.add(todo)
+                            }
+                        }
+                    }
+
                     trySend(Result.Success(todoList))
                 }
 

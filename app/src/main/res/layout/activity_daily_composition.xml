@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@+id/daily_composition_title_tv"
-            style="@style/Homegram.TextStyle.H5"
+            style="@style/Theme.Homegram.TextView.TitleBold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -41,28 +41,18 @@
             app:layout_constraintTop_toBottomOf="@id/daily_composition_appbar"
             tools:text="내 이름은?" />
 
-        <TextView
-            android:id="@+id/daily_composition_subtitle_tv"
-            style="@style/Homegram.TextStyle.Subtitle1.Gray"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/daily_composition_title_tv"
-            tools:text="2023/03/01" />
-
-
         <EditText
             android:id="@+id/daily_composition_content_tv"
             style="@style/Theme.Homegram.EditText.Transparent"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="답변을 입력해주세요."
+            android:hint="@string/composition_hint"
+            android:importantForAutofill="no"
             android:inputType="text"
             android:paddingVertical="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/daily_composition_subtitle_tv"
+            app:layout_constraintTop_toBottomOf="@id/daily_composition_title_tv"
             tools:layout_editor_absoluteX="329dp" />
 
 

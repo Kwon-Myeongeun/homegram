@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@+id/daily_detail_title_tv"
-            style="@style/Homegram.TextStyle.H5"
+            style="@style/Theme.Homegram.TextView.TitleBold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -41,17 +41,6 @@
             app:layout_constraintTop_toBottomOf="@id/daily_detail_appbar"
             tools:text="내 이름은?" />
 
-        <TextView
-            android:id="@+id/daily_detail_subtitle_tv"
-            style="@style/Homegram.TextStyle.Subtitle1.Gray"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/daily_detail_title_tv"
-            tools:text="2023/03/01" />
-
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/daily_detail_recycler"
             android:layout_width="0dp"
@@ -60,7 +49,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/daily_detail_subtitle_tv"
+            app:layout_constraintTop_toBottomOf="@id/daily_detail_title_tv"
             tools:listitem="@layout/item_answer" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -19,8 +19,12 @@ class DailyCompositionActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val item = intent.getStringExtra(Constants.PARCELABLE_ANSWER_TEXT)
-        item?.let{
+        val content = intent.getStringExtra(Constants.PARCELABLE_CONTENT)
+        item?.let {
             binding.dailyCompositionContentTv.setText(it)
+        }
+        content?.let {
+            binding.dailyCompositionTitleTv.text = it
         }
 
         binding.dailyCompositionToolbar.setNavigationOnClickListener {
@@ -30,7 +34,7 @@ class DailyCompositionActivity : AppCompatActivity() {
         binding.dailyCompositionToolbar.setOnMenuItemClickListener {
             val answer = binding.dailyCompositionContentTv.text
             val intent = Intent(this, DailyDetailActivity::class.java).apply {
-                if(!answer.isNullOrEmpty()){
+                if (!answer.isNullOrEmpty()) {
                     putExtra(Constants.PARCELABLE_ANSWER_TEXT, answer.toString())
                 }
             }

@@ -11,7 +11,6 @@
 
         <TextView
             android:id="@+id/schedule_tv"
-            style="@style/Theme.Homegram.TextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingVertical="16dp"
@@ -29,6 +28,7 @@
             android:src="@drawable/ic_baseline_delete_forever_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="@string/delete_todo"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

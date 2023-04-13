@@ -2,6 +2,7 @@ package com.lovesme.homegram.ui.setting
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,8 @@ import com.lovesme.homegram.data.model.UiState
 import com.lovesme.homegram.databinding.ActivitySettingBinding
 import com.lovesme.homegram.ui.signin.SignInActivity
 import com.lovesme.homegram.ui.viewmodel.SettingViewModel
+import com.lovesme.homegram.util.Constants
+import com.lovesme.homegram.util.location.LocationService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
@@ -44,6 +47,13 @@ class SettingActivity : AppCompatActivity() {
             }
         }
         binding.userSignOutTv.setOnClickListener {
+            val locationServiceIntent = Intent(this, LocationService::class.java)
+            locationServiceIntent.putExtra(Constants.PARCELABLE_SERVICE_STOP, true)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                this.startForegroundService(locationServiceIntent)
+            } else {
+                this.startService(locationServiceIntent)
+            }
             settingViewModel.deleteUserInfo()
         }
 

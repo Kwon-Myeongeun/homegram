@@ -8,4 +8,11 @@ data class Location(
     val latitude: Double = 128.624,
     val longitude: Double = 36.805,
     var title: String = "",
-) : Parcelable
+) : Parcelable {
+    fun mapToLocationEntity(): LocationEntity =
+        LocationEntity(
+            latitude,
+            longitude,
+            title
+        )
+}

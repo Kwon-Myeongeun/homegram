@@ -2,9 +2,7 @@ package com.lovesme.homegram.di
 
 import android.content.Context
 import com.lovesme.homegram.data.HomegramDB
-import com.lovesme.homegram.data.dao.AnswerDao
-import com.lovesme.homegram.data.dao.QuestionDao
-import com.lovesme.homegram.data.dao.UserInfoDao
+import com.lovesme.homegram.data.dao.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,4 +36,22 @@ object SyncDataModule {
     fun provideAnswerDao(
         homegramDB: HomegramDB
     ): AnswerDao = homegramDB.answerDao()
+
+    @Provides
+    @Singleton
+    fun provideGroupDao(
+        homegramDB: HomegramDB
+    ): GroupDao = homegramDB.groupDao()
+
+    @Provides
+    @Singleton
+    fun provideLocationDao(
+        homegramDB: HomegramDB
+    ): LocationDao = homegramDB.locationDao()
+
+    @Provides
+    @Singleton
+    fun provideTodoDao(
+        homegramDB: HomegramDB
+    ): TodoDao = homegramDB.todoDao()
 }

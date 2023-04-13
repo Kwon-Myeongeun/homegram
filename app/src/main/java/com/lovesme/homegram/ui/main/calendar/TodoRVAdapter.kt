@@ -10,7 +10,7 @@ import com.lovesme.homegram.data.model.listener.DeleteClickListener
 import com.lovesme.homegram.databinding.ItemScheduleBinding
 
 class TodoRVAdapter(private val clickListener: DeleteClickListener) :
-    ListAdapter<Pair<String, Todo>, TodoRVAdapter.TodoViewHolder>(diffUtil) {
+    ListAdapter<Todo, TodoRVAdapter.TodoViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
         return TodoViewHolder(
@@ -29,24 +29,26 @@ class TodoRVAdapter(private val clickListener: DeleteClickListener) :
     class TodoViewHolder(private val binding: ItemScheduleBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Pair<String, Todo>, clickListener: DeleteClickListener) {
-            binding.scheduleTv.text = item.second.contents
+        fun bind(item: Todo, clickListener: DeleteClickListener) {
+            binding.scheduleTv.text = item.contents
             binding.scheduleEditIv.setOnClickListener() {
-                clickListener.onClickTodoItem(item.first)
+                item.key?.let{
+                    clickListener.onClickTodoItem(it)
+                }
             }
         }
     }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<Pair<String, Todo>>() {
+        val diffUtil = object : DiffUtil.ItemCallback<Todo>() {
             override fun areContentsTheSame(
-                oldItem: Pair<String, Todo>,
-                newItem: Pair<String, Todo>
+                oldItem: Todo,
+                newItem: Todo
             ) =
                 oldItem == newItem
 
-            override fun areItemsTheSame(oldItem: Pair<String, Todo>, newItem: Pair<String, Todo>) =
-                oldItem.first == newItem.first
+            override fun areItemsTheSame(oldItem: Todo, newItem: Todo) =
+                oldItem == newItem
         }
     }
 }

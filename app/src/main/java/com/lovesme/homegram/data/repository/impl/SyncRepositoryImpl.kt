@@ -3,6 +3,7 @@ package com.lovesme.homegram.data.repository.impl
 import com.lovesme.homegram.data.datasource.*
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.data.repository.SyncRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
@@ -12,6 +13,8 @@ class SyncRepositoryImpl @Inject constructor(
     private val dailyLocalDataSource: DailyLocalDataSource,
     private val questionDataSource: QuestionRemoteDataSource,
     private val userInfoDataSource: UserInfoRemoteDataSource,
+    private val locationRemoteDataSource: LocationRemoteDataSource,
+    private val todoRemoteDataSource: TodoRemoteDataSource,
 ) :
     SyncRepository {
     override suspend fun syncStart(): Result<Unit> {
@@ -24,6 +27,24 @@ class SyncRepositoryImpl @Inject constructor(
 
         val groupId = userInfoDataSource.getGroupId()
         if (groupId is Result.Success) {
+            val group = syncDataSource.loadGroup(groupId.data)
+            if (group is Result.Success) {
+                userInfoLocalDataSource.syncAllGroup(group.data.filterNotNull())
+            } else {
+                return Result.Error((group as Result.Error).exception)
+            }
+            val location = locationRemoteDataSource.getLocation(groupId.data).first()
+            if (location is Result.Success) {
+                userInfoLocalDataSource.syncAllLocation(location.data)
+            } else {
+                return Result.Error((location as Result.Error).exception)
+            }
+            val todo = todoRemoteDataSource.getAllSchedule(groupId.data).first()
+            if (todo is Result.Success) {
+                userInfoLocalDataSource.syncAllTodo(todo.data)
+            } else {
+                return Result.Error((todo as Result.Error).exception)
+            }
             val daily = questionDataSource.getQuestion(groupId.data).first()
             if (daily is Result.Success) {
                 dailyLocalDataSource.syncAllQuestion(
@@ -43,5 +64,9 @@ class SyncRepositoryImpl @Inject constructor(
             return Result.Error((groupId as Result.Error).exception)
         }
         return Result.Success(Unit)
+    }
+
+    override suspend fun isConnect(): Flow<Result<Boolean>> {
+        return syncDataSource.isConnect()
     }
 }
