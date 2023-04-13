@@ -13,4 +13,7 @@ interface QuestionDao {
 
     @Query("DELETE FROM question")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM question")
+    suspend fun selectAll(): List<QuestionEntity>
 }

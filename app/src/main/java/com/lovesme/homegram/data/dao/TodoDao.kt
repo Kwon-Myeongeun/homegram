@@ -13,4 +13,7 @@ interface TodoDao {
 
     @Query("DELETE FROM todo")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM todo")
+    suspend fun selectAll(): List<TodoEntity>
 }

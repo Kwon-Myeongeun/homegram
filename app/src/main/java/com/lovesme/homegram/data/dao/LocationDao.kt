@@ -13,4 +13,7 @@ interface LocationDao {
 
     @Query("DELETE FROM location")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM location")
+    suspend fun selectAll(): List<LocationEntity>
 }

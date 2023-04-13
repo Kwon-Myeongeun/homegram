@@ -3,6 +3,7 @@ package com.lovesme.homegram.data.repository.impl
 import com.lovesme.homegram.data.datasource.*
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.data.repository.SyncRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
@@ -63,5 +64,9 @@ class SyncRepositoryImpl @Inject constructor(
             return Result.Error((groupId as Result.Error).exception)
         }
         return Result.Success(Unit)
+    }
+
+    override suspend fun isConnect(): Flow<Result<Boolean>> {
+        return syncDataSource.isConnect()
     }
 }

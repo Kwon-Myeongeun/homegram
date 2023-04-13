@@ -32,4 +32,5 @@ object Constants {
     const val DIRECTORY_QUESTION_IS_DONE = "isDone"
     const val DIRECTORY_TOKEN = "token"
     const val DIRECTORY_EMAIL = "email"
+    const val DIRECTORY_CHECK_CONNECT = ".info/connected"
 }

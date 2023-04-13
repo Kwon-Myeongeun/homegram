@@ -30,10 +30,9 @@ class TodoRemoteDataSourceImpl @Inject constructor() : TodoRemoteDataSource {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val todoList = mutableListOf<Todo>()
                     for (child in snapshot.children) {
-                        val key = child.key.toString()
                         val todo = child.getValue(Todo::class.java)
                         todo?.let {
-                            todo.date = key
+                            todo.date = snapshot.key.toString()
                             todoList.add(todo)
                         }
                     }
