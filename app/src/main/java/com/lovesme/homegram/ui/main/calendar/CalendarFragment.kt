@@ -64,8 +64,7 @@ class CalendarFragment : Fragment(), DatePickerDialog.OnDateSetListener, DeleteC
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     todoViewModel.todo.collect { todo ->
-                        val todoList = todo.entries.map { Pair(it.key, it.value) }
-                        adapter.submitList(todoList)
+                        adapter.submitList(todo.toMutableList())
                     }
                 }
                 launch {

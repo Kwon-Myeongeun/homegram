@@ -23,8 +23,8 @@ class CalendarViewModel @Inject constructor(
     private val dateFormatText: DateFormatText
 ) : ViewModel() {
 
-    private val _todo = MutableStateFlow<Map<String, Todo>>(mapOf())
-    val todo: StateFlow<Map<String, Todo>> = _todo
+    private val _todo = MutableStateFlow<List<Todo>>(listOf())
+    val todo: StateFlow<List<Todo>> = _todo
 
     private val _date = MutableStateFlow(dateFormatText.getTodayText())
     val date: StateFlow<String> = _date

@@ -19,7 +19,7 @@ class TodoRemoteDataSourceImpl @Inject constructor() : TodoRemoteDataSource {
     override suspend fun getSchedule(
         groupId: String,
         date: String
-    ): Flow<Result<Map<String, Todo>>> =
+    ): Flow<Result<List<Todo>>> =
         callbackFlow {
             val reference = Constants.database.reference
                 .child(Constants.DIRECTORY_TODO)
@@ -28,12 +28,13 @@ class TodoRemoteDataSourceImpl @Inject constructor() : TodoRemoteDataSource {
 
             val listener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val todoList = mutableMapOf<String, Todo>()
+                    val todoList = mutableListOf<Todo>()
                     for (child in snapshot.children) {
                         val key = child.key.toString()
                         val todo = child.getValue(Todo::class.java)
                         todo?.let {
-                            todoList.put(key, it)
+                            todo.date = key
+                            todoList.add(todo)
                         }
                     }
                     trySend(Result.Success(todoList))
