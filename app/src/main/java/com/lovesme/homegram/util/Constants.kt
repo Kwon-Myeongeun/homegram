@@ -9,6 +9,8 @@ object Constants {
     const val PARCELABLE_QUESTION = "question"
     const val PARCELABLE_ANSWER_TEXT = "answer"
     const val PARCELABLE_CONTENT = "content"
+    const val PARCELABLE_SERVICE_STOP = "stop"
+
 
     val database = Firebase.database(BuildConfig.DATABASE_URL)
     val userId get() = FirebaseAuth.getInstance().currentUser?.uid

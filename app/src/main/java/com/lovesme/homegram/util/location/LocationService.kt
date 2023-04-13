@@ -10,7 +10,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Looper
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleService
@@ -21,6 +20,7 @@ import com.lovesme.homegram.data.model.Location
 import com.lovesme.homegram.ui.main.MainActivity
 import com.lovesme.homegram.R
 import com.lovesme.homegram.data.repository.LocationRepository
+import com.lovesme.homegram.util.Constants.PARCELABLE_SERVICE_STOP
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -57,6 +57,11 @@ class LocationService() : LifecycleService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+        if (intent?.getBooleanExtra(PARCELABLE_SERVICE_STOP, false) == true) {
+            stopSelf()
+        }
+
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -78,7 +83,7 @@ class LocationService() : LifecycleService() {
             val notification: Notification = Notification.Builder(this, channelId)
                 .setContentTitle(applicationContext.getString(R.string.notification_title))
                 .setContentText(applicationContext.getString(R.string.notification_message))
-                .setSmallIcon(R.drawable.pet_normal_origin)
+                .setSmallIcon(R.mipmap.ic_launcher_foreground)
                 .setContentIntent(pendingIntent)
                 .setTicker(applicationContext.getString(R.string.notification_title))
                 .build()
@@ -115,10 +120,6 @@ class LocationService() : LifecycleService() {
             .addOnSuccessListener { location ->
                 if (location != null) {
                     _userLocation.value = Location(location.latitude, location.longitude)
-                    Log.d(
-                        "Personal Location Test 1",
-                        "${location.latitude} , ${location.longitude}"
-                    )
                 }
             }
             .addOnFailureListener {
@@ -130,11 +131,6 @@ class LocationService() : LifecycleService() {
                 for (location in locationResult.locations) {
                     if (location != null) {
                         _userLocation.value = Location(location.latitude, location.longitude)
-
-                        Log.d(
-                            "Personal Location Test 2",
-                            "${location.latitude} , ${location.longitude}"
-                        )
                     }
                 }
             }
