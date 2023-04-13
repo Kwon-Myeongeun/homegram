@@ -25,6 +25,9 @@ class DailyViewModel @Inject constructor(
     private val _questions = MutableStateFlow<List<Question>>(listOf())
     val questions: StateFlow<List<Question>> = _questions
 
+    private val _connect = MutableStateFlow<Boolean>(true)
+    val connect: StateFlow<Boolean> = _connect
+
     fun loadQuestion() {
         viewModelScope.launch {
             val isConnect = syncRepository.isConnect().first()
@@ -32,14 +35,18 @@ class DailyViewModel @Inject constructor(
                 if (isConnect.data) {
                     questionRepository.getQuestion().collectLatest { result ->
                         if (result is Result.Success) {
+                            _connect.value = true
                             _questions.value = result.data
                         }
                     }
                 } else {
-                    _questions.value =
-                        dailyLocalDataSource.getAllQuestion()
+
+                    _connect.value = false
+                    _questions.value = dailyLocalDataSource.getAllQuestion()
                 }
             } else {
+
+                _connect.value = false
                 _questions.value = dailyLocalDataSource.getAllQuestion()
             }
         }
