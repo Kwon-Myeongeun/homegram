@@ -32,7 +32,7 @@ class TodoRVAdapter(private val clickListener: DeleteClickListener) :
         fun bind(item: Todo, clickListener: DeleteClickListener) {
             binding.scheduleTv.text = item.contents
             binding.scheduleEditIv.setOnClickListener() {
-                item.date?.let{
+                item.key?.let{
                     clickListener.onClickTodoItem(it)
                 }
             }

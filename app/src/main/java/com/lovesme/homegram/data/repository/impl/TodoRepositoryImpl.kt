@@ -21,7 +21,7 @@ class TodoRepositoryImpl @Inject constructor(
     override suspend fun addSchedule(date: String, contents: String): Result<Unit> {
         val groupId = userInfoLocalDataSource.getGroupId()
         val userName = userInfoLocalDataSource.getUserName()
-        val todo = Todo(null, userName, contents)
+        val todo = Todo(null, null, userName, contents)
         return todoDataSource.addSchedule(groupId, date, todo)
     }
 

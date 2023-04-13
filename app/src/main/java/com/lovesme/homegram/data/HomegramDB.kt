@@ -9,7 +9,7 @@ import com.lovesme.homegram.data.model.*
 
 @Database(
     entities = [UserInfoEntity::class, QuestionEntity::class, AnswerEntity::class, GroupEntity::class, LocationEntity::class, TodoEntity::class],
-    version = 6,
+    version = 7,
     exportSchema = false
 )
 

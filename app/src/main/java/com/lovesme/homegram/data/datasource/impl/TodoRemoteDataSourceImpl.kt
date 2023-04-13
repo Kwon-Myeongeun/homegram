@@ -33,6 +33,7 @@ class TodoRemoteDataSourceImpl @Inject constructor() : TodoRemoteDataSource {
                         val todo = child.getValue(Todo::class.java)
                         todo?.let {
                             todo.date = snapshot.key.toString()
+                            todo.key = child.key.toString()
                             todoList.add(todo)
                         }
                     }
@@ -58,10 +59,12 @@ class TodoRemoteDataSourceImpl @Inject constructor() : TodoRemoteDataSource {
                     val todoList = mutableListOf<Todo>()
                     for (childSnapshot in snapshot.children) {
                         for (child in childSnapshot.children) {
-                            val key = childSnapshot.key.toString()
+                            val date = childSnapshot.key.toString()
+                            val key = child.key.toString()
                             val todo = child.getValue(Todo::class.java)
                             todo?.let {
-                                todo.date = key
+                                todo.date = date
+                                todo.key = key
                                 todoList.add(todo)
                             }
                         }
