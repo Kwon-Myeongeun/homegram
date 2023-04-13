@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.PermissionChecker
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -53,6 +54,8 @@ class SignInActivity : AppCompatActivity() {
 
     private val signInViewModel: SignInViewModel by viewModels()
 
+    private lateinit var alertDialog: AlertDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
@@ -66,6 +69,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun initData() {
+        initDialog()
         initLauncher()
         initManager()
 
@@ -84,10 +88,15 @@ class SignInActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 signInViewModel.uiState.collect { state ->
                     when (state) {
+                        is UiState.Loading -> {
+                            alertDialog.show()
+                        }
                         is UiState.Success -> {
+                            alertDialog.dismiss()
                             handleDynamicLinks()
                         }
                         is UiState.Error -> {
+                            alertDialog.dismiss()
                             Snackbar.make(
                                 binding.root,
                                 getString(R.string.signin_google_fail),
@@ -96,6 +105,7 @@ class SignInActivity : AppCompatActivity() {
                             return@collect
                         }
                         else -> {
+                            alertDialog.dismiss()
                             return@collect
                         }
                     }
@@ -232,5 +242,14 @@ class SignInActivity : AppCompatActivity() {
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
+    }
+
+    private fun initDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_progress, null)
+        alertDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false)
+            .create()
+        alertDialog.window?.setBackgroundDrawableResource(R.color.transparent)
     }
 }

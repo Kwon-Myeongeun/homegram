@@ -7,6 +7,7 @@ import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.data.model.UiState
 import com.lovesme.homegram.data.repository.SignInRepository
 import com.lovesme.homegram.data.repository.UserPreferencesRepository
+import com.lovesme.homegram.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,6 +38,9 @@ class SignInViewModel @Inject constructor(
     private fun saveLogInUserInfo() {
         _uiState.value = UiState.Loading
         viewModelScope.launch {
+            if (Constants.userId == null){
+                _uiState.value = UiState.Success(Unit)
+            }
             val existUser = userPreferencesRepository.existUser()
             if (existUser is Result.Success) {
                 if (!existUser.data) {
