@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">homegram</string>
+    <string name="app_name">Homegram</string>
     <string name="signin_google_fail">구글 로그인 실패</string>
     <string name="signin_google_connect_fail">구글 연결 실패</string>
     <string name="home_menu_home">Home</string>
