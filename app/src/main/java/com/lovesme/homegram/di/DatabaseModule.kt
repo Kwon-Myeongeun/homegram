@@ -1,9 +1,6 @@
 package com.lovesme.homegram.di
 
-import com.lovesme.homegram.data.dao.AnswerDao
-import com.lovesme.homegram.data.dao.GroupDao
-import com.lovesme.homegram.data.dao.QuestionDao
-import com.lovesme.homegram.data.dao.UserInfoDao
+import com.lovesme.homegram.data.dao.*
 import com.lovesme.homegram.data.datasource.*
 import com.lovesme.homegram.data.datasource.impl.*
 import com.lovesme.homegram.data.repository.*
@@ -61,13 +58,15 @@ object DatabaseModule {
         dailyLocalDataSource: DailyLocalDataSource,
         questionDataSource: QuestionRemoteDataSource,
         userInfoDataSource: UserInfoRemoteDataSource,
+        locationRemoteDataSource: LocationRemoteDataSource
     ): SyncRepository {
         return SyncRepositoryImpl(
             syncDataSource,
             userInfoLocalDataSource,
             dailyLocalDataSource,
             questionDataSource,
-            userInfoDataSource
+            userInfoDataSource,
+            locationRemoteDataSource,
         )
     }
 
@@ -81,9 +80,10 @@ object DatabaseModule {
     @Singleton
     fun provideUserInfoLocalDataSource(
         userInfoDao: UserInfoDao,
-        groupDao: GroupDao
+        groupDao: GroupDao,
+        locationDao: LocationDao,
     ): UserInfoLocalDataSource {
-        return UserInfoLocalDataSourceImpl(userInfoDao, groupDao)
+        return UserInfoLocalDataSourceImpl(userInfoDao, groupDao, locationDao)
     }
 
     @Provides
