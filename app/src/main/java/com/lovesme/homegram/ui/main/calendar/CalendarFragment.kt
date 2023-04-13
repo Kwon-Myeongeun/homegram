@@ -11,6 +11,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.snackbar.Snackbar
+import com.lovesme.homegram.R
 import com.lovesme.homegram.data.model.listener.DeleteClickListener
 import com.lovesme.homegram.databinding.FragmentCalendarBinding
 import com.lovesme.homegram.ui.viewmodel.CalendarViewModel
@@ -71,6 +73,17 @@ class CalendarFragment : Fragment(), DatePickerDialog.OnDateSetListener, DeleteC
                     todoViewModel.date.collect { date ->
                         todoViewModel.loadTodo(date)
                         binding.dateTv.text = date
+                    }
+                }
+                launch {
+                    todoViewModel.connect.collect { connect ->
+                        if (!connect) {
+                            Snackbar.make(
+                                binding.root,
+                                getString(R.string.internet_connect_fail),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
             }

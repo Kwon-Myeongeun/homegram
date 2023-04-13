@@ -51,7 +51,7 @@ class DailyFragment : Fragment(), QuestionClickListener {
                 }
                 launch {
                     dailyViewModel.connect.collect { connect ->
-                        if(!connect){
+                        if (!connect) {
                             Snackbar.make(
                                 binding.root,
                                 getString(R.string.internet_connect_fail),

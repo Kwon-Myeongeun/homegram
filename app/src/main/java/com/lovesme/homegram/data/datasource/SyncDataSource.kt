@@ -1,8 +1,6 @@
 package com.lovesme.homegram.data.datasource
 
-import com.lovesme.homegram.data.model.Group
-import com.lovesme.homegram.data.model.User
-import com.lovesme.homegram.data.model.Result
+import com.lovesme.homegram.data.model.*
 import kotlinx.coroutines.flow.Flow
 
 interface SyncDataSource {

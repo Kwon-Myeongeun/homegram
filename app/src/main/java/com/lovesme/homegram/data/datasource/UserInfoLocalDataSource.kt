@@ -14,4 +14,5 @@ interface UserInfoLocalDataSource {
     suspend fun getUserName(): String
     suspend fun getUserToken(): String
     suspend fun updateToken(userToken: String)
+    suspend fun getAllTodo(): List<Todo>
 }

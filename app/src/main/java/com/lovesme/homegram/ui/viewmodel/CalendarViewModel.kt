@@ -2,9 +2,11 @@ package com.lovesme.homegram.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lovesme.homegram.data.datasource.UserInfoLocalDataSource
 import com.lovesme.homegram.data.model.NotificationType
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.data.model.Todo
+import com.lovesme.homegram.data.repository.SyncRepository
 import com.lovesme.homegram.data.repository.TodoRepository
 import com.lovesme.homegram.data.usecase.SendNotificationUseCase
 import com.lovesme.homegram.util.Constants
@@ -13,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,7 +23,9 @@ import javax.inject.Inject
 class CalendarViewModel @Inject constructor(
     private val repository: TodoRepository,
     private val sendNotificationUseCase: SendNotificationUseCase,
-    private val dateFormatText: DateFormatText
+    private val dateFormatText: DateFormatText,
+    private val syncRepository: SyncRepository,
+    private val userInfoLocalDataSource: UserInfoLocalDataSource,
 ) : ViewModel() {
 
     private val _todo = MutableStateFlow<List<Todo>>(listOf())
@@ -29,12 +34,27 @@ class CalendarViewModel @Inject constructor(
     private val _date = MutableStateFlow(dateFormatText.getTodayText())
     val date: StateFlow<String> = _date
 
+    private val _connect = MutableStateFlow<Boolean>(true)
+    val connect: StateFlow<Boolean> = _connect
+
     fun loadTodo(date: String) {
         viewModelScope.launch {
-            repository.getSchedule(date).collectLatest { result ->
-                if (result is Result.Success) {
-                    _todo.value = result.data
+            val isConnect = syncRepository.isConnect().first()
+            if (isConnect is Result.Success) {
+                if (isConnect.data) {
+                    repository.getSchedule(date).collectLatest { result ->
+                        if (result is Result.Success) {
+                            _connect.value = true
+                            _todo.value = result.data
+                        }
+                    }
+                } else {
+                    _connect.value = false
+                    _todo.value = userInfoLocalDataSource.getAllTodo()
                 }
+            } else {
+                _connect.value = false
+                _todo.value = userInfoLocalDataSource.getAllTodo()
             }
         }
     }

@@ -54,5 +54,9 @@ class UserInfoLocalDataSourceImpl @Inject constructor(
         return userInfoDao.updateToken(userToken)
     }
 
+    override suspend fun getAllTodo(): List<Todo> {
+        return todoDao.selectAll().map { Todo(it.date, it.name, it.contents) }
+    }
+
 
 }
