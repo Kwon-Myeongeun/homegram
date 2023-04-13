@@ -4,4 +4,11 @@ data class Todo(
     var date: String? = "",
     val name: String = "",
     val contents: String = ""
-)
+) {
+    fun mapToTodoEntity(): TodoEntity =
+        TodoEntity(
+            date ?: "",
+            name,
+            contents
+        )
+}

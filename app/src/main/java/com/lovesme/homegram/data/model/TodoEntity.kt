@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "todo")
 data class TodoEntity(
-    @PrimaryKey val date: String,
+    val date: String,
     val name: String,
     val contents: String,
 ) {

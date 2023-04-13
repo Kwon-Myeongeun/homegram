@@ -48,4 +48,10 @@ object SyncDataModule {
     fun provideLocationDao(
         homegramDB: HomegramDB
     ): LocationDao = homegramDB.locationDao()
+
+    @Provides
+    @Singleton
+    fun provideTodoDao(
+        homegramDB: HomegramDB
+    ): TodoDao = homegramDB.todoDao()
 }

@@ -13,6 +13,7 @@ class SyncRepositoryImpl @Inject constructor(
     private val questionDataSource: QuestionRemoteDataSource,
     private val userInfoDataSource: UserInfoRemoteDataSource,
     private val locationRemoteDataSource: LocationRemoteDataSource,
+    private val todoRemoteDataSource: TodoRemoteDataSource,
 ) :
     SyncRepository {
     override suspend fun syncStart(): Result<Unit> {
@@ -36,6 +37,12 @@ class SyncRepositoryImpl @Inject constructor(
                 userInfoLocalDataSource.syncAllLocation(location.data)
             } else {
                 return Result.Error((location as Result.Error).exception)
+            }
+            val todo = todoRemoteDataSource.getAllSchedule(groupId.data).first()
+            if (todo is Result.Success) {
+                userInfoLocalDataSource.syncAllTodo(todo.data)
+            } else {
+                return Result.Error((todo as Result.Error).exception)
             }
             val daily = questionDataSource.getQuestion(groupId.data).first()
             if (daily is Result.Success) {

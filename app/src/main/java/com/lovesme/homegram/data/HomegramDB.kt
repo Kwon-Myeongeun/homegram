@@ -8,8 +8,8 @@ import com.lovesme.homegram.data.dao.*
 import com.lovesme.homegram.data.model.*
 
 @Database(
-    entities = [UserInfoEntity::class, QuestionEntity::class, AnswerEntity::class, GroupEntity::class, LocationEntity::class],
-    version = 5,
+    entities = [UserInfoEntity::class, QuestionEntity::class, AnswerEntity::class, GroupEntity::class, LocationEntity::class, TodoEntity::class],
+    version = 6,
     exportSchema = false
 )
 
@@ -27,4 +27,5 @@ abstract class HomegramDB : RoomDatabase() {
     abstract fun answerDao(): AnswerDao
     abstract fun groupDao(): GroupDao
     abstract fun locationDao(): LocationDao
+    abstract fun todoDao(): TodoDao
 }

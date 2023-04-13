@@ -58,7 +58,8 @@ object DatabaseModule {
         dailyLocalDataSource: DailyLocalDataSource,
         questionDataSource: QuestionRemoteDataSource,
         userInfoDataSource: UserInfoRemoteDataSource,
-        locationRemoteDataSource: LocationRemoteDataSource
+        locationRemoteDataSource: LocationRemoteDataSource,
+        todoRemoteDataSource: TodoRemoteDataSource,
     ): SyncRepository {
         return SyncRepositoryImpl(
             syncDataSource,
@@ -67,6 +68,7 @@ object DatabaseModule {
             questionDataSource,
             userInfoDataSource,
             locationRemoteDataSource,
+            todoRemoteDataSource,
         )
     }
 
@@ -82,8 +84,9 @@ object DatabaseModule {
         userInfoDao: UserInfoDao,
         groupDao: GroupDao,
         locationDao: LocationDao,
+        todoDao: TodoDao,
     ): UserInfoLocalDataSource {
-        return UserInfoLocalDataSourceImpl(userInfoDao, groupDao, locationDao)
+        return UserInfoLocalDataSourceImpl(userInfoDao, groupDao, locationDao, todoDao)
     }
 
     @Provides
