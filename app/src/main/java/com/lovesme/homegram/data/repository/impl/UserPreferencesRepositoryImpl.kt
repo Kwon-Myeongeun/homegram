@@ -8,8 +8,7 @@ class UserPreferencesRepositoryImpl(private val userInfoDataSource: UserInfoRemo
     UserPreferencesRepository {
 
     override suspend fun setMessageToken(token: String): Result<Unit> {
-        val result = userInfoDataSource.getGroupId()
-        return when (result) {
+        return when (val result = userInfoDataSource.getGroupId()) {
             is Result.Success ->
                 userInfoDataSource.setMessageToken(result.data, token)
             is Result.Error -> Result.Error(result.exception)
@@ -20,8 +19,7 @@ class UserPreferencesRepositoryImpl(private val userInfoDataSource: UserInfoRemo
         name: String,
         birth: String
     ): Result<Unit> {
-        val result = userInfoDataSource.getGroupId()
-        return when (result) {
+        return when (val result = userInfoDataSource.getGroupId()) {
             is Result.Success ->
                 userInfoDataSource.updateUserInfo(result.data, name, birth)
             is Result.Error -> Result.Error(result.exception)
@@ -29,11 +27,30 @@ class UserPreferencesRepositoryImpl(private val userInfoDataSource: UserInfoRemo
     }
 
     override suspend fun getReceiverToken(): Result<List<String>> {
-        val result = userInfoDataSource.getGroupId()
-        return when (result) {
+        return when (val result = userInfoDataSource.getGroupId()) {
             is Result.Success ->
                 userInfoDataSource.getReceiverToken(result.data)
             is Result.Error -> Result.Error(result.exception)
         }
+    }
+
+    override suspend fun deleteUserInfo(): Result<Unit> {
+        return when (val result = userInfoDataSource.getGroupId()) {
+            is Result.Success ->
+                userInfoDataSource.deleteUserInfo(result.data)
+            is Result.Error -> Result.Error(result.exception)
+        }
+    }
+
+    override suspend fun existUser(): Result<Boolean> {
+        return userInfoDataSource.existUser()
+    }
+
+    override suspend fun existGroupId(groupId: String): Result<Boolean> {
+        return userInfoDataSource.existGroupId(groupId)
+    }
+
+    override suspend fun existUserName(): Result<Boolean> {
+        return userInfoDataSource.existUserName()
     }
 }

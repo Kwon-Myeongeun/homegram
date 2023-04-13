@@ -26,5 +26,10 @@
     <string name="setting_user_info">내 정보</string>
     <string name="setting_user_sign_out">회원 탈퇴</string>
     <string name="loading_text">잠시만 기다려주세요.</string>
-    <string name="load_data_fail">인터넷 연결을 확인해주세요.</string>
+    <string name="load_data_fail">데이터 로딩에 실패했습니다.</string>
+    <string name="download_data_fail">데이터 다운로딩에 실패했습니다.</string>
+    <string name="user_name">이름</string>
+    <string name="user_birth">생일</string>
+    <string name="save_btn_text">저장</string>
+    <string name="signout_fail">로그아웃 실패</string>
 </resources>

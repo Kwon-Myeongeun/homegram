@@ -7,7 +7,6 @@ import com.lovesme.homegram.data.repository.TodoRepository
 import javax.inject.Inject
 import com.lovesme.homegram.data.model.Result
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 class TodoRepositoryImpl @Inject constructor(
     private val userInfoLocalDataSource: UserInfoLocalDataSource,
@@ -16,7 +15,7 @@ class TodoRepositoryImpl @Inject constructor(
     TodoRepository {
     override suspend fun getSchedule(date: String): Flow<Result<Map<String, Todo>>> {
         val groupId = userInfoLocalDataSource.getGroupId()
-        return flow { emit(todoDataSource.getSchedule(groupId, date)) }
+        return todoDataSource.getSchedule(groupId, date)
     }
 
     override suspend fun addSchedule(date: String, contents: String): Result<Unit> {

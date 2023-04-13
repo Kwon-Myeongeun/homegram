@@ -12,7 +12,7 @@ import com.lovesme.homegram.util.DateFormatText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,9 +31,10 @@ class CalendarViewModel @Inject constructor(
 
     fun loadTodo(date: String) {
         viewModelScope.launch {
-            val result = repository.getSchedule(date).first()
-            if (result is Result.Success) {
-                _todo.value = result.data
+            repository.getSchedule(date).collectLatest { result ->
+                if (result is Result.Success) {
+                    _todo.value = result.data
+                }
             }
         }
     }
@@ -41,10 +42,12 @@ class CalendarViewModel @Inject constructor(
     fun writeTodo(date: String, contents: String) {
         viewModelScope.launch {
             val result = repository.addSchedule(date, contents)
-            sendNotificationUseCase.invoke(
-                NotificationType.UPDATE_TODO,
-                Constants.userId.toString(),
-            )
+            if (result is Result.Success) {
+                sendNotificationUseCase.invoke(
+                    NotificationType.UPDATE_TODO,
+                    Constants.userId.toString(),
+                )
+            }
         }
     }
 
@@ -54,7 +57,9 @@ class CalendarViewModel @Inject constructor(
 
     fun deleteTodo(key: String) {
         viewModelScope.launch {
-            val result = repository.deleteSchedule(date.value, key)
+            repository.deleteSchedule(date.value, key)
         }
     }
+
+    fun getDate() = dateFormatText.convertToDateInt(date.value)
 }

@@ -15,41 +15,26 @@ import kotlin.coroutines.suspendCoroutine
 
 class LocationRemoteDataSourceImpl @Inject constructor() : LocationRemoteDataSource {
     override suspend fun getLocation(groupId: String): Flow<Result<List<Location>>> = callbackFlow {
-        Constants.userId?.let { id ->
-            val reference = Constants.database.reference
-                .child(Constants.DIRECTORY_LOCATION)
-                .child(groupId)
+        val reference = Constants.database.reference
+            .child(Constants.DIRECTORY_LOCATION)
+            .child(groupId)
 
-            reference.get()
-                .addOnSuccessListener { snapshot ->
-                    val locationList = mutableListOf<Location?>()
-                    for (child in snapshot.children) {
-                        val item = child.getValue(Location::class.java)
-                        locationList.add(item)
-                    }
-                    trySend(Result.Success(locationList.filterNotNull()))
+        val listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val locationList = mutableListOf<Location?>()
+                for (child in dataSnapshot.children) {
+                    val item = child.getValue(Location::class.java)
+                    locationList.add(item)
                 }
-                .addOnFailureListener { exception ->
-                    trySend(Result.Error(exception))
-                }
-
-            val listener = object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val locationList = mutableListOf<Location?>()
-                    for (child in dataSnapshot.children) {
-                        val item = child.getValue(Location::class.java)
-                        locationList.add(item)
-                    }
-                    trySend(Result.Success(locationList.filterNotNull()))
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    trySend(Result.Error(Error(databaseError.message)))
-                }
+                trySend(Result.Success(locationList.filterNotNull()))
             }
-            reference.addValueEventListener(listener)
-            awaitClose { reference.removeEventListener(listener) }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                trySend(Result.Error(Error(databaseError.message)))
+            }
         }
+        reference.addValueEventListener(listener)
+        awaitClose { reference.removeEventListener(listener) }
     }
 
     override suspend fun setLocation(groupId: String, location: Location): Result<Unit> =

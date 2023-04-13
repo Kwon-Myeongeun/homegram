@@ -6,4 +6,8 @@ interface UserPreferencesRepository {
     suspend fun setMessageToken(token: String): Result<Unit>
     suspend fun updateUserInfo(name: String, birth: String): Result<Unit>
     suspend fun getReceiverToken(): Result<List<String>>
+    suspend fun deleteUserInfo(): Result<Unit>
+    suspend fun existUser(): Result<Boolean>
+    suspend fun existGroupId(groupId: String): Result<Boolean>
+    suspend fun existUserName(): Result<Boolean>
 }

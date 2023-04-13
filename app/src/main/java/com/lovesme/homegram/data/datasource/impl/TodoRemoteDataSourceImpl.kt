@@ -1,23 +1,33 @@
 package com.lovesme.homegram.data.datasource.impl
 
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.lovesme.homegram.data.datasource.TodoRemoteDataSource
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.data.model.Todo
 import com.lovesme.homegram.util.Constants
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class TodoRemoteDataSourceImpl @Inject constructor() : TodoRemoteDataSource {
 
-    override suspend fun getSchedule(groupId: String, date: String): Result<Map<String, Todo>> =
-        suspendCoroutine { continuation ->
-            Constants.database.reference
+    override suspend fun getSchedule(
+        groupId: String,
+        date: String
+    ): Flow<Result<Map<String, Todo>>> =
+        callbackFlow {
+            val reference = Constants.database.reference
                 .child(Constants.DIRECTORY_TODO)
                 .child(groupId)
                 .child(date)
-                .get()
-                .addOnSuccessListener { snapshot ->
+
+            val listener = object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
                     val todoList = mutableMapOf<String, Todo>()
                     for (child in snapshot.children) {
                         val key = child.key.toString()
@@ -26,11 +36,15 @@ class TodoRemoteDataSourceImpl @Inject constructor() : TodoRemoteDataSource {
                             todoList.put(key, it)
                         }
                     }
-                    continuation.resume(Result.Success(todoList))
+                    trySend(Result.Success(todoList))
                 }
-                .addOnFailureListener { exception ->
-                    continuation.resume(Result.Error(exception))
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    trySend(Result.Error(Error(databaseError.message)))
                 }
+            }
+            reference.addValueEventListener(listener)
+            awaitClose { reference.removeEventListener(listener) }
         }
 
     override suspend fun addSchedule(groupId: String, date: String, todo: Todo): Result<Unit> =

@@ -5,6 +5,10 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.dynamiclinks.ktx.androidParameters
@@ -13,6 +17,7 @@ import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.lovesme.homegram.BuildConfig
 import com.lovesme.homegram.R
+import com.lovesme.homegram.data.model.UiState
 import com.lovesme.homegram.databinding.ActivitySettingBinding
 import com.lovesme.homegram.ui.signin.SignInActivity
 import com.lovesme.homegram.ui.viewmodel.SettingViewModel
@@ -39,12 +44,40 @@ class SettingActivity : AppCompatActivity() {
             }
         }
         binding.userSignOutTv.setOnClickListener {
-            Firebase.auth.currentUser?.delete()
-            FirebaseAuth.getInstance().signOut()
+            settingViewModel.deleteUserInfo()
+        }
 
-            val intent = Intent(this, SignInActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
+        binding.settingToolbar.setNavigationOnClickListener {
+            finish()
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                settingViewModel.uiState.collect { state ->
+                    when (state) {
+                        is UiState.Success -> {
+                            Firebase.auth.currentUser?.delete()
+                            FirebaseAuth.getInstance().signOut()
+
+                            val intent = Intent(this@SettingActivity, SignInActivity::class.java)
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                        }
+                        is UiState.Error -> {
+                            Snackbar.make(
+                                binding.root,
+                                getString(R.string.signout_fail),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            return@collect
+                        }
+                        else -> {
+                            return@collect
+                        }
+                    }
+                }
+            }
         }
     }
 

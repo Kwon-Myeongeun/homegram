@@ -19,7 +19,6 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.lovesme.homegram.databinding.ActivitySignInBinding
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
@@ -28,9 +27,10 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.lovesme.homegram.R
-import com.lovesme.homegram.ui.main.MainActivity
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.data.model.UiState
+import com.lovesme.homegram.databinding.ActivitySignInBinding
+import com.lovesme.homegram.ui.main.MainActivity
 import com.lovesme.homegram.ui.setting.UserPreferenceActivity
 import com.lovesme.homegram.ui.viewmodel.SignInViewModel
 import com.lovesme.homegram.util.sns.LegacySignInManager
@@ -61,7 +61,7 @@ class SignInActivity : AppCompatActivity() {
         initData()
         requestNotificationPermission()
         if (auth.currentUser != null) {
-            gotoHome()
+            handleDynamicLinks()
         }
     }
 
@@ -85,7 +85,7 @@ class SignInActivity : AppCompatActivity() {
                 signInViewModel.uiState.collect { state ->
                     when (state) {
                         is UiState.Success -> {
-                            gotoUserPreference()
+                            handleDynamicLinks()
                         }
                         is UiState.Error -> {
                             Snackbar.make(
@@ -181,8 +181,18 @@ class SignInActivity : AppCompatActivity() {
             }
     }
 
+    private suspend fun gotoLoginSuccessActivity() {
+        val result = signInViewModel.existUserName()
+        if (result is Result.Success) {
+            if (result.data) {
+                gotoHome()
+            } else {
+                gotoUserPreference()
+            }
+        }
+    }
+
     private fun gotoHome() {
-        handleDynamicLinks()
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
@@ -198,8 +208,15 @@ class SignInActivity : AppCompatActivity() {
             .addOnSuccessListener(this) { linkData ->
                 if (linkData != null && linkData.link != null) {
                     val groupId = linkData.link?.getQueryParameter("code")
-                    if (groupId != null) {
-                        signInViewModel.joinToInvitedGroup(groupId)
+                    lifecycleScope.launch {
+                        if (groupId != null) {
+                            signInViewModel.joinToInvitedGroup(groupId)
+                        }
+                        gotoLoginSuccessActivity()
+                    }
+                } else {
+                    lifecycleScope.launch() {
+                        gotoLoginSuccessActivity()
                     }
                 }
             }

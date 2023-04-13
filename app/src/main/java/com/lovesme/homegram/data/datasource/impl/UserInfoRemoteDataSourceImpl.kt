@@ -91,6 +91,82 @@ class UserInfoRemoteDataSourceImpl @Inject constructor() :
                 .addOnFailureListener { exception ->
                     continuation.resume(Result.Error(exception))
                 }
+        }
 
+    override suspend fun deleteUserInfo(groupId: String): Result<Unit> =
+        suspendCoroutine { continuation ->
+            Constants.userId?.let { id ->
+                val childUpdates = hashMapOf<String, Any?>(
+                    "/${Constants.DIRECTORY_USER}/$id" to null,
+                    "/${Constants.DIRECTORY_GROUP}/$groupId/${Constants.DIRECTORY_MEMBER}/$id" to null,
+                    "/${Constants.DIRECTORY_LOCATION}/$groupId/$id" to null,
+                )
+                Constants.database.reference.updateChildren(childUpdates)
+                    .addOnSuccessListener { snapshot ->
+                        continuation.resume(Result.Success(Unit))
+                    }
+                    .addOnFailureListener { exception ->
+                        continuation.resume(Result.Error(exception))
+                    }
+            }
+        }
+
+    override suspend fun existUser(): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            Constants.userId?.let { id ->
+                Constants.database.reference
+                    .child(Constants.DIRECTORY_USER)
+                    .child(id)
+                    .get()
+                    .addOnSuccessListener { snapshot ->
+                        if (snapshot.exists()) {
+                            continuation.resume(Result.Success(true))
+                        } else {
+                            continuation.resume(Result.Success(false))
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        continuation.resume(Result.Error(exception))
+                    }
+            }
+        }
+
+    override suspend fun existGroupId(groupId: String): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            Constants.database.reference
+                .child(Constants.DIRECTORY_GROUP)
+                .child(groupId)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    if (snapshot.exists()) {
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        continuation.resume(Result.Success(false))
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    continuation.resume(Result.Error(exception))
+                }
+        }
+
+    override suspend fun existUserName(): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            Constants.userId?.let { id ->
+                Constants.database.reference
+                    .child(Constants.DIRECTORY_USER)
+                    .child(id)
+                    .child(Constants.DIRECTORY_NAME)
+                    .get()
+                    .addOnSuccessListener { snapshot ->
+                        if (snapshot.exists()) {
+                            continuation.resume(Result.Success(true))
+                        } else {
+                            continuation.resume(Result.Success(false))
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        continuation.resume(Result.Error(exception))
+                    }
+            }
         }
 }

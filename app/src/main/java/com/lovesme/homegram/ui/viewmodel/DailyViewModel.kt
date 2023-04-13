@@ -10,6 +10,7 @@ import javax.inject.Inject
 import com.lovesme.homegram.data.model.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 
 @HiltViewModel
 class DailyViewModel @Inject constructor(private val repository: QuestionRepository) : ViewModel() {
@@ -19,9 +20,10 @@ class DailyViewModel @Inject constructor(private val repository: QuestionReposit
 
     fun loadQuestion() {
         viewModelScope.launch {
-            val result = repository.getQuestion()
-            if (result is Result.Success) {
-                _questions.value = result.data
+            repository.getQuestion().collectLatest { result ->
+                if (result is Result.Success) {
+                    _questions.value = result.data
+                }
             }
         }
     }

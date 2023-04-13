@@ -3,6 +3,7 @@ package com.lovesme.homegram.data.repository.impl
 import com.lovesme.homegram.data.datasource.*
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.data.repository.SyncRepository
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class SyncRepositoryImpl @Inject constructor(
@@ -23,7 +24,7 @@ class SyncRepositoryImpl @Inject constructor(
 
         val groupId = userInfoDataSource.getGroupId()
         if (groupId is Result.Success) {
-            val daily = questionDataSource.getQuestion(groupId.data)
+            val daily = questionDataSource.getQuestion(groupId.data).first()
             if (daily is Result.Success) {
                 dailyLocalDataSource.syncAllQuestion(
                     daily.data.map { item ->

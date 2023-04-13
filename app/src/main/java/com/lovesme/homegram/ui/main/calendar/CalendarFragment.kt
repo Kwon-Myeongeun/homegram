@@ -37,20 +37,14 @@ class CalendarFragment : Fragment(), DatePickerDialog.OnDateSetListener, DeleteC
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentCalendarBinding.inflate(inflater, container, false)
-        todoViewModel.loadTodo(
-            dateFormatText.convertToDateText(
-                dateFormatText.getTodayYEAR(),
-                dateFormatText.getTodayMONTH(),
-                dateFormatText.getTodayDATE()
-            )
-        )
         binding.dateTv.setOnClickListener {
+            val (year, month, date) = todoViewModel.getDate()
             DatePickerDialog(
                 requireContext(),
                 this,
-                dateFormatText.getTodayYEAR(),
-                dateFormatText.getTodayMONTH(),
-                dateFormatText.getTodayDATE(),
+                year,
+                month - 1,
+                date,
             ).show()
         }
         binding.writeTodoBtn.setOnClickListener {
