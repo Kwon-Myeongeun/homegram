@@ -24,6 +24,12 @@ class SyncRepositoryImpl @Inject constructor(
 
         val groupId = userInfoDataSource.getGroupId()
         if (groupId is Result.Success) {
+            val group = syncDataSource.loadGroup(groupId.data)
+            if (group is Result.Success) {
+                userInfoLocalDataSource.syncAllGroup(group.data.filterNotNull())
+            } else {
+                return Result.Error((group as Result.Error).exception)
+            }
             val daily = questionDataSource.getQuestion(groupId.data).first()
             if (daily is Result.Success) {
                 dailyLocalDataSource.syncAllQuestion(

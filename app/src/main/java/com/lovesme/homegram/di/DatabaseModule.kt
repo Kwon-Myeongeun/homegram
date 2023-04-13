@@ -1,6 +1,7 @@
 package com.lovesme.homegram.di
 
 import com.lovesme.homegram.data.dao.AnswerDao
+import com.lovesme.homegram.data.dao.GroupDao
 import com.lovesme.homegram.data.dao.QuestionDao
 import com.lovesme.homegram.data.dao.UserInfoDao
 import com.lovesme.homegram.data.datasource.*
@@ -78,8 +79,11 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideUserInfoLocalDataSource(userInfoDao: UserInfoDao): UserInfoLocalDataSource {
-        return UserInfoLocalDataSourceImpl(userInfoDao)
+    fun provideUserInfoLocalDataSource(
+        userInfoDao: UserInfoDao,
+        groupDao: GroupDao
+    ): UserInfoLocalDataSource {
+        return UserInfoLocalDataSourceImpl(userInfoDao, groupDao)
     }
 
     @Provides
