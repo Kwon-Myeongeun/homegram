@@ -99,6 +99,7 @@ class LocationService() : LifecycleService() {
                     Manifest.permission.ACCESS_BACKGROUND_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
+                stopSelf()
                 return
             }
         } else {
@@ -110,6 +111,7 @@ class LocationService() : LifecycleService() {
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
+                stopSelf()
                 return
             }
         }
