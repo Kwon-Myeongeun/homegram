@@ -52,8 +52,10 @@ class CalendarFragment : Fragment(), DatePickerDialog.OnDateSetListener, DeleteC
         binding.writeTodoBtn.setOnClickListener {
             val date = binding.dateTv.text.toString()
             val contents = binding.todoCompositionContentTv.text.toString()
-            binding.todoCompositionContentTv.text.clear()
-            todoViewModel.writeTodo(date, contents)
+            if (contents.trim().isNotEmpty()) {
+                binding.todoCompositionContentTv.text.clear()
+                todoViewModel.writeTodo(date, contents)
+            }
         }
         return binding.root
     }
