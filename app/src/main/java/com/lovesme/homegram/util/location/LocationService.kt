@@ -84,6 +84,7 @@ class LocationService() : LifecycleService() {
                 .setContentTitle(applicationContext.getString(R.string.notification_title))
                 .setContentText(applicationContext.getString(R.string.notification_message))
                 .setSmallIcon(R.mipmap.ic_launcher_foreground)
+                .setOngoing(true)
                 .setContentIntent(pendingIntent)
                 .setTicker(applicationContext.getString(R.string.notification_title))
                 .build()
