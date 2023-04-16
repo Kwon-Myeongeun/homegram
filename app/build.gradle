@@ -6,6 +6,7 @@ plugins {
     id 'com.google.dagger.hilt.android'
     id 'kotlin-parcelize'
     id 'kotlinx-serialization'
+    id 'com.google.firebase.crashlytics'
 }
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -32,7 +33,11 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable false
         }
     }
     compileOptions {
@@ -75,6 +80,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:$retrofitSerializationVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationJsonVersion"
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$junitUiVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoCoreVersion"
