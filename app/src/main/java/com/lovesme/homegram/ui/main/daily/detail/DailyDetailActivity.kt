@@ -66,7 +66,7 @@ class DailyDetailActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.dailyDetailToolbar.setOnMenuItemClickListener {
+        binding.writeAnswerBtn.setOnClickListener {
             lifecycleScope.launch {
                 val intent = Intent(this@DailyDetailActivity, DailyCompositionActivity::class.java)
                 val test = dailyDetailViewModel.getMyAnswer(item)
@@ -78,7 +78,6 @@ class DailyDetailActivity : AppCompatActivity() {
                 }
                 dailyCompositionResultLauncher.launch(intent)
             }
-            return@setOnMenuItemClickListener true
         }
     }
 }

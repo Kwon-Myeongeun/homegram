@@ -22,7 +22,6 @@
                 android:id="@+id/daily_composition_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:menu="@menu/daily_composition_app_bar"
                 app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
                 app:title="@string/app_name"
                 app:titleCentered="true" />
@@ -45,16 +44,26 @@
             android:id="@+id/daily_composition_content_tv"
             style="@style/Theme.Homegram.EditText.Transparent"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:gravity="top"
             android:hint="@string/composition_hint"
             android:importantForAutofill="no"
             android:inputType="text"
             android:paddingVertical="16dp"
+            app:layout_constraintBottom_toTopOf="@id/composition_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/daily_composition_title_tv"
             tools:layout_editor_absoluteX="329dp" />
 
+        <Button
+            android:id="@+id/composition_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/composition_btn_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

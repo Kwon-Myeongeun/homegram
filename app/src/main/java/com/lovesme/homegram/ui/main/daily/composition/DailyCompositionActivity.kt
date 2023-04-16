@@ -31,7 +31,7 @@ class DailyCompositionActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.dailyCompositionToolbar.setOnMenuItemClickListener {
+        binding.compositionBtn.setOnClickListener {
             val answer = binding.dailyCompositionContentTv.text
             val intent = Intent(this, DailyDetailActivity::class.java).apply {
                 if (!answer.isNullOrEmpty()) {
@@ -40,7 +40,7 @@ class DailyCompositionActivity : AppCompatActivity() {
             }
             setResult(RESULT_OK, intent)
             finish()
-            return@setOnMenuItemClickListener true
+
         }
     }
 }

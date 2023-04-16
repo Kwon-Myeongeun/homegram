@@ -19,6 +19,7 @@
     <string name="notification_message">사용자의 위치를 트래킹 중입니다</string>
     <string name="location_notification_channel_name">locationTracking</string>
     <string name="write_todo_btn_text">작성하기</string>
+    <string name="composition_btn_text">완료하기</string>
     <string name="permission_notification_denied">새로운 메세지를 확인하시려면 알림을 허용해주세요</string>
     <string name="default_notification_channel_id">Notice</string>
     <string name="default_notification_name">Homegram</string>
