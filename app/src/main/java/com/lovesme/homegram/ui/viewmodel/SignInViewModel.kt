@@ -50,6 +50,8 @@ class SignInViewModel @Inject constructor(
                     } else {
                         _uiState.value = UiState.Error
                     }
+                } else {
+                    _uiState.value = UiState.Success(Unit)
                 }
             } else {
                 _uiState.value = UiState.Error
