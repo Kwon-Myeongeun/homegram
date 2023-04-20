@@ -45,6 +45,7 @@ class DailyDetailActivity : AppCompatActivity() {
             dailyDetailViewModel.answer
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect { answer ->
+                    item?.answer = answer.toMutableList()
                     adapter.submitList(answer.toMutableList())
                 }
         }
@@ -69,8 +70,8 @@ class DailyDetailActivity : AppCompatActivity() {
         binding.writeAnswerBtn.setOnClickListener {
             lifecycleScope.launch {
                 val intent = Intent(this@DailyDetailActivity, DailyCompositionActivity::class.java)
-                val test = dailyDetailViewModel.getMyAnswer(item)
-                test?.let {
+                val answer = dailyDetailViewModel.getMyAnswer(item)
+                answer?.let {
                     intent.putExtra(Constants.PARCELABLE_ANSWER_TEXT, it)
                 }
                 item?.let {
