@@ -50,14 +50,7 @@ class SettingActivity : AppCompatActivity() {
             }
         }
         binding.userSignOutTv.setOnClickListener {
-            val locationServiceIntent = Intent(this, LocationService::class.java)
-            locationServiceIntent.putExtra(Constants.PARCELABLE_SERVICE_STOP, true)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                this.startForegroundService(locationServiceIntent)
-            } else {
-                this.startService(locationServiceIntent)
-            }
-            settingViewModel.deleteUserInfo()
+            setCheckDialog(this)
         }
 
         binding.settingToolbar.setNavigationOnClickListener {
@@ -69,7 +62,7 @@ class SettingActivity : AppCompatActivity() {
                 settingViewModel.uiState.collect { state ->
                     when (state) {
                         is UiState.Success -> {
-                            setCheckDialog(this@SettingActivity)
+                            signOut()
                         }
                         is UiState.Error -> {
                             Snackbar.make(
@@ -117,7 +110,7 @@ class SettingActivity : AppCompatActivity() {
         val listener = DialogInterface.OnClickListener { _, p1 ->
             when (p1) {
                 DialogInterface.BUTTON_POSITIVE ->
-                    signOut()
+                    deleteData()
             }
         }
         builder.setPositiveButton("네", listener)
@@ -134,5 +127,16 @@ class SettingActivity : AppCompatActivity() {
         intent.flags =
             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
+    }
+
+    private fun deleteData() {
+        val locationServiceIntent = Intent(this, LocationService::class.java)
+        locationServiceIntent.putExtra(Constants.PARCELABLE_SERVICE_STOP, true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.startForegroundService(locationServiceIntent)
+        } else {
+            this.startService(locationServiceIntent)
+        }
+        settingViewModel.deleteUserInfo()
     }
 }
