@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class NotificationRequestData(
     val title: String,
     val message: String,
-    val fromId: String
+    val detail: String
 )
 
 enum class NotificationType(val title: String, val msg: String) {

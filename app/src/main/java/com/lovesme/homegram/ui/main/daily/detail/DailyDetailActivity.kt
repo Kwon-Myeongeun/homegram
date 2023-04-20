@@ -57,7 +57,7 @@ class DailyDetailActivity : AppCompatActivity() {
                 val contents = result.data?.getStringExtra(Constants.PARCELABLE_ANSWER_TEXT)
                 if (contents != null) {
                     item?.let {
-                        dailyDetailViewModel.updateAnswer(it.key, contents)
+                        dailyDetailViewModel.updateAnswer(item.no, it.key, contents)
                     }
                 }
             }

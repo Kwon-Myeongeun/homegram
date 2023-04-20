@@ -28,6 +28,7 @@ class DailyFragment : Fragment(), QuestionClickListener {
     private val binding get() = _binding!!
     private val dailyViewModel: DailyViewModel by activityViewModels()
     private val adapter = DailyQuestionRVAdapter(this)
+    var isFirst = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,6 +48,18 @@ class DailyFragment : Fragment(), QuestionClickListener {
                 launch {
                     dailyViewModel.questions.collect { question ->
                         adapter.submitList(question.toMutableList())
+                        arguments?.getString(Constants.PARCELABLE_NO)?.let { uploadNo ->
+                            if (question.isNotEmpty()) {
+                                if (isFirst) {
+                                    val uploadQuestion = question.first { it.no == uploadNo }
+                                    val intent = Intent(context, DailyDetailActivity::class.java)
+                                    intent.putExtra(Constants.PARCELABLE_QUESTION, uploadQuestion)
+                                    startActivity(intent)
+
+                                    isFirst = false
+                                }
+                            }
+                        }
                     }
                 }
                 launch {

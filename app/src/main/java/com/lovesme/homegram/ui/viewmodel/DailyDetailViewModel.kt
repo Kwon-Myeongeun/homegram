@@ -9,7 +9,6 @@ import com.lovesme.homegram.data.model.Question
 import com.lovesme.homegram.data.model.Result
 import com.lovesme.homegram.data.repository.QuestionRepository
 import com.lovesme.homegram.data.usecase.SendNotificationUseCase
-import com.lovesme.homegram.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,13 +26,13 @@ class DailyDetailViewModel @Inject constructor(
     private val _answer = MutableStateFlow<List<Answer>>(listOf())
     val answer: StateFlow<List<Answer>> = _answer
 
-    fun updateAnswer(key: String, answer: String) {
+    fun updateAnswer(no: String, key: String, answer: String) {
         viewModelScope.launch {
             val result = repository.updateAnswer(key, answer)
             if (result is Result.Success) {
                 sendNotificationUseCase.invoke(
                     NotificationType.UPDATE_ANSWER,
-                    Constants.userId.toString(),
+                    no,
                 )
             }
             refreshQuestion(key)
