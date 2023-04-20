@@ -44,7 +44,6 @@
         </activity>
         <activity android:name=".ui.main.MainActivity" />
         <activity android:name=".ui.setting.SettingActivity" />
-        <activity android:name=".ui.invite.InviteLinkActivity" />
         <activity android:name=".ui.setting.UserPreferenceActivity" />
         <activity android:name=".ui.main.daily.detail.DailyDetailActivity" />
         <activity android:name=".ui.main.daily.composition.DailyCompositionActivity" />
