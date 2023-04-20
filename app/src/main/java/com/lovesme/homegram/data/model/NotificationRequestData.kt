@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class NotificationRequestData(
-    val type: NotificationType,
     val title: String,
     val message: String,
     val fromId: String

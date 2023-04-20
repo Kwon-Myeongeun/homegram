@@ -18,7 +18,6 @@ class SendNotificationUseCase @Inject constructor(
         userId: String,
     ): Result<Unit> {
         val notification = NotificationRequestData(
-            type = notificationType,
             title = notificationType.title,
             message = notificationType.msg,
             fromId = userId,
