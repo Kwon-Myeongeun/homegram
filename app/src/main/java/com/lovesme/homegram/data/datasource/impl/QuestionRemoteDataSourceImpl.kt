@@ -118,4 +118,21 @@ class QuestionRemoteDataSourceImpl @Inject constructor() : QuestionRemoteDataSou
                 }
         }
 
+    override suspend fun getUserName(): Result<String> =
+        suspendCoroutine { continuation ->
+            Constants.userId?.let { id ->
+                val reference = Constants.database.reference
+                    .child(Constants.DIRECTORY_USER)
+                    .child(id)
+                    .child(Constants.DIRECTORY_NAME)
+
+                reference.get()
+                    .addOnSuccessListener { snapshot ->
+                        continuation.resume(Result.Success(snapshot.value.toString()))
+                    }
+                    .addOnFailureListener { exception ->
+                        continuation.resume(Result.Error(exception))
+                    }
+            }
+        }
 }

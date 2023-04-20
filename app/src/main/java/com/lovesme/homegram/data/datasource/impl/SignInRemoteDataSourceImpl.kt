@@ -37,12 +37,12 @@ class SignInRemoteDataSourceImpl @Inject constructor() : SignInRemoteDataSource 
             }
         }
 
-    override suspend fun joinToInvitedGroup(oldGroupId: String, newGroupId: String) =
+    override suspend fun joinToInvitedGroup(oldGroupId: String, newGroupId: String, userName: String) =
         suspendCoroutine { continuation ->
             Constants.userId?.let { id ->
                 val childUpdates = hashMapOf<String, Any?>(
                     "/${Constants.DIRECTORY_USER}/$id/${Constants.DIRECTORY_GROUP_ID}/" to newGroupId,
-                    "/${Constants.DIRECTORY_GROUP}/$newGroupId/${Constants.DIRECTORY_MEMBER}/$id/${Constants.DIRECTORY_NAME}" to "name",
+                    "/${Constants.DIRECTORY_GROUP}/$newGroupId/${Constants.DIRECTORY_MEMBER}/$id/${Constants.DIRECTORY_NAME}" to userName,
                     "/${Constants.DIRECTORY_GROUP}/$oldGroupId/${Constants.DIRECTORY_MEMBER}/$id/" to null,
                 )
                 Constants.database.reference.updateChildren(childUpdates)

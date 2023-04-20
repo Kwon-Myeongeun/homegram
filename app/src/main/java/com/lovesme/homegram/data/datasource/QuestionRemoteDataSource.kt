@@ -13,4 +13,5 @@ interface QuestionRemoteDataSource {
         name: String,
         answer: String
     ): Result<Unit>
+    suspend fun getUserName(): Result<String>
 }
