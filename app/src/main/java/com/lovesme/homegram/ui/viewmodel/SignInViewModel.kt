@@ -39,7 +39,7 @@ class SignInViewModel @Inject constructor(
         _uiState.value = UiState.Loading
         viewModelScope.launch {
             if (Constants.userId == null) {
-                _uiState.value = UiState.Success(Unit)
+                _uiState.value = UiState.Empty
             }
             val existUser = userPreferencesRepository.existUser()
             if (existUser is Result.Success) {

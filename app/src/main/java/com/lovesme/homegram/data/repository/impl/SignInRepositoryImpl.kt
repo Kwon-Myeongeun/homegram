@@ -20,19 +20,19 @@ class SignInRepositoryImpl @Inject constructor(
     override suspend fun joinToInvitedGroup(groupId: String): Result<Unit> {
         var oldGroupId = userInfoLocalDataSource.getGroupId()
         var userName = userInfoLocalDataSource.getUserName()
-        if (oldGroupId.isEmpty()) {
+        if (oldGroupId.isNullOrEmpty()) {
             val result = questionDataSource.getGroupId()
             if (result is Result.Success) {
                 oldGroupId = result.data
             }
         }
-        if (userName.isEmpty()) {
+        if (userName.isNullOrEmpty()) {
             val result = questionDataSource.getUserName()
             if (result is Result.Success) {
                 userName = result.data
             }
         }
-        return if(oldGroupId != groupId){
+        return if (oldGroupId != groupId) {
 
             signInDataSource.joinToInvitedGroup(oldGroupId, groupId, userName)
         } else {
