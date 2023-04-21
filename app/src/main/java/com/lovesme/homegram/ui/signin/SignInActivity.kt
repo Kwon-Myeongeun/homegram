@@ -55,6 +55,7 @@ class SignInActivity : AppCompatActivity() {
     private val signInViewModel: SignInViewModel by viewModels()
 
     private lateinit var alertDialog: AlertDialog
+    var isFirst = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +65,7 @@ class SignInActivity : AppCompatActivity() {
         initData()
         requestNotificationPermission()
         if (auth.currentUser != null) {
-            handleDynamicLinks()
+            signInViewModel.setLoginSuccessState()
         }
     }
 
@@ -92,8 +93,11 @@ class SignInActivity : AppCompatActivity() {
                             alertDialog.show()
                         }
                         is UiState.Success -> {
-                            alertDialog.dismiss()
-                            handleDynamicLinks()
+                            if (isFirst) {
+                                alertDialog.dismiss()
+                                handleDynamicLinks()
+                                isFirst = false
+                            }
                         }
                         is UiState.Error -> {
                             alertDialog.dismiss()
