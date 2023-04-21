@@ -28,7 +28,10 @@ import com.lovesme.homegram.ui.viewmodel.SettingViewModel
 import com.lovesme.homegram.util.Constants
 import com.lovesme.homegram.util.location.LocationService
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class SettingActivity : AppCompatActivity() {
@@ -51,6 +54,12 @@ class SettingActivity : AppCompatActivity() {
         }
         binding.userSignOutTv.setOnClickListener {
             setCheckDialog(this)
+        }
+
+        binding.developerTv.setOnClickListener {
+            val browserIntent =
+                Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.customer_opinion_link)))
+            startActivity(browserIntent)
         }
 
         binding.settingToolbar.setNavigationOnClickListener {
