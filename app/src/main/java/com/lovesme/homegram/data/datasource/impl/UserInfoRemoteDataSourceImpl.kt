@@ -169,4 +169,20 @@ class UserInfoRemoteDataSourceImpl @Inject constructor() :
                     }
             }
         }
+
+    override suspend fun existMember(groupId: String): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            val reference = Constants.database.reference
+                .child(Constants.DIRECTORY_GROUP)
+                .child(groupId)
+                .child(Constants.DIRECTORY_MEMBER)
+
+            reference.get()
+                .addOnSuccessListener { snapshot ->
+                    continuation.resume(Result.Success((snapshot.childrenCount >= 2)))
+                }
+                .addOnFailureListener { exception ->
+                    continuation.resume(Result.Error(exception))
+                }
+        }
 }

@@ -37,4 +37,5 @@
     <string name="delete_todo">delete Todo</string>
     <string name="composition_hint">답변을 입력해주세요.</string>
     <string name="internet_connect_fail">인터넷 연결을 확인해주세요.</string>
+    <string name="home_image">cat image</string>
 </resources>
