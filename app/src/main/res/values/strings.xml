@@ -39,4 +39,6 @@
     <string name="internet_connect_fail">인터넷 연결을 확인해주세요.</string>
     <string name="home_image">cat image</string>
     <string name="customer_opinion_link">https://docs.google.com/forms/d/e/1FAIpQLSfLSFdfiEGK1ZNFIOngjoO60X0Fpb62Ye6L8chXhRMxQWOpkQ/viewform?usp=sf_link</string>
+    <!--<string name="banner_ad_unit_id">ca-app-pub-4166221499185541/2970966395</string>-->
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

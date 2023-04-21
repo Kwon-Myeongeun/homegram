@@ -23,6 +23,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${GoogleMapApiKey}" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4166221499185541~7544033581"/>
 
         <activity
             android:name=".ui.signin.SignInActivity"

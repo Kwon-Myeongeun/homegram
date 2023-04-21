@@ -21,6 +21,7 @@ buildscript {
         okhttpVersion = "4.10.0"
         kotlinxSerializationJsonVersion = "1.4.1"
         retrofitSerializationVersion = "0.8.0"
+        google_ads_version = "22.0.0"
     }
     repositories {
         google()
