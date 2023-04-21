@@ -74,5 +74,24 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/developer_tv" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/permission_divider"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_sign_out_tv" />
+
+        <TextView
+            android:id="@+id/user_permission_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:paddingVertical="16dp"
+            android:text="@string/setting_user_permission"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_sign_out_tv" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -60,6 +61,15 @@ class SettingActivity : AppCompatActivity() {
             val browserIntent =
                 Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.customer_opinion_link)))
             startActivity(browserIntent)
+        }
+
+        binding.userPermissionTv.setOnClickListener {
+            val intent = Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.fromParts("package", packageName, null)
+            )
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
         }
 
         binding.settingToolbar.setNavigationOnClickListener {
