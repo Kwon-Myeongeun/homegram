@@ -8,3 +8,4 @@
 .externalNativeBuild
 .cxx
 /functions/node_modules
+/keystore.properties
