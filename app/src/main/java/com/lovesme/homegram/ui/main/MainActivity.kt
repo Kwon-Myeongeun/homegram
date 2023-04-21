@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import com.lovesme.homegram.R
@@ -38,7 +39,17 @@ class MainActivity : AppCompatActivity() {
         val navController =
             supportFragmentManager.findFragmentById(binding.homeFrmContainer.id)
                 ?.findNavController()
-        navController?.let { binding.homeBtmNavigation.setupWithNavController(it) }
+        navController?.let {
+            binding.homeBtmNavigation.setupWithNavController(it)
+            binding.homeBtmNavigation.setOnItemSelectedListener { item ->
+                onNavDestinationSelected(item, navController)
+                true
+            }
+            binding.homeBtmNavigation.setOnItemReselectedListener { item ->
+                val reselectedDestinationId = item.itemId
+                navController.popBackStack(reselectedDestinationId, inclusive = false)
+            }
+        }
 
         binding.homeToolbar.setOnMenuItemClickListener {
             startActivity(Intent(this, SettingActivity::class.java))
