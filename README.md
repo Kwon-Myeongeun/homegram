@@ -1,7 +1,7 @@
 # Homegram
 <br>
 
-<img src = https://user-images.githubusercontent.com/107901963/233968826-4d0115e6-b08f-494b-acbe-3b563700a663.png width=100% height=80%>
+<img src = https://user-images.githubusercontent.com/107901963/233968826-4d0115e6-b08f-494b-acbe-3b563700a663.png width=80% height=80%>
 
 # 개발환경 및 라이브러리
 <br>
