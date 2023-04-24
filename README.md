@@ -1,7 +1,7 @@
 # Homegram
 <br>
 
-<img src = https://user-images.githubusercontent.com/107901963/233968826-4d0115e6-b08f-494b-acbe-3b563700a663.png width=70% height=70%>
+<img src = https://user-images.githubusercontent.com/107901963/233968826-4d0115e6-b08f-494b-acbe-3b563700a663.png width=100% height=80%>
 
 # 개발환경 및 라이브러리
 <br>
@@ -36,13 +36,14 @@
 ### 일정 공유
 
 나의 일정을 알리고 싶을 때, 우리들의 소중한 일정을 공유하고 확실하게 기억하고 싶을 때 일정을 등록하고 함께 관리해 보세요.
-<img src = https://user-images.githubusercontent.com/107901963/233986828-4479bbb6-c99d-4e64-a88e-7e59faf1328f.jpg width=25% height=25%>
-<img src = https://user-images.githubusercontent.com/107901963/233984845-c05ad376-8e6f-420a-adae-5f34e05f856a.png width=25% height=25%>
+
+<img src = https://user-images.githubusercontent.com/107901963/233986828-4479bbb6-c99d-4e64-a88e-7e59faf1328f.jpg width=25% height=25%> <img src = https://user-images.githubusercontent.com/107901963/233984845-c05ad376-8e6f-420a-adae-5f34e05f856a.png width=25% height=25%>
 
 
 ### 위치 추적
 
 현재 위치를 실시간으로 확인할 수 있어요. Homegram을 통해 소중한 사람이 어디에 있는지 안전하게 확인해 보세요.
+
 <img src = https://user-images.githubusercontent.com/107901963/233984872-a8eb0882-dcc3-4615-8867-f84857403be2.png width=25% height=25%>
 
 
