@@ -40,8 +40,13 @@ object DatabaseModule {
     fun provideQuestionRepository(
         questionDataSource: QuestionRemoteDataSource,
         userInfoLocalDataSource: UserInfoLocalDataSource,
+        userInfoDataSource: UserInfoRemoteDataSource,
     ): QuestionRepository {
-        return QuestionRepositoryImpl(questionDataSource, userInfoLocalDataSource)
+        return QuestionRepositoryImpl(
+            questionDataSource,
+            userInfoLocalDataSource,
+            userInfoDataSource
+        )
     }
 
     @Provides

@@ -9,7 +9,6 @@ import com.lovesme.homegram.data.model.Todo
 import com.lovesme.homegram.data.repository.SyncRepository
 import com.lovesme.homegram.data.repository.TodoRepository
 import com.lovesme.homegram.data.usecase.SendNotificationUseCase
-import com.lovesme.homegram.util.Constants
 import com.lovesme.homegram.util.DateFormatText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,7 +64,7 @@ class CalendarViewModel @Inject constructor(
             if (result is Result.Success) {
                 sendNotificationUseCase.invoke(
                     NotificationType.UPDATE_TODO,
-                    Constants.userId.toString(),
+                    date,
                 )
             }
         }

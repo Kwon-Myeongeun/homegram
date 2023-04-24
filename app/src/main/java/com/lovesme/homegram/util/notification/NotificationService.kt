@@ -4,15 +4,17 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.lovesme.homegram.R
+import com.lovesme.homegram.data.model.NotificationType
 import com.lovesme.homegram.data.usecase.SetMessageTokenUseCase
 import com.lovesme.homegram.ui.main.MainActivity
+import com.lovesme.homegram.util.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,13 +48,6 @@ class NotificationService : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(
-            this,
-            0,
-            Intent(this, MainActivity::class.java),
-            PendingIntent.FLAG_IMMUTABLE
-        )
-
         val builder =
             NotificationCompat.Builder(
                 this,
@@ -61,18 +56,40 @@ class NotificationService : FirebaseMessagingService() {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(message.data["title"])
                 .setContentText(message.data["message"])
-                .setContentIntent(pendingIntent)
+                .setContentIntent(createPendingIntent(message))
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
 
         notificationManager.notify(0, builder.build())
     }
 
-    private fun createPendingIntent(message: RemoteMessage): PendingIntent? {
-        // 딥링크 생성
+    private fun createPendingIntent(message: RemoteMessage): PendingIntent {
+        val type = message.data["title"]
+
         val deepLinkBuilder = NavDeepLinkBuilder(this)
             .setComponentName(MainActivity::class.java)
-        //.setGraph(R.navigation.home_graph)
+            .setGraph(R.navigation.home_graph)
+
+        when (type) {
+            NotificationType.UPDATE_TODO.title -> {
+                deepLinkBuilder.apply {
+                    val arguments = Bundle().apply {
+                        putString(Constants.PARCELABLE_DATE, message.data["detail"])
+                    }
+                    setArguments(arguments)
+                    addDestination(R.id.navigation_calendar_menu)
+                }
+            }
+            NotificationType.UPDATE_ANSWER.title -> {
+                val arguments = Bundle().apply {
+                    putString(Constants.PARCELABLE_NO, message.data["detail"])
+                }
+                deepLinkBuilder.apply {
+                    setArguments(arguments)
+                    addDestination(R.id.navigation_daily_menu)
+                }
+            }
+        }
 
         return deepLinkBuilder.createPendingIntent()
     }

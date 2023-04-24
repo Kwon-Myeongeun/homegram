@@ -1,15 +1,18 @@
 package com.lovesme.homegram.ui.main
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.snackbar.Snackbar
 import com.lovesme.homegram.R
 import com.lovesme.homegram.data.model.UiState
@@ -38,7 +41,17 @@ class MainActivity : AppCompatActivity() {
         val navController =
             supportFragmentManager.findFragmentById(binding.homeFrmContainer.id)
                 ?.findNavController()
-        navController?.let { binding.homeBtmNavigation.setupWithNavController(it) }
+        navController?.let {
+            binding.homeBtmNavigation.setupWithNavController(it)
+            binding.homeBtmNavigation.setOnItemSelectedListener { item ->
+                onNavDestinationSelected(item, navController)
+                true
+            }
+            binding.homeBtmNavigation.setOnItemReselectedListener { item ->
+                val reselectedDestinationId = item.itemId
+                navController.popBackStack(reselectedDestinationId, inclusive = false)
+            }
+        }
 
         binding.homeToolbar.setOnMenuItemClickListener {
             startActivity(Intent(this, SettingActivity::class.java))
@@ -47,6 +60,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initData() {
+        initAds()
         initDialog()
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -80,5 +94,12 @@ class MainActivity : AppCompatActivity() {
             .setCancelable(false)
             .create()
         alertDialog.window?.setBackgroundDrawableResource(R.color.transparent)
+    }
+
+    private fun initAds(){
+        MobileAds.initialize(this) {}
+
+        val adRequest = AdRequest.Builder().build()
+        binding.adView.loadAd(adRequest)
     }
 }

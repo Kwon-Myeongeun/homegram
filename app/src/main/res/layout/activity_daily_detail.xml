@@ -23,7 +23,6 @@
                 android:id="@+id/daily_detail_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:menu="@menu/daily_detail_app_bar"
                 app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
                 app:title="@string/app_name"
                 app:titleCentered="true" />
@@ -46,10 +45,20 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/write_answer_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/daily_detail_title_tv"
             tools:listitem="@layout/item_answer" />
+
+        <Button
+            android:id="@+id/write_answer_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/write_todo_btn_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

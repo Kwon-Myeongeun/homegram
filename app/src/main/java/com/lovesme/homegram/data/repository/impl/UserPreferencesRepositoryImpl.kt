@@ -53,4 +53,12 @@ class UserPreferencesRepositoryImpl(private val userInfoDataSource: UserInfoRemo
     override suspend fun existUserName(): Result<Boolean> {
         return userInfoDataSource.existUserName()
     }
+
+    override suspend fun existMember(): Result<Boolean> {
+        return when (val result = userInfoDataSource.getGroupId()) {
+            is Result.Success ->
+                userInfoDataSource.existMember(result.data)
+            is Result.Error -> Result.Error(result.exception)
+        }
+    }
 }

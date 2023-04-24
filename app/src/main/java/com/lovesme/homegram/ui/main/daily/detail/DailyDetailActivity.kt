@@ -45,6 +45,7 @@ class DailyDetailActivity : AppCompatActivity() {
             dailyDetailViewModel.answer
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect { answer ->
+                    item?.answer = answer.toMutableList()
                     adapter.submitList(answer.toMutableList())
                 }
         }
@@ -56,7 +57,7 @@ class DailyDetailActivity : AppCompatActivity() {
                 val contents = result.data?.getStringExtra(Constants.PARCELABLE_ANSWER_TEXT)
                 if (contents != null) {
                     item?.let {
-                        dailyDetailViewModel.updateAnswer(it.key, contents)
+                        dailyDetailViewModel.updateAnswer(item.no, it.key, contents)
                     }
                 }
             }
@@ -66,11 +67,11 @@ class DailyDetailActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.dailyDetailToolbar.setOnMenuItemClickListener {
+        binding.writeAnswerBtn.setOnClickListener {
             lifecycleScope.launch {
                 val intent = Intent(this@DailyDetailActivity, DailyCompositionActivity::class.java)
-                val test = dailyDetailViewModel.getMyAnswer(item)
-                test?.let {
+                val answer = dailyDetailViewModel.getMyAnswer(item)
+                answer?.let {
                     intent.putExtra(Constants.PARCELABLE_ANSWER_TEXT, it)
                 }
                 item?.let {
@@ -78,7 +79,6 @@ class DailyDetailActivity : AppCompatActivity() {
                 }
                 dailyCompositionResultLauncher.launch(intent)
             }
-            return@setOnMenuItemClickListener true
         }
     }
 }

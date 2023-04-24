@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -15,6 +14,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavDeepLinkBuilder
 import com.google.android.gms.location.*
 import com.lovesme.homegram.data.model.Location
 import com.lovesme.homegram.ui.main.MainActivity
@@ -72,19 +72,19 @@ class LocationService() : LifecycleService() {
 
     private fun createNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val pendingIntent: PendingIntent =
-                Intent(this, MainActivity::class.java).let { notificationIntent ->
-                    PendingIntent.getActivity(
-                        this, 0, notificationIntent,
-                        PendingIntent.FLAG_IMMUTABLE
-                    )
-                }
+            val deepLinkBuilder = NavDeepLinkBuilder(this)
+                .setComponentName(MainActivity::class.java)
+                .setGraph(R.navigation.home_graph)
+                .addDestination(R.id.navigation_map_menu)
+                .createPendingIntent()
+
             val channelId = applicationContext.getString(R.string.location_notification_channel_id)
             val notification: Notification = Notification.Builder(this, channelId)
                 .setContentTitle(applicationContext.getString(R.string.notification_title))
                 .setContentText(applicationContext.getString(R.string.notification_message))
-                .setSmallIcon(R.mipmap.ic_launcher_foreground)
-                .setContentIntent(pendingIntent)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setOngoing(true)
+                .setContentIntent(deepLinkBuilder)
                 .setTicker(applicationContext.getString(R.string.notification_title))
                 .build()
             createChannel(channelId)

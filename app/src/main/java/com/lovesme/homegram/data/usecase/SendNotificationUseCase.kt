@@ -15,13 +15,12 @@ class SendNotificationUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         notificationType: NotificationType,
-        userId: String,
+        detail: String,
     ): Result<Unit> {
         val notification = NotificationRequestData(
-            type = notificationType,
             title = notificationType.title,
             message = notificationType.msg,
-            fromId = userId,
+            detail = detail,
         )
         val receiverIds = userPreferencesRepository.getReceiverToken()
         val personalToken = userInfoLocalDataSource.getUserToken()

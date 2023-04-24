@@ -5,6 +5,9 @@ admin.initializeApp(functions.config().firebase);
 var database = admin.database();
 
 var dailyRef = database.ref("daily/");
+var groupRef = database.ref("group/");
+var todoRef = database.ref("todo/");
+var locationRef = database.ref("location/");
 
 exports.dailyContentScheduledFunction = functions.pubsub.schedule("0 9 * * *")
     .timeZone("Asia/Seoul")
@@ -22,6 +25,51 @@ exports.dailyContentScheduledFunction = functions.pubsub.schedule("0 9 * * *")
                             });
                         }
                     });
+                });
+            });
+        });
+        return null;
+    });
+    
+exports.cleanDailyScheduledFunction = functions.pubsub.schedule("0 6 * * *")
+    .timeZone("Asia/Seoul")
+    .onRun(async (context) => {
+        dailyRef.once("value").then(dailySnapshot => {
+            dailySnapshot.forEach(group => {
+                groupRef.child(group.key).once("value").then(groupSnapshot => {
+                    if (!groupSnapshot.exists()) {
+                        dailyRef.child(group.key).remove();
+                    }
+                });
+            });
+        });
+        return null;
+    });
+    
+exports.cleanTodoScheduledFunction = functions.pubsub.schedule("0 7 * * *")
+    .timeZone("Asia/Seoul")
+    .onRun(async (context) => {
+        todoRef.once("value").then(todoSnapshot => {
+            todoSnapshot.forEach(group => {
+                groupRef.child(group.key).once("value").then(groupSnapshot => {
+                    if (!groupSnapshot.exists()) {
+                        todoRef.child(group.key).remove();
+                    }
+                });
+            });
+        });
+        return null;
+    });
+    
+exports.cleanLocationScheduledFunction = functions.pubsub.schedule("0 8 * * *")
+    .timeZone("Asia/Seoul")
+    .onRun(async (context) => {
+        locationRef.once("value").then(locationSnapshot => {
+            locationSnapshot.forEach(group => {
+                groupRef.child(group.key).once("value").then(groupSnapshot => {
+                    if (!groupSnapshot.exists()) {
+                        locationRef.child(group.key).remove();
+                    }
                 });
             });
         });

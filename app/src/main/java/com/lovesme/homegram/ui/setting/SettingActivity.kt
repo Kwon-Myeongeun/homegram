@@ -1,9 +1,13 @@
 package com.lovesme.homegram.ui.setting
 
+import android.app.AlertDialog
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -25,7 +29,10 @@ import com.lovesme.homegram.ui.viewmodel.SettingViewModel
 import com.lovesme.homegram.util.Constants
 import com.lovesme.homegram.util.location.LocationService
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class SettingActivity : AppCompatActivity() {
@@ -47,14 +54,22 @@ class SettingActivity : AppCompatActivity() {
             }
         }
         binding.userSignOutTv.setOnClickListener {
-            val locationServiceIntent = Intent(this, LocationService::class.java)
-            locationServiceIntent.putExtra(Constants.PARCELABLE_SERVICE_STOP, true)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                this.startForegroundService(locationServiceIntent)
-            } else {
-                this.startService(locationServiceIntent)
-            }
-            settingViewModel.deleteUserInfo()
+            setCheckDialog(this)
+        }
+
+        binding.developerTv.setOnClickListener {
+            val browserIntent =
+                Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.customer_opinion_link)))
+            startActivity(browserIntent)
+        }
+
+        binding.userPermissionTv.setOnClickListener {
+            val intent = Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.fromParts("package", packageName, null)
+            )
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
         }
 
         binding.settingToolbar.setNavigationOnClickListener {
@@ -66,13 +81,7 @@ class SettingActivity : AppCompatActivity() {
                 settingViewModel.uiState.collect { state ->
                     when (state) {
                         is UiState.Success -> {
-                            Firebase.auth.currentUser?.delete()
-                            FirebaseAuth.getInstance().signOut()
-
-                            val intent = Intent(this@SettingActivity, SignInActivity::class.java)
-                            intent.flags =
-                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            startActivity(intent)
+                            signOut()
                         }
                         is UiState.Error -> {
                             Snackbar.make(
@@ -112,4 +121,41 @@ class SettingActivity : AppCompatActivity() {
             dynamicLink.uri
 
         }
+
+    private fun setCheckDialog(context: Context) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("탈퇴 시 모든 데이터가 삭제됩니다.\n정말 탈퇴하시겠습니까?")
+
+        val listener = DialogInterface.OnClickListener { _, p1 ->
+            when (p1) {
+                DialogInterface.BUTTON_POSITIVE ->
+                    deleteData()
+            }
+        }
+        builder.setPositiveButton("네", listener)
+        builder.setNegativeButton("아니오", null)
+
+        builder.show()
+    }
+
+    private fun signOut() {
+        Firebase.auth.currentUser?.delete()
+        FirebaseAuth.getInstance().signOut()
+
+        val intent = Intent(this@SettingActivity, SignInActivity::class.java)
+        intent.flags =
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
+
+    private fun deleteData() {
+        val locationServiceIntent = Intent(this, LocationService::class.java)
+        locationServiceIntent.putExtra(Constants.PARCELABLE_SERVICE_STOP, true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.startForegroundService(locationServiceIntent)
+        } else {
+            this.startService(locationServiceIntent)
+        }
+        settingViewModel.deleteUserInfo()
+    }
 }

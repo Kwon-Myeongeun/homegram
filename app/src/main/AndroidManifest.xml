@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
     <application
         android:name=".HomegramApplication"
@@ -23,6 +24,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${GoogleMapApiKey}" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4166221499185541~7544033581"/>
 
         <activity
             android:name=".ui.signin.SignInActivity"
@@ -44,7 +48,6 @@
         </activity>
         <activity android:name=".ui.main.MainActivity" />
         <activity android:name=".ui.setting.SettingActivity" />
-        <activity android:name=".ui.invite.InviteLinkActivity" />
         <activity android:name=".ui.setting.UserPreferenceActivity" />
         <activity android:name=".ui.main.daily.detail.DailyDetailActivity" />
         <activity android:name=".ui.main.daily.composition.DailyCompositionActivity" />

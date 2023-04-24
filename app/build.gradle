@@ -6,19 +6,32 @@ plugins {
     id 'com.google.dagger.hilt.android'
     id 'kotlin-parcelize'
     id 'kotlinx-serialization'
+    id 'com.google.firebase.crashlytics'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 Properties properties = new Properties()
+Properties keyProperties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
+keyProperties.load(project.rootProject.file('keystore.properties').newDataInputStream())
 android {
+    signingConfigs {
+        release {
+            keyAlias keyProperties['keyAlias']
+            keyPassword keyProperties['keyPassword']
+            storeFile file(keyProperties['storeFile'])
+            storePassword keyProperties['storePassword']
+        }
+    }
     namespace 'com.lovesme.homegram'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.lovesme.homegram"
+        applicationId 'com.lovesme.homegram'
         minSdk 23
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
+        setProperty("archivesBaseName", "${applicationId}-v${versionName}")
 
         buildConfigField "String", "GOOGLE_CLIENT_ID", properties["google_client_id"]
         buildConfigField "String", "DATABASE_URL", properties["database_url"]
@@ -32,7 +45,14 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'retrofit2.pro'
+            versionNameSuffix "-release"
+            signingConfig signingConfigs.release
+        }
+        debug {
+            debuggable true
+            versionNameSuffix "-debug"
         }
     }
     compileOptions {
@@ -63,6 +83,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
     implementation "com.google.firebase:firebase-dynamic-links-ktx"
     implementation "com.google.dagger:hilt-android:$hiltVersion"
+    implementation "com.google.android.gms:play-services-ads:$google_ads_version"
     kapt "com.google.dagger:hilt-compiler:$hiltVersion"
     implementation "androidx.core:core-splashscreen:$splashVersion"
     implementation "androidx.room:room-runtime:$room_version"
@@ -75,6 +96,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:$retrofitSerializationVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationJsonVersion"
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$junitUiVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoCoreVersion"

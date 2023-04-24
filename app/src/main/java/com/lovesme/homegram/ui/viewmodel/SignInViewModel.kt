@@ -38,8 +38,8 @@ class SignInViewModel @Inject constructor(
     private fun saveLogInUserInfo() {
         _uiState.value = UiState.Loading
         viewModelScope.launch {
-            if (Constants.userId == null){
-                _uiState.value = UiState.Success(Unit)
+            if (Constants.userId == null) {
+                _uiState.value = UiState.Empty
             }
             val existUser = userPreferencesRepository.existUser()
             if (existUser is Result.Success) {
@@ -50,6 +50,8 @@ class SignInViewModel @Inject constructor(
                     } else {
                         _uiState.value = UiState.Error
                     }
+                } else {
+                    _uiState.value = UiState.Success(Unit)
                 }
             } else {
                 _uiState.value = UiState.Error
@@ -73,5 +75,9 @@ class SignInViewModel @Inject constructor(
     override fun onCleared() {
         auth.removeAuthStateListener(authStateListener)
         super.onCleared()
+    }
+
+    fun setLoginSuccessState() {
+        _uiState.value = UiState.Success(Unit)
     }
 }

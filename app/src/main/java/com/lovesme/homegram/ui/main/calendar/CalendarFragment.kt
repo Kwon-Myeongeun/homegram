@@ -16,6 +16,7 @@ import com.lovesme.homegram.R
 import com.lovesme.homegram.data.model.listener.DeleteClickListener
 import com.lovesme.homegram.databinding.FragmentCalendarBinding
 import com.lovesme.homegram.ui.viewmodel.CalendarViewModel
+import com.lovesme.homegram.util.Constants
 import com.lovesme.homegram.util.DateFormatText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -52,8 +53,10 @@ class CalendarFragment : Fragment(), DatePickerDialog.OnDateSetListener, DeleteC
         binding.writeTodoBtn.setOnClickListener {
             val date = binding.dateTv.text.toString()
             val contents = binding.todoCompositionContentTv.text.toString()
-            binding.todoCompositionContentTv.text.clear()
-            todoViewModel.writeTodo(date, contents)
+            if (contents.trim().isNotEmpty()) {
+                binding.todoCompositionContentTv.text.clear()
+                todoViewModel.writeTodo(date, contents)
+            }
         }
         return binding.root
     }
@@ -71,8 +74,9 @@ class CalendarFragment : Fragment(), DatePickerDialog.OnDateSetListener, DeleteC
                 }
                 launch {
                     todoViewModel.date.collect { date ->
-                        todoViewModel.loadTodo(date)
-                        binding.dateTv.text = date
+                        val uploadDate = arguments?.getString(Constants.PARCELABLE_DATE) ?: date
+                        todoViewModel.loadTodo(uploadDate)
+                        binding.dateTv.text = uploadDate
                     }
                 }
                 launch {

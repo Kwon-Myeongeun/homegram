@@ -10,6 +10,8 @@ object Constants {
     const val PARCELABLE_ANSWER_TEXT = "answer"
     const val PARCELABLE_CONTENT = "content"
     const val PARCELABLE_SERVICE_STOP = "stop"
+    const val PARCELABLE_DATE = "date"
+    const val PARCELABLE_NO = "no"
 
 
     val database = Firebase.database(BuildConfig.DATABASE_URL)

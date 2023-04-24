@@ -21,6 +21,7 @@ buildscript {
         okhttpVersion = "4.10.0"
         kotlinxSerializationJsonVersion = "1.4.1"
         retrofitSerializationVersion = "0.8.0"
+        google_ads_version = "22.0.0"
     }
     repositories {
         google()
@@ -29,6 +30,8 @@ buildscript {
     dependencies {
         classpath 'com.google.gms:google-services:4.3.15'
         classpath "org.jetbrains.kotlin:kotlin-serialization:1.7.20"
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.5'
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3"
     }
 }
 plugins {
