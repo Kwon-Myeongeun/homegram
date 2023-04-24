@@ -10,17 +10,28 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
 }
 Properties properties = new Properties()
+Properties keyProperties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
+keyProperties.load(project.rootProject.file('keystore.properties').newDataInputStream())
 android {
+    signingConfigs {
+        release {
+            keyAlias keyProperties['keyAlias']
+            keyPassword keyProperties['keyPassword']
+            storeFile file(keyProperties['storeFile'])
+            storePassword keyProperties['storePassword']
+        }
+    }
     namespace 'com.lovesme.homegram'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.lovesme.homegram"
+        applicationId 'com.lovesme.homegram'
         minSdk 23
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
+        setProperty("archivesBaseName", "${applicationId}-v${versionName}")
 
         buildConfigField "String", "GOOGLE_CLIENT_ID", properties["google_client_id"]
         buildConfigField "String", "DATABASE_URL", properties["database_url"]
@@ -35,10 +46,13 @@ android {
         release {
             minifyEnabled false
             debuggable false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'retrofit2.pro'
+            versionNameSuffix "-release"
+            signingConfig signingConfigs.release
         }
         debug {
             debuggable true
+            versionNameSuffix "-debug"
         }
     }
     compileOptions {
